@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('head'); %>
+</head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col font-serif">
+    <header><%- include('menu'); %></header>
+
+    <main class="flex-1 px-6 py-5">
+
+        <div class="max-w-full mx-auto rounded-3xl shadow-lg overflow-hidden flex flex-col lg:flex-row
+            bg-gradient-to-r from-[#f4edd7] to-[#1a83b8]">
+            <div class="lg:w-1/2 p-10 flex flex-col justify-center">
+                <h1 class="text-4xl font-semibold mt-6 leading-tight text-black">
+                    Entre para campeonatos e encontre sua comunidade esportiva
+                </h1>
+                <p class="text-lg text-black mt-6 leading-relaxed max-w-xl">
+                    Escolha seu esporte, participe de equipes e dispute campeonatos
+                    com atletas da sua região.
+                </p>
+                
+                <div class="mt-10 relative">
+
+                    <img src="/imagens/trofeu.jpg" alt="Campeonato"
+                        class="rounded-3xl shadow-2xl w-full max-w-xl object-cover">
+                </div>
+
+            </div>
+
+            <div class="lg:w-1/2 p-10 flex flex-col justify-center">
+
+                <h2 class="text-3xl text-white mb-8 tracking-wide">
+                    Escolha seu esporte
+                </h2>
+
+                <div class="flex flex-col gap-6">
+
+                    <div
+                        class="group bg-[#ffe58f] rounded-2xl px-8 py-6 flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-md">
+
+                        <div>
+                            <h3 class="text-2xl font-semibold text-[#2c2c2c]">
+                                Voleibol
+                            </h3>
+
+                            <p class="text-sm mt-1 text-[#5a5335]">
+                                Equipes, torneios e amistosos
+                            </p>
+                        </div>
+
+                        <img src="/imagens/volei.png" class="w-20 h-20 group-hover:rotate-12 transition">
+                    </div>
+
+                    <div
+                        class="group bg-[#9be7ff] rounded-2xl px-8 py-6 flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-md">
+
+                        <div>
+                            <h3 class="text-2xl font-semibold text-[#16374a]">
+                                Corrida
+                            </h3>
+
+                            <p class="text-sm mt-1 text-[#30556b]">
+                                Maratonas e desafios pessoais
+                            </p>
+                        </div>
+
+                        <img src="/imagens/corrida.png" class="w-20 h-20 group-hover:translate-x-1 transition">
+                    </div>
+
+                    <div
+                        class="group bg-[#ff8a8a] rounded-2xl px-8 py-6 flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-md">
+
+                        <div>
+                            <h3 class="text-2xl font-semibold text-[#3d1414]">
+                                Boxe
+                            </h3>
+
+                            <p class="text-sm mt-1 text-[#5a2323]">
+                                Lutas, rankings e academias
+                            </p>
+                        </div>
+
+                        <img src="/imagens/boxe.png" class="w-20 h-20 group-hover:-rotate-12 transition">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('mensagens') %>
+</body>
+
+</html>

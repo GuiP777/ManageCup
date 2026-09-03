@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head> <%- include('../head'); %> </head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+    <header> <%- include('../menu'); %> </header>
+    <main class="md:p-12 font-serif text-gray-900 flex-1">
+        <div class="max-w-4xl mx-auto top-1">
+
+            <h1 class="text-4xl text-[#1a83b8] mb-6 tracking-wide drop-shadow-md font-semibold">
+                Detalhes do Campeonato
+            </h1>
+
+            <div class="bg-[#f5ebd4] rounded-lg shadow-lg p-6 md:p-8 flex flex-col md:flex-row gap-8 ">
+                <div class="md:w-1/3 flex flex-col items-center">
+                    <img src="/imagens/<%= dadosCampeonatos.imagem %>" alt="Imagem do Campeonato"
+                        class="w-full h-auto object-cover border border-black shadow-sm mb-4">
+                </div>
+
+                <div class="md:w-2/3 flex flex-col justify-between text-[#1a83b8] ">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-6 border-b border-gray-400 pb-2">
+                            <%= dadosCampeonatos.nome %>
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
+                            <p><span class="font-bold text-black">Esporte:</span>
+                                <%= dadosCampeonatos.esporte %>
+                            </p>
+                            <p><span class="font-bold text-black">Organizador:</span>
+                                <%= dadosCampeonatos.organizador %>
+                            </p>
+                            <p><span class="font-bold text-black">Data:</span>
+                                <%= dadosCampeonatos.data.toLocaleDateString('pt-BR', { 
+                                    day: '2-digit' , 
+                                    month: 'long' ,
+                                    year: 'numeric' }) %>
+                            </p>
+                            <p><span class="font-bold text-black">Local:</span>
+                                <%= dadosCampeonatos.localizacao %>
+                            </p>
+                            <p><span class="font-bold text-black">Limite de Inscritos:</span>
+                                <%= dadosCampeonatos.inscricoes %>
+                            </p>
+
+                            <div
+                                class="col-span-1 md:col-span-2 mt-2 bg-[#e6dcbf] p-3 border border-gray-300 inline-block w-max ">
+                                <p><span class="font-bold text-black">Inscritos:</span>
+                                    <%= inscritosCampeonato %>
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="mt-10 flex flex-wrap gap-4 justify-end">
+                        <a href="/campeonato"
+                            class="bg-[#ffe58f] rounded-lg text-[#1a83b8] font-semibold px-6 py-2 border-2 border-black hover:bg-[#fce597] transition-colors 
+                            shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
+                            Voltar
+                        </a>
+                        <a href="/inscrever/<%=dadosCampeonatos.id %>">
+                            <button
+                                class="bg-[#c24e54] rounded-lg font-semibold cursor-pointer text-white px-6 py-2 border-2 border-black hover:bg-[#a63f44] 
+                                transition-colors shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
+                                Inscrever-se
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('../mensagens') %>
+</body>
+
+</html>

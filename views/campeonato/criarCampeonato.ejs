@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head> <%- include('../head'); %> </head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+    <header> <%- include('../menu'); %> </header>
+    <main class="flex-1 flex justify-center items-start pt-10 font-serif p-6">
+
+        <div class="bg-[#1a83b8] w-full max-w-4xl rounded-xl p-8 shadow-lg">
+
+            <h1 class="text-[#f4edd7] text-4xl font-semibold  mb-8">Criar um Campeonato</h1>
+
+            <form action="/cadastroCampeonato" method="POST" enctype="multipart/form-data"
+                class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 text-[#f4edd7]">
+
+                <div class="flex flex-col">
+                    <label for="nome" class="mb-1 text-[1.1rem]">Nome do Campeonato</label>
+                    <input type="text" id="nome" name="nome"
+                        class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="organizador" class="mb-1 text-[1.1rem]">Organizador</label>
+                    <input type="text" id="organizador" name="organizador" value="<%= dadosUsuario.nome %>"
+                        class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                </div>
+
+                <div class="flex flex-col relative">
+                    <label for="esporte" class="mb-1 text-[1.1rem]">Esporte</label>
+                    <select id="esporte" name="esporte"
+                        class=" bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                        <option value="" disabled <% if(modalidade=="" ){%>selected<% } %>>Selecione</option>
+                        <option value="voleibol" <% if(modalidade=="Voleibol" ){%>selected<% } %>>Voleibol</option>
+                        <option value="boxe" <% if(modalidade=="Boxe" ){%>selected<% } %>>Boxe</option>
+                        <option value="corrida" <% if(modalidade=="Corrida" ){%>selected<% } %>>Corrida</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="data" class="mb-1 text-[1.1rem]">Data de Ocorrência</label>
+                    <input type="date" id="data" name="data"
+                        class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="inscricoes" class="mb-1 text-[1.1rem]">Quantidade de Times/Atletas</label>
+                    <input type="number" id="inscricoes" name="inscricoes"
+                        class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                </div>
+
+                <div class="hidden md:block"></div>
+
+                <div class="flex flex-col">
+                    <label for="localizacao" class="mb-1 text-[1.1rem]">Localização</label>
+                    <input type="text" id="localizacao" name="localizacao"
+                        class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                </div>
+
+                <div class="hidden md:block"></div>
+
+                <div class="flex flex-col items-start">
+                    <span class="mb-1 text-[1.1rem]">Imagem Representativa</span>
+
+                    <label class="cursor-pointer mt-2">
+                        <img src="/imagens/iconeBaixar.png" class="size-10 cursor-pointer">
+                        <input type="file" name="imagem" class="hidden " required>
+                    </label>
+                </div>
+
+                <div class="flex justify-center ">
+                    <button type="submit" class="w-1/2 h-2/3 mt-auto font-sans text-lg cursor-pointer bg-[#c24e54] 
+                        text-white font-semibold border-2 border-black rounded-lg hover:bg-[#a63f44]
+                        shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                        hover:translate-y-[2px] hover:translate-x-[2px]">
+                        Criar Campeonato
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <%- include('../mensagens') %>
+
+</body>
+
+</html>

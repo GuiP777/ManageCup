@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head> <%- include('../head'); %> </head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+    <header> <%- include('../menu'); %> </header>
+    <main class="flex-1 flex items-center justify-center py-8">
+
+        <div class="bg-[#1a83b8] w-full max-w-md rounded-xl p-8 text-[#f4edd7]">
+
+            <h1 class="text-center text-3xl mb-6 font-semibold">Cadastro</h1>
+
+            <form action="/cadastro" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
+
+                <div>
+                    <label>Nome completo</label>
+                    <input type="text" name="nome" class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <input type="email" name="email"
+                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                </div>
+
+                <div>
+                    <label>Senha</label>
+                    <input type="password" name="senha"
+                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                </div>
+
+                <div>
+                    <label>Data de Nascimento</label>
+                    <input type="date" name="data" class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                </div>
+
+                <div>
+                    <label>Sexo</label>
+                    <select name="sexo" class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                        <option value="">Selecione</option>
+                        <option>Masculino</option>
+                        <option>Feminino</option>
+                        <option>Outro</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <span>Avatar</span>
+
+                    <label class="cursor-pointer mt-2">
+                        <img src="/imagens/iconeBaixar.png" class="size-10">
+                        <input type="file" name="avatar" class="hidden " required>
+                    </label>
+                </div>
+
+                <button type="submit" class="bg-[#c24e54] text-white  w-1/4 font-semibold py-2 rounded cursor-pointer
+                                border-2 border-black hover:bg-[#a63f44] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,1)] 
+                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
+                    Enviar
+                </button>
+
+
+
+            </form>
+
+        </div>
+
+    </main>
+    <%- include('../mensagens') %>
+</body>
+
+</html>

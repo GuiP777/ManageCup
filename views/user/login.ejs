@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head> <%- include('../head'); %> </head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+    <header> <%- include('../menu'); %> </header>
+    <main class="flex flex-1 items-center justify-center ">
+
+        <div class="bg-[#1a83b8] w-full max-w-md  rounded-xl p-8 text-[#f4edd7]">
+
+            <h1 class="text-center text-3xl mb-4 font-semibold">Login</h1>
+
+            <form action="/login" method="POST" class="flex flex-col gap-4">
+                <div>
+                    <label>Email</label>
+                    <input type="email" name="email"
+                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                </div>
+
+                <div class="mb-4">
+                    <label>Senha</label>
+                    <input type="password" name="senha"
+                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                </div>
+
+                <button type="submit" class="bg-[#c24e54] text-white  w-1/4 font-semibold py-2 rounded cursor-pointer
+                                border-2 border-black hover:bg-[#a63f44] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,1)] 
+                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
+                    Enviar
+                </button>
+            </form>
+        </div>
+    </main>
+    <%- include('../mensagens') %>
+</body>
+
+</html>

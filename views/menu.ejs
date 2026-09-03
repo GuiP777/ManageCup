@@ -1,0 +1,114 @@
+<%
+function isActive(...rotas) {
+
+    for(let i = 0; i < rotas.length; i++){
+
+        if(rotas[i] === '/' && rotaAtual === '/'){
+            return 'bg-[#1a83b8] text-[#f4edd7] px-4 py-1 rounded-lg';
+        }
+        if(rotas[i] !== '/' && rotaAtual.startsWith(rotas[i])){
+            return 'bg-[#1a83b8] text-[#f4edd7] px-4 py-1 rounded-lg';
+        }
+    }
+
+    return 'relative text-black after:block after:h-[2px] after:bg-black after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100 after:origin-left';
+}
+%>
+    <nav class=" px-6 flex items-center justify-between mx-auto font-sans">
+
+        <div class="flex items-center gap-2">
+            <img src="/imagens/logo.png" alt="Logo" class="size-20">
+        </div>
+
+        <div class="flex items-center gap-6">
+
+            <a href="/" class="<%= isActive('/') %> ">Início</a>
+
+            <a href="/campeonato" class="<%= isActive('/campeonato', '/infoCampeonato/', '/filtrarCampeonatos') %>">Campeonatos</a>
+
+            <% if (perfis.voleibolTreinador) { %>
+                <a href="/equipe" class="<%= isActive('/equipe') %>">Equipe</a>
+                <% } %>
+
+                    <% if(logado){ %>
+                        <a href="/chat" class="<%= isActive('/chat') %> ">Chat</a>
+
+                        <div class="relative group inline-block">
+                            <button class="flex items-center gap-1 bg-[#1a83b8] text-[#f4edd7] px-4 py-2 rounded-t-md 
+                                font-medium transition-colors">
+                                Postagens
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div
+                                class="absolute hidden group-hover:block w-38 bg-[#1d84bd] rounded-b-md shadow-lg overflow-hidden z-50">
+                                <div class="flex flex-col">
+
+                                    <% if (perfis.boxe) { %>
+                                        <a href="#"
+                                            class="px-4 py-2 text-black hover:bg-[#156a99] border-b border-black/20 mx-2 last:border-0 transition-colors">
+                                            Boxe
+                                        </a>
+                                        <% }else{ %>
+                                            <p
+                                                class="px-4 py-2 text-black hover:bg-[#156a99] border-b border-black/20 mx-2 last:border-0 transition-colors">
+                                                Boxe
+                                            </p>
+                                            <% } %>
+
+                                                <% if (perfis.voleibolTreinador || perfis.voleibolJogador) { %>
+                                                    <a href="#"
+                                                        class="px-4 py-2 text-black hover:bg-[#156a99] border-b border-black/20 mx-2 last:border-0 transition-colors">
+                                                        Voleibol
+                                                    </a>
+                                                    <% }else{ %>
+                                                        <p
+                                                            class="px-4 py-2 text-black hover:bg-[#156a99] border-b border-black/20 mx-2 last:border-0 transition-colors">
+                                                            Voleibol
+                                                        </p>
+                                                        <% } %>
+
+                                                            <% if (perfis.corrida) { %>
+                                                                <a href="#"
+                                                                    class="px-4 py-2 text-black hover:bg-[#156a99] border-b border-black/20 mx-2 last:border-0 transition-colors">
+                                                                    Corrida
+                                                                </a>
+                                                                <% }else{ %>
+                                                                    <p
+                                                                        class="px-4 py-2 text-black hover:bg-[#156a99] border-b border-black/20 mx-2 last:border-0 transition-colors">
+                                                                        Corrida
+                                                                    </p>
+                                                                    <% } %>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="/logout"
+                            class="'relative text-black after:block after:h-[2px] after:bg-black 
+                             after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100 after:origin-left'">
+                            Logout
+                        </a>
+                        <a href="/notificacao">
+                            <img src="/imagens/notificacao.png" class="w-5 h-5 cursor-pointer">
+                        </a>
+                        <% } else{%>
+                            <a href="/cadastro" class="<%= isActive('/cadastro') %>">Cadastro</a>
+                            <a href="/login" class="<%= isActive('/login') %>">Login</a>
+                            <% } %>
+
+                                <a href="/perfil">
+                                    <img src="<%= avatar != null ? '/imagens/' + avatar : '/imagens/avatarPadrao.png' %>"
+                                        alt="Avatar"
+                                        class="w-10 h-10 rounded-full border-1 border-black object-cover cursor-pointer">
+                                </a>
+
+
+
+        </div>
+
+    </nav>

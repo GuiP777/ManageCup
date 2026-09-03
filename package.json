@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "formidable": "^3.5.4",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.18.2",
+    "sequelize": "^6.37.7",
+    "socket.io": "^4.8.3"
+  },
+  "name": "managecup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node servidor.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

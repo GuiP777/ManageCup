@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head> <%- include('../head'); %> </head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+    <header> <%- include('../menu'); %> </header>
+    <main class=" flex-1 flex items-center justify-center py-10">
+
+        <div class="bg-[#1a83b8] min-h-screen rounded-xl p-10 w-full max-w-3xl shadow-md font-serif text-white">
+            <h2 class="text-4xl mb-6 tracking-wide text-center text-[#f4edd7]">Notificações</h2>
+
+            <% dadosConvitesJogadores.forEach(function(convite){ %>
+                <% if(convite.status=="pendente" ){ %>
+                    <div class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                        <div class="flex justify-between items-start gap-4">
+                            <div>
+                                <h2 class="text-xl font-semibold text-gray-800">
+                                    Convite de equipe
+                                </h2>
+                                <p class="text-gray-600 mt-2">
+                                    Você foi convidado pelo time
+                                    <span class="font-semibold text-blue-600">
+                                        <%= convite.equipe.treinador.nomeEquipe %>
+                                    </span>
+                                    para participar da equipe.
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2 mt-auto">
+                                <a href="/conviteAceito/<%= convite.equipe.id %>/<%= convite.id %>">
+                                    <button
+                                        class="bg-[#ffe58f] text-[#1a83b8] border-2 border-black rounded-lg px-5 py-2 
+                                    hover:bg-[#fce597] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                    hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                        Aceitar
+                                    </button>
+                                </a>
+                                <button onclick="abrirModal()"
+                                    class="bg-[#c24e54] text-white border-2 border-black rounded-lg px-5 py-2 
+                                    hover:bg-[#a63f44] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                    hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                    Recusar
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="modalRecusa" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+                        <div class="bg-[#f4edd7] w-[500px] rounded-xl p-6 relative">
+
+                            <button onclick="fecharModal()"
+                                class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl">
+                                X
+                            </button>
+
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                                Motivo da recusa
+                            </h2>
+
+                            <form action="/conviteRecusa/<%= convite.id %>" method="POST">
+
+                                <textarea name="motivo" id="motivo" required
+                                    class="w-full h-40 border border-gray-300 rounded-lg p-3 text-black resize-none outline-none focus:border-red-400"
+                                    placeholder="Escreva o motivo da recusa..."></textarea>
+
+                                <div class="flex justify-end gap-3 mt-5">
+
+                                    <button type="submit"
+                                        class="bg-[#c24e54] text-white border-2 border-black rounded-lg px-5 py-2 
+                                        hover:bg-[#a63f44] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                        hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                        Enviar recusa
+                                    </button>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <% }; %>
+                        <% if(convite.status=="aceito" ){ %>
+                            <div class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                                <div class="flex justify-between items-start gap-4">
+                                    <div>
+                                        <h2 class="text-xl font-semibold text-gray-800">
+                                            Convite de equipe
+                                        </h2>
+                                        <p class="text-gray-600 mt-2">
+                                            Você
+                                            <span class="font-semibold text-green-600">
+                                                aceitou
+                                            </span>
+                                            o convite da equipe
+                                            <span class="font-semibold text-blue-600">
+                                                <%= convite.equipe.treinador.nomeEquipe %>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }; %>
+                            <% if(convite.status=="removido" ){ %>
+                            <div class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                                <div class="flex justify-between items-start gap-4">
+                                    <div>
+                                        <h2 class="text-xl font-semibold text-gray-800">
+                                            Notificação de equipe
+                                        </h2>
+                                        <p class="text-gray-600 mt-2">
+                                            Você foi
+                                            <span class="font-semibold text-red-500">
+                                                removido
+                                            </span>
+                                            da equipe
+                                            <span class="font-semibold text-blue-600">
+                                                <%= convite.equipe.treinador.nomeEquipe %>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }; %>
+                                <% if(convite.status=="recusado" || convite.status=="recusadoVisto" ){ %>
+                                    <div class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                                        <div>
+                                            <h2 class="text-xl font-semibold text-gray-800">
+                                                Convite de equipe
+                                            </h2>
+
+                                            <p class="text-gray-600 mt-2">
+                                                Você 
+                                                <span class="font-semibold text-red-500">
+                                                    recusou
+                                                </span>
+                                                o convite da equipe
+                                                <span class="font-semibold text-blue-600">
+                                                    <%= convite.equipe.treinador.nomeEquipe %>
+                                                </span>
+                                            </p>
+
+                                            <div class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+                                                <p class="text-sm font-semibold text-red-600 mb-2">
+                                                    Motivo da recusa
+                                                </p>
+
+                                                <p class="text-gray-600 leading-relaxed">
+                                                    <%= convite.motivo %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }; %>
+                                        <% }); %>
+
+                                            <% dadosConvitesTreinador.forEach(function(convite){ %>
+                                                <% if(convite.status=="aceito" ){ %>
+                                                    <div
+                                                        class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                                                        <div class="flex justify-between items-start gap-4">
+                                                            <div>
+                                                                <h2 class="text-xl font-semibold text-gray-800">
+                                                                    Convite de equipe
+                                                                </h2>
+                                                                <p class="text-gray-600 mt-2">
+                                                                    Seu convite para
+                                                                    <span class="font-semibold text-blue-600">
+                                                                        <%= convite.jogador.donoDoPerfil.nome %> |
+                                                                            <%= convite.jogador.posicao %>
+                                                                    </span>
+                                                                    foi
+                                                                    <span class="font-semibold text-green-600">
+                                                                        Aceito
+                                                                    </span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% }; %>
+                                                        <% if(convite.status=="pendente" ){ %>
+                                                            <div
+                                                                class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                                                                <div class="flex justify-between items-start gap-4">
+                                                                    <div>
+                                                                        <h2 class="text-xl font-semibold text-gray-800">
+                                                                            Convite de equipe
+                                                                        </h2>
+                                                                        <p class="text-gray-600 mt-2">
+                                                                            Seu convite para
+                                                                            <span class="font-semibold text-blue-600">
+                                                                                <%= convite.jogador.donoDoPerfil.nome %>
+                                                                                    |
+                                                                                    <%= convite.jogador.posicao %>
+                                                                            </span>
+                                                                            está
+                                                                            <span class="font-semibold text-orange-500">
+                                                                                Pendente
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <% }; %>
+                                                                <% if(convite.status=="recusado" ){ %>
+                                                                    <div
+                                                                        class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                                                                        <div>
+                                                                            <h2
+                                                                                class="text-xl font-semibold text-gray-800">
+                                                                                Convite de equipe
+                                                                            </h2>
+
+                                                                            <p class="text-gray-600 mt-2">
+                                                                                Seu convite para
+                                                                                <span
+                                                                                    class="font-semibold text-blue-600">
+                                                                                    <%= convite.jogador.donoDoPerfil.nome
+                                                                                        %> |
+                                                                                        <%= convite.jogador.posicao %>
+                                                                                </span>
+                                                                                foi
+                                                                                <span
+                                                                                    class="font-semibold text-red-500">
+                                                                                    Recusado
+                                                                                </span>
+                                                                            </p>
+
+                                                                            <div
+                                                                                class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+                                                                                <p
+                                                                                    class="text-sm font-semibold text-red-600 mb-2">
+                                                                                    Motivo da recusa
+                                                                                </p>
+
+                                                                                <p
+                                                                                    class="text-gray-600 leading-relaxed">
+                                                                                    <%= convite.motivo %>
+                                                                                </p>
+                                                                            </div>
+                                                                            <%# chat n está funcionando ainda %>
+                                                                                <div
+                                                                                    class="flex justify-end gap-3 mt-4">
+                                                                                    <a
+                                                                                        href="chat/<%= convite.jogador.donoDoPerfil.id %>">
+                                                                                        <button class="bg-[#ffe58f] text-[#1a83b8] hover:bg-[#fce597] px-4 py-2 
+                                                                            border-2 border-black rounded-lg transition cursor-pointer font-semibold
+                                                                            shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] 
+                                                                            hover:translate-x-[2px]">
+                                                                                            Conversar
+                                                                                        </button>
+                                                                                    </a>
+                                                                                    <a
+                                                                                        href="recusadoVisto/<%= convite.id %>">
+                                                                                        <button
+                                                                                            class="bg-[#c24e54] text-white border-2 border-black rounded-lg px-5 py-2 
+                                                                            hover:bg-[#a63f44] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                                                            hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                                                                            Ok
+                                                                                        </button>
+                                                                                    </a>
+                                                                                </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <% }; %>
+                                                                        <% if(convite.status=="recusadoVisto" ){ %>
+                                                                            <div
+                                                                                class="bg-[#f4edd7] rounded-xl p-5 mb-4 shadow-lg border border-gray-200">
+                                                                                <div>
+                                                                                    <h2
+                                                                                        class="text-xl font-semibold text-gray-800">
+                                                                                        Convite de equipe
+                                                                                    </h2>
+
+                                                                                    <p class="text-gray-600 mt-2">
+                                                                                        Seu convite para
+                                                                                        <span
+                                                                                            class="font-semibold text-blue-600">
+                                                                                            <%= convite.jogador.donoDoPerfil.nome
+                                                                                                %> |
+                                                                                                <%= convite.jogador.posicao
+                                                                                                    %>
+                                                                                        </span>
+                                                                                        foi
+                                                                                        <span
+                                                                                            class="font-semibold text-red-500">
+                                                                                            Recusado
+                                                                                        </span>
+                                                                                    </p>
+
+                                                                                    <div
+                                                                                        class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+                                                                                        <p
+                                                                                            class="text-sm font-semibold text-red-600 mb-2">
+                                                                                            Motivo da recusa
+                                                                                        </p>
+
+                                                                                        <p
+                                                                                            class="text-gray-600 leading-relaxed">
+                                                                                            <%= convite.motivo %>
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    <%# chat n está funcionando ainda %>
+                                                                                        <div
+                                                                                            class="flex justify-end gap-3 mt-4">
+                                                                                            <a
+                                                                                                href="chat/<%= convite.jogador.donoDoPerfil.id %>">
+                                                                                                <button class="bg-[#ffe58f] text-[#1a83b8] hover:bg-[#fce597] px-4 py-2 
+                                                                            border-2 border-black rounded-lg transition cursor-pointer font-semibold
+                                                                            shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] 
+                                                                            hover:translate-x-[2px]">
+                                                                                                    Conversar
+                                                                                                </button>
+                                                                                            </a>
+                                                                                        </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <% }; %>
+                                                                                <% }); %>
+
+        </div>
+
+    </main>
+
+    <script>
+        function abrirModal() {
+            const modal = document.getElementById('modalRecusa');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function fecharModal() {
+            const modal = document.getElementById('modalRecusa');
+
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // FECHAR AO CLICAR FORA
+        document.getElementById('modalRecusa').addEventListener('click', function (e) {
+
+            if (e.target.id === 'modalRecusa') {
+                fecharModal();
+            }
+
+        });
+    </script>
+    <%- include('../mensagens') %>
+
+</body>
+
+</html>

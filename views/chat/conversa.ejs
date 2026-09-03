@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('../head'); %>
+</head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col font-serif">
+    <header><%- include('../menu'); %></header>
+
+    <div class="h-[calc(100vh-80px)] flex flex-col">
+
+        <main class="flex-1 flex min-h-0 p-2 gap-1">
+            <aside class="w-[340px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+                <div class="px-5 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-bold text-gray-800">
+                        Conversas
+                    </h2>
+
+                    <div class="relative mt-3">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 21l-4.35-4.35m2.35-5.65a8 8 0 11-16 0 8 8 0 0116 0z" />
+
+                        </svg>
+
+                        <input type="text" placeholder="Pesquisar conversa..." class="w-full bg-gray-100 rounded-lg pl-10 pr-3 py-2 text-sm
+                                   focus:outline-none focus:ring-2 focus:ring-[#1a83b8]">
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONVERSAS -->
+                <div class="flex-1 overflow-y-auto">
+                    <% dadosConversantes.forEach(function(conversante){ %>
+                        <a href="/chat/<%= conversante.usuario.id %>">
+                            <button class="w-full px-5 py-4 flex items-center gap-3
+                               hover:bg-gray-100 transition text-left cursor-pointer">
+                                <div class="relative">
+                                    <img src="/imagens/<%= conversante.usuario.avatar || 'avatarPadrao.png' %> " class="w-12 h-12 rounded-full object-cover
+                                       border-2 border-gray-200">
+
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-bold text-gray-800 truncate">
+                                            <%= conversante.usuario.nome %>
+                                        </p>
+                                        <span class="text-xs text-gray-400">
+                                            <%= formatarDataMensagem(conversante.ultimaMensagem.creat_at) %>
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 truncate mt-1">
+                                        <%= conversante.ultimaMensagem.mensagem %>
+                                    </p>
+                                </div>
+                            </button>
+                        </a>
+                        <% }) %>
+                </div>
+            </aside>
+
+            <!-- ÁREA DA CONVERSA -->
+            <section class="flex-1 bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <img src="/imagens/<%= dadosDestinatario.avatar || 'avatarPadrao.png' %> "
+                                class="w-12 h-12 rounded-full object-cover border-2 border-[#1a83b8]">
+
+                            <span class="absolute bottom-0 right-0 w-3.5 h-3.5
+                                       bg-green-500 border-2 border-white rounded-full">
+                            </span>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-gray-800 text-lg">
+                                <%= dadosDestinatario.nome %>
+
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <!-- MENSAGENS -->
+                <div id="areaMensagens" class="flex-1 overflow-y-auto p-6 space-y-4 bg-[#faf8f1]">
+                   
+                </div>
+
+                <!-- CAMPO DE MENSAGEM -->
+                <div class="border-t border-gray-200 bg-white p-4">
+                    <form id="formMensagem" class="flex items-center gap-3">
+                        <!-- INPUT -->
+                        <input id="campoMensagem" type="text" placeholder="Digite uma mensagem..." class="flex-1 bg-gray-100 rounded-xl
+                                   px-4 py-3 text-sm
+                                   focus:outline-none
+                                   focus:ring-2 focus:ring-[#1a83b8]">
+
+                        <!-- ENVIAR -->
+                        <button type="submit" class="w-11 h-11 rounded-xl
+                                   bg-[#1a83b8] text-white
+                                   flex items-center justify-center
+                                   hover:bg-[#156f9d]
+                                   transition shadow-md">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="dadosChat" data-usuario-id="<%= usuario_id %>" data-destinatario-id="<%= dadosDestinatario.id %>" hidden>
+    </div>
+    <div id="mensagens" data-mensagens="<%= JSON.stringify(mensagens) %>" hidden></div>
+
+
+    <%- include('../mensagens') %>
+
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+
+            function formatarHorario(horario) {
+
+                const data = new Date(horario);
+
+                if (isNaN(data.getTime())) {
+                    return '--:--';
+                }
+
+                return data.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            function formatarDataMensagem(dataMensagem) {
+
+                const data = new Date(dataMensagem);
+                const hoje = new Date();
+
+                if (isNaN(data.getTime())) {
+                    return '';
+                }
+
+                const mesmaData =
+                    data.getDate() === hoje.getDate() &&
+                    data.getMonth() === hoje.getMonth() &&
+                    data.getFullYear() === hoje.getFullYear();
+
+                if (mesmaData) {
+                    return 'Hoje';
+                }
+
+                const ontem = new Date();
+                ontem.setDate(hoje.getDate() - 1);
+
+                const foiOntem =
+                    data.getDate() === ontem.getDate() &&
+                    data.getMonth() === ontem.getMonth() &&
+                    data.getFullYear() === ontem.getFullYear();
+
+                if (foiOntem) {
+                    return 'Ontem';
+                }
+
+                return data.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+            }
+
+            const elementoMensagens = document.getElementById('mensagens');
+            const mensagens = JSON.parse(elementoMensagens.dataset.mensagens);
+
+            const socket = io();
+
+            const dadosChat = document.getElementById('dadosChat');
+
+            const usuarioId = dadosChat.dataset.usuarioId;
+            const destinatarioId = dadosChat.dataset.destinatarioId;
+
+            if (mensagens != null) {
+
+                let ultimaData = null;
+
+                mensagens.forEach(mensagem => {
+
+                    const dataMensagem = formatarDataMensagem(mensagem.creat_at);
+
+                    if (dataMensagem !== ultimaData) {
+                        adicionarSeparadorData(dataMensagem);
+                        ultimaData = dataMensagem;
+                    }
+
+                    if (String(mensagem.id_remetente) === String(usuarioId)) {
+                        adicionarMensagemEnviada(mensagem.mensagem, mensagem.creat_at);
+
+                    } else {
+                        adicionarMensagemRecebida(mensagem.mensagem, mensagem.creat_at);
+                    }
+
+                });
+            }
+
+            function adicionarSeparadorData(data) {
+
+                const areaMensagens = document.getElementById('areaMensagens');
+                const div = document.createElement('div');
+
+                div.classList.add(
+                    'flex',
+                    'justify-center',
+                    'my-4'
+                );
+
+                div.innerHTML = `
+                    <span class="text-xs text-gray-500 bg-white px-3 py-1 rounded-full shadow-sm">
+                        ${data}
+                    </span>
+                `;
+
+                areaMensagens.appendChild(div);
+            }
+
+            socket.emit('identificarUsuario', usuarioId);
+
+            const formMensagem = document.getElementById('formMensagem');
+            const campoMensagem = document.getElementById('campoMensagem');
+
+            formMensagem.addEventListener('submit', (event) => {
+
+                event.preventDefault();
+
+                const mensagem = campoMensagem.value.trim();
+
+                if (!mensagem) {
+                    return;
+                }
+
+                socket.emit('enviarMensagem', {
+
+
+                    remetente: usuarioId,
+                    destinatario: destinatarioId,
+                    mensagem: mensagem
+
+                });
+
+                campoMensagem.value = '';
+
+            });
+
+            socket.on('mensagemEnviada', (dados) => {
+
+                adicionarMensagemEnviada(dados.mensagem, dados.horario);
+
+            });
+
+            socket.on('novaMensagem', (dados) => {
+
+                adicionarMensagemRecebida(dados.mensagem, dados.horario);
+
+            });
+
+            function adicionarMensagemRecebida(mensagem, horario) {
+
+                const areaMensagens = document.getElementById('areaMensagens');
+                const div = document.createElement('div');
+
+                div.classList.add(
+                    'flex',
+                    'items-end',
+                    'gap-2'
+                );
+
+                div.innerHTML = `
+
+                    <img
+                        src="/imagens/<%=dadosDestinatario.avatar || 'avatarPadrao.png'%> "
+                        class="w-8 h-8 rounded-full object-cover">
+
+                    <div class="max-w-[65%]">
+
+                        <div
+                            class="bg-white border border-gray-200
+                                rounded-2xl rounded-bl-sm
+                                px-4 py-3 shadow-sm">
+
+                            <p class="text-gray-700 text-sm">
+                                ${mensagem}
+                            </p>
+
+                        </div>
+
+                        <span class="text-[11px] text-gray-400 ml-2">
+                            ${formatarHorario(horario)}
+                        </span>
+
+                    </div>
+
+                `;
+
+                areaMensagens.appendChild(div);
+
+                areaMensagens.scrollTop = areaMensagens.scrollHeight;
+            }
+
+            function adicionarMensagemEnviada(mensagem, horario) {
+
+                const areaMensagens = document.getElementById('areaMensagens');
+
+                const div = document.createElement('div');
+
+                div.classList.add(
+                    'flex',
+                    'justify-end'
+                );
+
+                div.innerHTML = `
+
+                    <div class="max-w-[65%]">
+
+                        <div
+                            class="bg-[#1a83b8] text-white
+                                rounded-2xl rounded-br-sm
+                                px-4 py-3 shadow-sm">
+
+                            <p class="text-sm">
+                                ${mensagem}
+                            </p>
+
+                        </div>
+
+                        <div class="flex justify-end items-center gap-1 mt-1">
+
+                            <span class="text-[11px] text-gray-400">
+                                ${formatarHorario(horario)}
+                            </span>
+
+                            <span class="text-[#1a83b8] text-xs">
+                                
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+                areaMensagens.appendChild(div);
+
+                areaMensagens.scrollTop = areaMensagens.scrollHeight;
+            }
+        </script>
+</body>
+
+</html>

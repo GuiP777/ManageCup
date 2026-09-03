@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('../head'); %>
+</head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen">
+
+    <header>
+        <%- include('../menu'); %>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-10 font-serif">
+
+        <section class="bg-[#1a83b8] rounded-3xl shadow-2xl p-8 border-2 border-black/10">
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-4xl font-bold text-[#f4edd7] mt-2">
+                        Equipe <%= dadosEquipe.treinador.nomeEquipe %>
+                    </h1>
+
+                    <p class="text-white/90 mt-2">
+                        Organize o elenco, monte a quadra e convide novos jogadores.
+                    </p>
+                </div>
+
+                <button onclick="abrirModalAdicionarJogador()" class="bg-[#ffe58f] text-[#1a83b8] hover:bg-[#fce597] px-6 py-3 rounded-xl 
+                    border-2 border-black font-semibold cursor-pointer transition
+                    shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] 
+                    hover:translate-x-[2px]">
+                    + Adicionar jogador
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8">
+
+                <div class="bg-[#f4edd7] rounded-2xl p-6 shadow-xl border-2 border-black/20">
+
+                    <div class="flex justify-between items-center mb-5">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-[#1a83b8]">Banco</h2>
+                        </div>
+
+                        <div class="bg-[#1a83b8] text-white px-4 py-2 rounded-xl shadow font-bold">
+                            <%= dadosEquipe.jogadores.length %>/12
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+
+                        <% for(let i=0; i < 12; i++){ %>
+
+                            <% if(dadosEquipe.jogadores[i]){ %>
+
+                                <div class="bg-white rounded-xl p-3 flex items-center gap-3 shadow border border-black/10 hover:scale-[1.01] transition cursor-pointer"
+                                    data-jogador='<%- JSON.stringify(dadosEquipe.jogadores[i].toJSON()) %>'
+                                    onclick="abrirModalRemoverJogador(this)">
+
+                                    <img src="/imagens/<%= dadosEquipe.jogadores[i].donoDoPerfil.avatar || 'avatarPadrao.png' %>"
+                                        class="w-12 h-12 rounded-full object-cover border-2 border-[#1a83b8]">
+
+                                    <div>
+                                        <p class="font-bold text-black">
+                                            <%= dadosEquipe.jogadores[i].donoDoPerfil.nome %>
+                                        </p>
+
+                                        <p class="text-sm text-black/70">
+                                            <%= dadosEquipe.jogadores[i].posicao %>
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <% } else { %>
+
+                                    <div class="bg-white/70 rounded-xl p-3 flex items-center gap-3 border border-dashed border-black/30 
+                                            hover:scale-[1.01] transition cursor-pointer"
+                                        onclick="abrirModalAdicionarJogador()">
+                                        <div
+                                            class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center font-bold text-black/60">
+                                            +
+                                        </div>
+
+                                        <div>
+                                            <p class="font-semibold text-black/60">Vaga disponível</p>
+                                            <p class="text-sm text-black/50">Aguardando jogador</p>
+                                        </div>
+                                    </div>
+
+                                    <% } %>
+
+                                        <% } %>
+
+                    </div>
+
+                </div>
+
+                <div class="bg-[#f4edd7] rounded-2xl p-6 shadow-xl border-2 border-black/20">
+
+                    <div class="flex justify-between items-center mb-5 gap-3">
+                        <div>
+                            <h2 class="text-2xl font-bold text-[#1a83b8]">Quadra</h2>
+                            <p class="text-black/70 text-sm">Clique no avatar para escolher o jogador</p>
+                        </div>
+
+                        <select class="border-2 border-black rounded-lg px-4 py-2 bg-white text-black shadow">
+                            <option>5x1</option>
+                            <option>4x2</option>
+                            <option>6x0</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-center overflow-visible">
+
+                        <div
+                            class="relative w-[420px] h-[560px] bg-[#d9903d] border-[6px] border-white rounded-2xl shadow-2xl overflow-visible">
+
+                            <div class="absolute inset-0 bg-gradient-to-b from-[#e8a24a] to-[#c97824] rounded-xl"></div>
+
+                            <div class="absolute inset-6 border-4 border-white rounded-md"></div>
+
+                            <div class="absolute top-1/2 left-6 right-6 h-[6px] bg-black -translate-y-1/2 rounded z-20">
+                            </div>
+
+                            <div
+                                class="absolute top-1/2 left-6 right-6 h-[34px] -translate-y-1/2 bg-black/20 border-y-2 border-white/70 z-10">
+                            </div>
+
+                            <div class="absolute top-[200px] left-6 right-6 border-t-4 border-white/90"></div>
+                            <div class="absolute bottom-[200px] left-6 right-6 border-t-4 border-white/90"></div>
+
+                            <div class="absolute top-6 left-0 right-0 text-center">
+                                <span class="bg-black/50 text-white px-4 py-1 rounded-full text-sm font-bold">
+                                    QUADRA DE VÔLEI - 5x1
+                                </span>
+                            </div>
+
+                            <!-- FRENTE -->
+                            <div class="absolute top-[320px] left-[70px] text-center cursor-pointer group z-30"
+                                data-posicao="posicao4" onclick="abrirModalQuadra('posicao4')">
+                                <div
+                                    class="inline-block bg-white rounded-full p-1 shadow-lg border-2 border-black group-hover:scale-110 transition">
+                                    <img src="/imagens/avatarPadrao.png" class="rounded-full w-11 h-11 object-cover">
+                                </div>
+                                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2">P4</p>
+                            </div>
+
+                            <div class="absolute top-[310px] left-[175px] text-center cursor-pointer group z-30"
+                                data-posicao="posicao3" onclick="abrirModalQuadra('posicao3')">
+                                <div
+                                    class="inline-block bg-white rounded-full p-1 shadow-lg border-2 border-black group-hover:scale-110 transition">
+                                    <img src="/imagens/avatarPadrao.png" class="rounded-full w-11 h-11 object-cover">
+                                </div>
+                                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2">P3</p>
+                            </div>
+
+                            <div class="absolute top-[320px] right-[70px] text-center cursor-pointer group z-30"
+                                data-posicao="posicao2" onclick="abrirModalQuadra('posicao2')">
+                                <div
+                                    class="inline-block bg-white rounded-full p-1 shadow-lg border-2 border-black group-hover:scale-110 transition">
+                                    <img src="/imagens/avatarPadrao.png" class="rounded-full w-11 h-11 object-cover">
+                                </div>
+                                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2">P2</p>
+                            </div>
+
+                            <!-- FUNDO -->
+                            <div class="absolute bottom-[45px] left-[70px] text-center cursor-pointer group z-30"
+                                data-posicao="posicao5" onclick="abrirModalQuadra('posicao5')">
+                                <div
+                                    class="inline-block bg-white rounded-full p-1 shadow-lg border-2 border-black group-hover:scale-110 transition">
+                                    <img src="/imagens/avatarPadrao.png" class="rounded-full w-11 h-11 object-cover">
+                                </div>
+                                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2">P5</p>
+                            </div>
+
+                            <div class="absolute bottom-[55px] left-[175px] text-center cursor-pointer group z-30"
+                                data-posicao="posicao6" onclick="abrirModalQuadra('posicao6')">
+                                <div
+                                    class="inline-block bg-white rounded-full p-1 shadow-lg border-2 border-black group-hover:scale-110 transition">
+                                    <img src="/imagens/avatarPadrao.png" class="rounded-full w-11 h-11 object-cover">
+                                </div>
+                                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2">P6</p>
+                            </div>
+
+                            <div class="absolute bottom-[45px] right-[70px] text-center cursor-pointer group z-30"
+                                data-posicao="posicao1" onclick="abrirModalQuadra('posicao1')">
+                                <div
+                                    class="inline-block bg-white rounded-full p-1 shadow-lg border-2 border-black group-hover:scale-110 transition">
+                                    <img src="/imagens/avatarPadrao.png" class="rounded-full w-11 h-11 object-cover">
+                                </div>
+                                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2">P1</p>
+                            </div>
+
+                            <div class="absolute bottom-[55px] -left-[65px] text-center cursor-pointer group z-30"
+                                data-posicao="posicao7" onclick="abrirModalQuadra('posicao7')">
+                                <div
+                                    class="inline-block bg-[#facc15] rounded-full p-1 shadow-lg border-2 border-black group-hover:scale-110 transition">
+                                    <img src="/imagens/avatarPadrao.png" class="rounded-full w-11 h-11 object-cover">
+                                </div>
+                                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2">Líbero</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="modalJogadoresQuadra"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+
+            <div class="bg-[#1a83b8] text-white px-6 py-4">
+                <h2 class="text-2xl font-bold">Selecionar jogador</h2>
+                <p class="text-white/80 text-sm">Escolha quem vai ocupar essa posição</p>
+            </div>
+
+            <div class="p-5 space-y-3 max-h-[430px] overflow-y-auto">
+
+                <% dadosEquipe.jogadores.forEach(jogador=> { %>
+
+                    <button
+                        class="w-full bg-[#f4edd7] hover:bg-[#eadfbd] border border-black/20 p-3 rounded-xl flex items-center gap-3 transition cursor-pointer"
+                        onclick='selecionarJogador("<%= jogador.donoDoPerfil.nome %>","<%= jogador.donoDoPerfil.avatar %>")'>
+
+                        <img src="/imagens/<%= jogador.donoDoPerfil.avatar || 'avatarPadrao.png' %>"
+                            class="w-11 h-11 rounded-full object-cover border-2 border-[#1a83b8]">
+
+                        <div class="text-left">
+                            <p class="font-bold text-black">
+                                <%= jogador.donoDoPerfil.nome %>
+                            </p>
+                            <p class="text-sm text-black/70">
+                                <%= jogador.posicao %>
+                            </p>
+                        </div>
+
+                    </button>
+
+                    <% }) %>
+
+                        <button class="w-full bg-gray-200 hover:bg-gray-300 border-2 border-black/20 p-3 
+                            rounded-xl font-semibold transition cursor-pointer
+                            " onclick="selecionarJogador('', '')">
+                            Limpar posição
+                        </button>
+
+                        <button onclick="fecharModal()" class="w-full bg-[#c24e54] hover:bg-[#a63f44] text-white py-3 rounded-xl 
+                            font-semibold border-2 border-black transition cursor-pointer 
+                            shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] 
+                            hover:translate-x-[2px]">
+                            Fechar
+                        </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="abrirModalRemoverJogador"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" data-posicao="divRemover">
+
+
+
+        </div>
+
+    </div>
+
+    <div id="modalJogadores"
+        class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden">
+
+            <div class="bg-[#1a83b8] text-white px-6 py-5">
+                <h2 class="text-2xl font-bold">Convide Jogadores para sua Equipe</h2>
+                <p class="text-white/80 text-sm">Escolha atletas disponíveis para completar seu elenco.</p>
+            </div>
+
+            <div class="p-6 space-y-4 max-h-[520px] overflow-y-auto bg-[#f4edd7]">
+
+                <% dadosJogadores.forEach(function(jogador){ %>
+
+                    <div
+                        class="bg-white p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow border border-black/10">
+
+                        <div class="flex items-center gap-3">
+
+                            <img src="/imagens/<%= jogador.donoDoPerfil.avatar || 'avatarPadrao.png' %>"
+                                class="w-14 h-14 rounded-full border-2 border-[#1a83b8] object-cover">
+
+                            <div>
+                                <p class="font-bold text-black text-lg">
+                                    <%= jogador.donoDoPerfil.nome %>
+                                </p>
+                                <p class="text-sm text-black/70">
+                                    <%= jogador.posicao %>
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="flex gap-2">
+
+                            <a href="/verPerfil/<%= jogador.id %>">
+                                <button
+                                    class="bg-[#1a83b8] hover:bg-[#0f6f9f] text-white px-4 py-2 rounded-lg border-2 border-black 
+                                    shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] font-semibold cursor-pointer">
+                                    Ver Perfil
+                                </button>
+                            </a>
+
+                            <% if(jogador.id_equipe !=dadosEquipe.id){ %>
+
+                                <% if(jogador.conviteJogador[0]){ %>
+                                    <% let statusConvite=null; for(let i=0; i < jogador.conviteJogador.length; i++){
+                                        if(jogador.conviteJogador[i].status=="pendente" ){ statusConvite="pendente" ;
+                                        break; } if(jogador.conviteJogador[i].status=="recusado" ){
+                                        statusConvite="recusado" ; break; } } %>
+
+                                        <% if(statusConvite=="pendente" ){ %>
+
+                                            <button
+                                                class="bg-orange-500 text-white px-4 py-2 rounded-lg border-2 border-black shadow font-semibold">
+                                                Pendente
+                                            </button>
+
+                                            <% } else if(statusConvite=="recusado" ){ %>
+                                                <a href="/notificacao">
+                                                    <button
+                                                        class="bg-[#c24e54] hover:bg-[#a63f44] text-white px-4 py-2 rounded-lg border-2 
+                                                        border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                                        hover:translate-y-[2px] hover:translate-x-[2px] font-bold cursor-pointer">
+                                                        Recusado
+                                                    </button>
+                                                </a>
+                                                <% } else { %>
+
+                                                    <a href="/convidar/<%= jogador.id %>/<%= dadosEquipe.id %>">
+                                                        <button class="bg-[#ffe58f] text-[#1a83b8] hover:bg-[#fce597] px-4 
+                                                                    py-2 rounded-lg border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] 
+                                                                    hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] 
+                                                                    font-semibold cursor-pointer">
+                                                            Convidar
+                                                        </button>
+                                                    </a>
+
+                                                    <% } %>
+
+                                                        <% } else { %>
+
+                                                            <a href="/convidar/<%= jogador.id %>/<%= dadosEquipe.id %>">
+                                                                <button class="bg-[#ffe58f] text-[#1a83b8] hover:bg-[#fce597] px-4 py-2 
+                                                                rounded-lg border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] 
+                                                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] 
+                                                                font-semibold cursor-pointer">
+                                                                    Convidar
+                                                                </button>
+                                                            </a>
+
+                                                            <% } %>
+
+                                                                <% }else{ %>
+                                                                    <button
+                                                                        class="bg-[#1a83b8]/60 text-white px-4 py-2 rounded-lg border-2 border-black shadow font-semibold">
+                                                                        Na Equipe
+                                                                    </button>
+                                                                    <% } %>
+
+                        </div>
+
+                    </div>
+
+                    <% }); %>
+
+            </div>
+
+            <div class="bg-white px-6 py-4 border-t flex justify-end">
+                <button onclick="fecharModal()" class="bg-[#c24e54] hover:bg-[#a63f44] text-white px-6 py-2 rounded-lg border-2 
+                    border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                    hover:translate-y-[2px] hover:translate-x-[2px] font-bold cursor-pointer">
+                    Fechar
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function abrirModalAdicionarJogador() {
+            document.getElementById("modalJogadores").classList.remove("hidden");
+        }
+
+        function fecharModal() {
+            document.getElementById("modalJogadores").classList.add("hidden");
+            document.getElementById("modalJogadoresQuadra").classList.add("hidden");
+            document.getElementById("abrirModalRemoverJogador").classList.add("hidden");
+        }
+
+        let posicaoAtual = null;
+
+        function abrirModalQuadra(posicao) {
+            posicaoAtual = posicao;
+            document.getElementById("modalJogadoresQuadra").classList.remove("hidden");
+        }
+
+        function selecionarJogador(nome, avatar) {
+
+            const posicao = document.querySelector(`[data-posicao="${posicaoAtual}"]`);
+
+
+            posicao.innerHTML = `
+                <div class="inline-block bg-white rounded-full p-1 shadow-lg border-2 border-black hover:scale-110 transition">
+                    <img src="/imagens/${avatar || 'avatarPadrao.png'}" class="rounded-full w-11 h-11 object-cover">
+                </div>
+
+                <p class="text-xs bg-black/70 text-white rounded mt-1 px-2 truncate">
+                    ${nome || (posicaoAtual === 'posicao1' ? 'P1' :
+                    posicaoAtual === 'posicao2' ? 'P2' :
+                        posicaoAtual === 'posicao3' ? 'P3' :
+                            posicaoAtual === 'posicao4' ? 'P4' :
+                                posicaoAtual === 'posicao5' ? 'P5' :
+                                    posicaoAtual === 'posicao6' ? 'P6' :
+                                        'Libero')
+                }
+                </p>
+            `;
+
+
+            document.getElementById("modalJogadoresQuadra").classList.add("hidden");
+        }
+
+        function abrirModalRemoverJogador(elemento) {
+
+            const jogador = JSON.parse(
+                elemento.dataset.jogador
+            );
+            
+            const divPosicao = document.querySelector(`[data-posicao="divRemover"]`);
+            console.log(jogador);
+
+           divPosicao.innerHTML = `
+           <div class="bg-white rounded-2xl overflow-hidden shadow-2xl">
+                <!-- Cabeçalho -->
+                <div class="bg-[#1a83b8] px-6 py-5 text-white">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-6 h-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
+                            </svg>
+                        </div>
+
+                        <div>
+                            <h2 class="text-xl font-bold">
+                                Remover jogador
+                            </h2>
+
+                            <p class="text-sm text-white/80">
+                                Remover ${jogador.donoDoPerfil.nome} da equipe
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo -->
+                <div class="px-6 py-6">
+
+                    <!-- Card do jogador -->
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
+
+                        <img 
+                            src="/imagens/${jogador.donoDoPerfil.avatar || 'avatarPadrao.png'}"
+                            class="w-16 h-16 rounded-full object-cover border-3 border-[#1a83b8] shadow-md"
+                        >
+
+                        <div class="flex-1">
+                            <p class="text-lg font-bold text-gray-800">
+                                ${jogador.donoDoPerfil.nome}
+                            </p>
+
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="w-2 h-2 rounded-full bg-[#1a83b8]"></span>
+
+                                <p class="text-sm text-gray-500">
+                                    ${jogador.posicao}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Aviso -->
+                    <div class="mt-5 flex gap-3 p-4 rounded-xl bg-red-50 border border-red-200">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="w-5 h-5 text-[#c24e54] flex-shrink-0 mt-0.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 9v2m0 4h.01M10.29 3.86l-7.2 12a2 2 0 001.71 3h14.4a2 2 0 001.71-3l-7.2-12a2 2 0 00-3.42 0z" />
+                        </svg>
+
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            Ao remover este jogador, ele deixará de fazer parte da sua equipe.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- Rodapé -->
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
+
+                    <button
+                        onclick="fecharModal()"
+                        class="px-5 py-2.5 rounded-lg bg-white text-gray-700 font-bold
+                            border border-gray-300
+                            hover:bg-gray-100
+                            transition-all duration-200
+                            cursor-pointer">
+                        Cancelar
+                    </button>
+                    <a href="/removerJogador/${jogador.id}/${jogador.id_equipe}">
+                    <button                       
+                        class="px-5 py-2.5 rounded-lg bg-[#c24e54] text-white font-bold
+                            border border-[#a63f44]
+                            hover:bg-[#a63f44]
+                            shadow-md
+                            hover:shadow-lg
+                            transition-all duration-200
+                            cursor-pointer">
+                        Remover jogador
+                    </button>
+                    </a>
+                </div>
+
+            </div>
+            `;
+            document.getElementById("abrirModalRemoverJogador").classList.remove("hidden");
+        }
+    </script>
+
+    <%- include('../mensagens') %>
+
+</body>
+
+</html>
