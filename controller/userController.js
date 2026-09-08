@@ -157,4 +157,8 @@ module.exports = {
         res.render('user/perfil', { dados: usuario });
 
     },
+
+    pagEditarUsuario: function (req, res) {
+        res.render('user/editarUsuario.ejs');
+    },
 }

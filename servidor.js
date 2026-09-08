@@ -105,6 +105,31 @@ app.get('/logout', auth.logado, userController.logout);
 app.get('/cadastro', userController.pagCadastro);
 app.post('/cadastro', userController.efetuaCadastro);
 app.get('/perfil', auth.logado, userController.pagPerfil);
+app.get('/editar_usuario', auth.logado, userController.pagEditarUsuario);
+app.post('/editar_usuario', auth.logado, userController.atualizarUsuario);
+
+app.get('/editar_perfil/:tipo', (req, res) => {
+
+    const tipo = req.params.tipo;
+
+    if (tipo === 'boxe') {
+        return user_boxeController.pagEditar(req, res);
+    }
+
+    if (tipo === 'corrida') {
+        return user_corridaController.pagEditar(req, res);
+    }
+
+    if (tipo === 'voleibolTreinador') {
+        return user_voleibol_treinadorController.pagEditarTreinador(req, res);
+    }
+
+    if (tipo === 'voleibolJogador') {
+        return user_voleibol_jogadorController.pagEditarJogador(req, res);
+    }
+
+    return res.status(404).send('Perfil não encontrado');
+});
 
 app.post('/atualiza_perfil_boxe', auth.logado, user_boxeController.SalvarPerfilBoxe);
 

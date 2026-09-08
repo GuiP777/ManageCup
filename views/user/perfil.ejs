@@ -1,400 +1,671 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 
-<head> <%- include('../head'); %> </head>
+<head>
+    <%- include('../head'); %>
+</head>
 
 <body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
-    <header> <%- include('../menu'); %> </header>
-    <div class=" p-8 flex-1 flex justify-center items-start">
 
-        <div class="bg-[#127fbf] rounded-xl p-10 w-full max-w-3xl shadow-md font-serif text-[#f4edd7]">
+    <header>
+        <%- include('../menu'); %>
+    </header>
 
-            <h2 class="text-4xl mb-6 tracking-wide text-[#f4edd7]">Informações pessoais</h2>
+    <main class="flex-1 px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-8">
+                <h1 class="font-serif text-5xl tracking-wide text-[#127fbf]">
+                    Meu perfil
+                </h1>
 
-            <div class="ml-8 space-y-1 text-lg text-[#f4edd7]">
-                <div>
-                    <span class="tracking-wide">Nome:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.nome %>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Email:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.email %>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Nascimento:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.nascimento.toLocaleDateString('pt-BR', { 
-                            day: '2-digit' , 
-                            month: 'long' ,
-                            year: 'numeric' }) %>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Sexo:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.sexo %>
-                    </span>
-                </div>
-                <% if(dados.perfilVoleibolTreinador != null){ %>
-                <div>
-                    <span class="tracking-wide">Nome da Equipe:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilVoleibolTreinador.nomeEquipe%>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Categoria:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilVoleibolTreinador.categoria %>
-                    </span>
-                </div>
-                <% } %>
-
-                <% if(dados.perfilVoleibolJogador != null){ %>
-                <div>
-                    <span class="tracking-wide">Posição:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilVoleibolJogador.posicao%>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Altura:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilVoleibolJogador.tamanho %>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Tempo Jogando:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilVoleibolJogador.tempo %>
-                    </span>
-                </div>
-                <% } %>
-
-                <% if(dados.perfilBoxe != null){ %>
-                <div>
-                    <span class="tracking-wide">Apelido:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilBoxe.apelido%>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Peso:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilBoxe.peso %>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Treinador:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilBoxe.treinador %>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Quantidade de lutas:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilBoxe.quantidadeLutas %>
-                    </span>
-                </div>
-                <% } %>
-
-                <% if(dados.perfilCorrida != null){ %>
-                <div>
-                    <span class="tracking-wide">Recorde pessoal:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilCorrida.recordePessoal%>
-                    </span>
-                </div>
-                <div>
-                    <span class="tracking-wide">Nivel:</span>
-                    <span class="text-black font-sans text-sm ml-1">
-                        <%= dados.perfilCorrida.nivel %>
-                    </span>
-                </div>
-                <% } %>
+                <p class="font-sans text-gray-600 mt-2">
+                    Gerencie suas informações e seus perfis esportivos.
+                </p>
             </div>
 
-            <h2 class="text-4xl mt-6 mb-6 tracking-wide text-[#f4edd7]">Complete seu perfil</h2>
-
-            <div class="ml-8">
-                <p class="text-xl mb-6 tracking-wide text-[#f4edd7]">Qual (s) esporte você quer competir?</p>
-
-                <form action="/atualiza_perfil_boxe" method="POST" class="flex flex-col space-y-4">
-
-                    <label class="flex items-center space-x-3 cursor-pointer w-max">
-                        <input type="checkbox" id="check-boxe" name="esporte" value="boxe" class="appearance-none w-7 h-7 bg-[#f4edd7] rounded cursor-pointer 
-                            checked:bg-[#f4edd7] checked:ring-2 checked:ring-green-500 flex items-center 
-                            justify-center relative after:content-[''] after:hidden checked:after:block 
-                            after:w-2.5 after:h-4 after:border-r-4 after:border-b-4 after:border-green-500 
-                            after:rotate-45 after:-mt-1">
-                        <span class="text-xl tracking-wide">Boxe</span>
-                    </label>
-
-                    <div id="campos-boxe" class="hidden flex-col space-y-4 ml-8 mt-2 w-full max-w-md text-[#ff8a8a]">
-
-                        <div class="flex flex-col">
-                            <label for="apelido" class="text-lg tracking-wide mb-1">Apelido</label>
-                            <input type="text" id="apelido" name="apelido"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full">
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label for="peso" class="text-lg tracking-wide mb-1">Peso</label>
-                            <input type="text" id="peso" name="peso"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full">
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label for="treinador" class="text-lg tracking-wide mb-1">Treinador/Academia</label>
-                            <input type="text" id="treinador" name="treinador"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full">
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label for="quantidadeLutas" class="text-lg tracking-wide mb-1">Quantidade de lutas</label>
-                            <input type="number" id="quantidadeLutas" name="quantidadeLutas"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full">
-                        </div>
-
-                        <button type="submit" class="bg-[#c24e54] text-white w-1/4 font-semibold py-2 rounded cursor-pointer
-                                border-2 border-black hover:bg-[#a63f44] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,1)] 
-                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
-                            Enviar
+            <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden mb-8">
+                <div class="bg-[#127fbf] px-8 py-5 flex items-center justify-between">
+                    <div>
+                        <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
+                            Informações pessoais
+                        </h2>
+                        <p class="font-sans text-sm text-[#e0fcff] mt-1">
+                            Dados da sua conta
+                        </p>
+                    </div>
+                    <a href="editar_usuario">
+                        <button class="bg-[#f4edd7] text-[#127fbf] px-5 py-2 rounded-lg font-semibold border-2 border-black
+                                    shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                    hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer ">
+                            Editar
                         </button>
-                        <br>
+                    </a>
+                </div>
+
+                <div class="p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
+
+                    <div class="flex-shrink-0">
+                        <img src="../imagens/<%= dados.avatar %>" alt="Avatar do usuário"
+                            class="w-32 h-32 rounded-full object-cover border-4 border-[#127fbf] shadow-md">
+                    </div>
+
+                    <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 w-full">
+
+                        <div>
+                            <p class="text-sm text-gray-500 font-sans">Nome</p>
+                            <p class="text-lg text-gray-900 font-sans font-medium">
+                                <%= dados.nome %>
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-gray-500 font-sans">Email</p>
+                            <p class="text-lg text-gray-900 font-sans font-medium">
+                                <%= dados.email %>
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-gray-500 font-sans">Nascimento</p>
+                            <p class="text-lg text-gray-900 font-sans font-medium">
+                                <%= dados.nascimento.toLocaleDateString('pt-BR', { day: '2-digit' , month: 'long' ,
+                                    year: 'numeric' }) %>
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-gray-500 font-sans">Sexo</p>
+                            <p class="text-lg text-gray-900 font-sans font-medium">
+                                <%= dados.sexo %>
+                            </p>
+                        </div>
 
                     </div>
+                </div>
+            </section>
+
+
+            <section class="mb-8">
+                <% if(dados.perfilBoxe !=null || dados.perfilCorrida !=null || dados.perfilVoleibolTreinador !=null ||
+                    dados.perfilVoleibolJogador !=null){ %>
+                    <div class="mb-5">
+                        <h2 class="font-serif text-4xl text-[#127fbf] tracking-wide">
+                            Meus perfis esportivos
+                        </h2>
+                        <p class="font-sans text-gray-600 mt-1">
+                            Veja e edite as informações dos seus esportes.
+                        </p>
+                    </div>
+                    <% } %>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <% if(dados.perfilBoxe !=null){ %>
+                                <div class="bg-white rounded-2xl shadow-md border-2 border-[#c24e54] p-6">
+                                    <div class="flex justify-between items-start mb-5">
+                                        <div>
+                                            <span class="text-4xl">🥊</span>
+                                            <h3 class="font-serif text-3xl text-[#c24e54] tracking-wide mt-2">
+                                                Boxe
+                                            </h3>
+                                        </div>
+                                        <a href="editar_perfil/boxe">
+                                            <button
+                                                class="text-sm bg-[#c24e54] text-white px-4 py-2 rounded-lg border-2 border-black
+                                                    shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                                    hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+                                                Editar
+                                            </button>
+                                        </a>
+                                    </div>
+
+                                    <div class="space-y-3 font-sans">
+                                        <p>
+                                            <span class="text-gray-500">Apelido:</span>
+                                            <strong>
+                                                <%= dados.perfilBoxe.apelido %>
+                                            </strong>
+                                        </p>
+                                        <p>
+                                            <span class="text-gray-500">Peso:</span>
+                                            <strong>
+                                                <%= dados.perfilBoxe.peso %>
+                                            </strong>
+                                        </p>
+                                        <p>
+                                            <span class="text-gray-500">Treinador:</span>
+                                            <strong>
+                                                <%= dados.perfilBoxe.treinador %>
+                                            </strong>
+                                        </p>
+                                        <p>
+                                            <span class="text-gray-500">Quantidade de lutas:</span>
+                                            <strong>
+                                                <%= dados.perfilBoxe.quantidadeLutas %>
+                                            </strong>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <% } %>
+
+                                    <% if(dados.perfilCorrida !=null){ %>
+                                        <div class="bg-white rounded-2xl shadow-md border-2 border-[#127fbf] p-6">
+                                            <div class="flex justify-between items-start mb-5">
+                                                <div>
+                                                    <img src="../imagens/corrida.png"
+                                                        class="w-20 h-20 group-hover:translate-x-1 transition">
+                                                    <h3 class="font-serif text-3xl text-[#127fbf] tracking-wide mt-2">
+                                                        Corrida
+                                                    </h3>
+                                                </div>
+                                                <a href="editar_perfil/corrida">
+                                                    <button class="text-sm bg-[#127fbf] text-white px-4 py-2 rounded-lg border-2 border-black
+                            shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                            hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+                                                        Editar
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <div class="space-y-3 font-sans">
+                                                <p>
+                                                    <span class="text-gray-500">Nível:</span>
+                                                    <strong>
+                                                        <%= dados.perfilCorrida.nivel %>
+                                                    </strong>
+                                                </p>
+                                                <p>
+                                                    <span class="text-gray-500">Recorde pessoal:</span>
+                                                    <strong>
+                                                        <%= dados.perfilCorrida.recordePessoal %>
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <% } %>
+
+                                            <% if(dados.perfilVoleibolTreinador !=null){ %>
+                                                <div
+                                                    class="bg-white rounded-2xl shadow-md border-2 border-[#f0c84b] p-6">
+                                                    <div class="flex justify-between items-start mb-5">
+                                                        <div>
+                                                            <span class="text-4xl">🏐</span>
+                                                            <h3
+                                                                class="font-serif text-3xl text-[#b48a00] tracking-wide mt-2">
+                                                                Voleibol — Treinador
+                                                            </h3>
+                                                        </div>
+                                                        <a href="editar_perfil/voleibolTreinador">
+                                                            <button class="text-sm bg-[#f0c84b] text-black px-4 py-2 rounded-lg border-2 border-black
+                            shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                            hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+                                                                Editar
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                    <div class="space-y-3 font-sans">
+                                                        <p>
+                                                            <span class="text-gray-500">Equipe:</span>
+                                                            <strong>
+                                                                <%= dados.perfilVoleibolTreinador.nomeEquipe %>
+                                                            </strong>
+                                                        </p>
+                                                        <p>
+                                                            <span class="text-gray-500">Categoria:</span>
+                                                            <strong>
+                                                                <%= dados.perfilVoleibolTreinador.categoria %>
+                                                            </strong>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+
+                                                    <% if(dados.perfilVoleibolJogador !=null){ %>
+                                                        <div
+                                                            class="bg-white rounded-2xl shadow-md border-2 border-[#127fbf] p-6">
+                                                            <div class="flex justify-between items-start mb-5">
+                                                                <div>
+                                                                    <span class="text-4xl">🏐</span>
+                                                                    <h3
+                                                                        class="font-serif text-3xl text-[#127fbf] tracking-wide mt-2">
+                                                                        Voleibol — Jogador
+                                                                    </h3>
+                                                                </div>
+                                                                <a href="editar_perfil/voleibolJogador">
+                                                                    <button class="text-sm bg-[#127fbf] text-white px-4 py-2 rounded-lg border-2 border-black
+                                                                                    shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                                                                    hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+                                                                        Editar
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="space-y-3 font-sans">
+                                                                <p>
+                                                                    <span class="text-gray-500">Posição:</span>
+                                                                    <strong>
+                                                                        <%= dados.perfilVoleibolJogador.posicao %>
+                                                                    </strong>
+                                                                </p>
+                                                                <p>
+                                                                    <span class="text-gray-500">Altura:</span>
+                                                                    <strong>
+                                                                        <%= dados.perfilVoleibolJogador.tamanho %>
+                                                                    </strong>
+                                                                </p>
+                                                                <p>
+                                                                    <span class="text-gray-500">Tempo jogando:</span>
+                                                                    <strong>
+                                                                        <%= dados.perfilVoleibolJogador.tempo %>
+                                                                    </strong>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                        </div>
+            </section>
+
+            <section class="bg-[#127fbf] rounded-2xl shadow-lg p-8">
+                <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
+                    Adicionar perfil esportivo
+                </h2>
+                <p class="font-sans text-[#e0fcff] mt-2 mb-6">
+                    Escolha um esporte para completar seu perfil.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                    <% if(dados.perfilBoxe==null){ %>
+
+                        <button onclick="abrirCadastro('boxe')" class="bg-[#f4edd7] rounded-xl p-5 border-2 border-black
+                    shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                    hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                    transition-all cursor-pointer">
+
+                            <span class="text-4xl">🥊</span>
+                            <p class="font-serif text-2xl text-[#c24e54] mt-2">
+                                Boxe
+                            </p>
+                            <p class="font-sans text-sm text-gray-600 mt-1">
+                                Adicionar perfil
+                            </p>
+                        </button>
+
+                        <% } %>
+
+                            <% if(dados.perfilCorrida==null){ %>
+
+                                <button onclick="abrirCadastro('corrida')" class="bg-[#f4edd7] rounded-xl p-5 border-2 border-black
+                    shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                    hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                    transition-all cursor-pointer">
+
+                                    <span class="text-4xl">🏃</span>
+                                    <p class="font-serif text-2xl text-[#127fbf] mt-2">
+                                        Corrida
+                                    </p>
+                                    <p class="font-sans text-sm text-gray-600 mt-1">
+                                        Adicionar perfil
+                                    </p>
+                                </button>
+
+                                <% } %>
+
+                                    <% if(dados.perfilVoleibolTreinador==null || dados.perfilVoleibolJogador==null){ %>
+
+                                        <button onclick="abrirCadastro('voleibol')" class="bg-[#f4edd7] rounded-xl p-5 border-2 border-black
+                    shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                    hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                    transition-all cursor-pointer">
+
+                                            <span class="text-4xl">🏐</span>
+                                            <p class="font-serif text-2xl text-[#b48a00] mt-2">
+                                                Voleibol
+                                            </p>
+                                            <p class="font-sans text-sm text-gray-600 mt-1">
+                                                Adicionar perfil
+                                            </p>
+                                        </button>
+
+                                        <% } %>
+
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <%- include('../mensagens') %>
+
+        <div id="modalCadastro" class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-5">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                <div class="bg-[#127fbf] p-6 flex justify-between items-center">
+                    <h2 id="tituloModal" class="font-serif text-3xl text-[#f4edd7]">
+                        Adicionar perfil
+                    </h2>
+
+                    <button onclick="fecharCadastro()" class="text-white text-3xl hover:scale-110 transition">
+                        &times;
+                    </button>
+                </div>
+
+                <form id="form-boxe" action="/atualiza_perfil_boxe" method="POST" class="hidden p-7 space-y-5">
+
+                    <h3 class="font-serif text-2xl text-[#c24e54]">
+                        Perfil de Boxe
+                    </h3>
+                    <div>
+                        <label class="block font-sans mb-1">Apelido</label>
+                        <input type="text" name="apelido" required
+                            class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-sans mb-1">Peso</label>
+                        <input type="text" name="peso" required
+                            class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-sans mb-1">Treinador/Academia</label>
+                        <input type="text" name="treinador"
+                            class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-sans mb-1">Quantidade de lutas</label>
+                        <input type="number" name="quantidadeLutas" required
+                            class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#c24e54] text-white font-semibold py-3 rounded-lg border-2 border-black
+                shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px] transition-all cursor-pointer">
+                        Cadastrar perfil
+                    </button>
 
                 </form>
 
-                <form action="/atualiza_perfil_corrida" method="POST" class="flex flex-col space-y-4">
+                <form id="form-corrida" action="/atualiza_perfil_corrida" method="POST" class="hidden p-7 space-y-5">
 
-                    <label class="flex items-center space-x-3 cursor-pointer w-max">
-                        <input type="checkbox" id="check-corrida" name="esporte" value="corrida" class="appearance-none w-7 h-7 bg-[#f4edd7] rounded cursor-pointer 
-                            checked:bg-[#f4edd7] checked:ring-2 checked:ring-green-500 flex items-center 
-                            justify-center relative after:content-[''] after:hidden checked:after:block 
-                            after:w-2.5 after:h-4 after:border-r-4 after:border-b-4 after:border-green-500 
-                            after:rotate-45 after:-mt-1">
-                        <span class="text-xl tracking-wide">Corrida</span>
-                    </label>
+                    <h3 class="font-serif text-2xl text-[#127fbf]">
+                        Perfil de Corrida
+                    </h3>
+                    <div>
+                        <label class="block font-sans mb-1">Nível</label>
 
-                    <div id="campos-corrida" class="hidden flex-col space-y-4 ml-8 mt-2 w-full max-w-md text-[#9be7ff]">
+                        <select name="nivel" required
+                            class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none cursor-pointer">
 
-                        <div class="flex flex-col">
-                            <label for="nivel" class="text-lg tracking-wide mb-1">Nível</label>
-                            <select id="nivel" name="nivel"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full cursor-pointer">
-                                <option value="" disabled selected>Selecione...</option>
-                                <option value="inicainte">Iniciante</option>
-                                <option value="intermediario">Intermediário</option>
-                                <option value="avancado">Avançado</option>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="iniciante">Iniciante</option>
+                            <option value="intermediario">Intermediário</option>
+                            <option value="avancado">Avançado</option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-sans mb-2">
+                            Recorde pessoal
+                        </label>
+                        <div class="flex gap-3">
+                            <input type="number" name="distancia" placeholder="Distância (Km)"
+                                class="w-1/2 bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+                            <input type="text" name="tempo" placeholder="hh:mm:ss" value="00:00:00"
+                                class="w-1/2 bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#127fbf] text-white font-semibold py-3 rounded-lg border-2 border-black
+                shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px] transition-all cursor-pointer">
+                        Cadastrar perfil
+                    </button>
+                </form>
+
+                <div id="form-voleibol" class="hidden p-7">
+                    <h3 class="font-serif text-2xl text-[#b48a00] mb-5">
+                        Perfil de Voleibol
+                    </h3>
+                    <p class="font-sans text-gray-600 mb-5">
+                        Escolha como você participa do voleibol:
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+
+                        <button type="button" onclick="mostrarVoleibol('treinador')" class="p-5 bg-[#f4edd7] rounded-xl border-2 border-black
+                    hover:bg-[#ffe58f] transition">
+                            <span class="text-3xl">🏐</span>
+
+                            <p class="font-serif text-xl mt-2">
+                                Treinador
+                            </p>
+
+                        </button>
+                        <button type="button" onclick="mostrarVoleibol('jogador')" class="p-5 bg-[#f4edd7] rounded-xl border-2 border-black
+                    hover:bg-[#e0fcff] transition">
+
+                            <span class="text-3xl">🏐</span>
+
+                            <p class="font-serif text-xl mt-2">
+                                Jogador
+                            </p>
+                        </button>
+                    </div>
+
+                    <form id="voleibol-treinador" action="/atualiza_perfil_voleibolTreinador" method="POST"
+                        class="hidden mt-6 space-y-5">
+
+                        <div>
+                            <label class="block font-sans mb-1">
+                                Nome da equipe
+                            </label>
+                            <input type="text" name="nomeEquipe" required
+                                class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-sans mb-1">
+                                Categoria
+                            </label>
+                            <select name="categoria" required
+                                class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
+                                <option value="" disabled selected>
+                                    Selecione...
+                                </option>
+
+                                <option value="adultoMasculino">
+                                    Adulta - Masculino
+                                </option>
+
+                                <option value="adultoFeminino">
+                                    Adulta - Feminino
+                                </option>
+
+                                <option value="infantoMasculino">
+                                    Infanto - Masculino
+                                </option>
+
+                                <option value="infantoFeminino">
+                                    Infanto - Feminino
+                                </option>
+
+                                <option value="juvenilMasculino">
+                                    Juvenil - Masculino
+                                </option>
+
+                                <option value="juvenilFeminino">
+                                    Juvenil - Feminino
+                                </option>
+
                             </select>
                         </div>
 
-                        <div class="mt-6">
-                            <label class="block text-lg mb-2">
-                                Qual é o seu recorde pessoal?
+                        <button type="submit" class="w-full bg-[#c24e54] text-white font-semibold py-3 rounded-lg border-2 border-black
+                    shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                    hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px] transition-all cursor-pointer">
+
+                            Cadastrar perfil
+
+                        </button>
+                    </form>
+
+                    <form id="voleibol-jogador" action="/atualiza_perfil_voleibolJogador" method="POST"
+                        class="hidden mt-6 space-y-5">
+
+                        <div>
+                            <label class="block font-sans mb-1">
+                                Posição
                             </label>
 
-                            <div class="flex items-center gap-3">
-                                <input type="number" placeholder="Distância em Km" id="distancia" name="distancia"
-                                    class="w-40 px-3 py-2 rounded-md bg-[#f4edd7] text-black focus:outline-none">
+                            <select name="posicao" required
+                                class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
 
-                                <span class="text-white">em</span>
+                                <option value="" disabled selected>
+                                    Selecione...
+                                </option>
 
-                                <input type="text" placeholder="Tempo (hh:mm:ss)" id="tempo" name="tempo"
-                                    class="w-40 px-3 py-2 rounded-md bg-[#f4edd7] text-black focus:outline-none"
-                                    pattern="^(([0-1]?[0-9]|2[0-3]):)?[0-5]?[0-9]:[0-5][0-9]$" value="00:00:00">
-
-                            </div>
-                        </div>
-                        <button type="submit" class="bg-[#c24e54] text-white w-1/4 font-semibold py-2 rounded cursor-pointer
-                                border-2 border-black hover:bg-[#a63f44] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,1)] 
-                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
-                            Enviar
-                        </button>
-                        <br>
-                    </div>
-
-                </form>
-
-
-
-                <label class="flex items-center space-x-3 cursor-pointer w-max">
-                    <input type="checkbox" id="check-voleibol" name="esporte" value="voleibol" class="appearance-none w-7 h-7 bg-[#f4edd7] rounded cursor-pointer checked:bg-[#f4edd7] checked:ring-2 
-                        checked:ring-green-500 flex items-center justify-center relative after:content-[''] after:hidden 
-                        checked:after:block after:w-2.5 after:h-4 after:border-r-4 after:border-b-4 after:border-green-500 
-                        after:rotate-45 after:-mt-1">
-                    <span class="text-xl tracking-wide">Voleibol</span>
-                </label>
-                <br>
-
-                <div id="campos-voleibol" class="hidden flex-col space-y-4 ml-8 mt-2 w-full max-w-md ">
-                    <form action="/atualiza_perfil_voleibolTreinador" method="POST" class="flex flex-col space-y-4">
-                        <label class="flex items-center space-x-3 cursor-pointer w-max">
-                            <input type="checkbox" id="check-treinador" name="voleibol_treinador" value="treinador"
-                                class="appearance-none w-7 h-7 bg-[#f4edd7] rounded cursor-pointer checked:bg-[#f4edd7] 
-                                checked:ring-2 checked:ring-green-500 flex items-center justify-center relative 
-                                after:content-[''] after:hidden checked:after:block after:w-2.5 after:h-4 
-                                after:border-r-4 after:border-b-4 after:border-green-500 after:rotate-45 
-                                after:-mt-1">
-                            <span class="text-xl tracking-wide">Treinador</span>
-                        </label>
-
-                        <div id="campos-treinador"
-                            class="hidden flex-col space-y-4 ml-8 mt-2 w-full max-w-md text-[#ffe58f]">
-
-                            <div class="flex flex-col">
-                                <label for="nomeEquipe" class="text-lg tracking-wide mb-1">Nome da
-                                    Equipe</label>
-                                <input type="text" id="nomeEquipe" name="nomeEquipe"
-                                    class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full">
-                            </div>
-
-                            <div class="flex flex-col">
-                                <label for="categoria" class="text-lg tracking-wide mb-1">Categoria</label>
-                                <select id="categoria" name="categoria"
-                                    class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full cursor-pointer">
-                                    <option value="" disabled selected>Selecione...</option>
-                                    <option value="adultoMasculino">Adulta - Masculino</option>
-                                    <option value="adultoFeminino">Adulta - Feminino</option>
-                                    <option value="infantoMasculino">Infanto - Masculino</option>
-                                    <option value="infantoFeminino">Infanto - Feminino</option>
-                                    <option value="juvenilMasculino">Juvenil - Masculino</option>
-                                    <option value="juvenilFeminino">Juvenil - Feminino</option>
-                                </select>
-                            </div>
-
-                            <button type="submit" class="bg-[#c24e54] text-white w-1/4 font-semibold py-2 rounded cursor-pointer
-                                border-2 border-black hover:bg-[#a63f44] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,1)] 
-                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
-                                Enviar
-                            </button>
-                    </form>
-                    <br>
-                </div>
-
-                <label class="flex items-center space-x-3 cursor-pointer w-max">
-                    <input type="checkbox" id="check-jogador" name="voleibol_jogador" value="jogador" class="appearance-none w-7 h-7 bg-[#f4edd7] rounded cursor-pointer checked:bg-[#f4edd7] 
-                        checked:ring-2 checked:ring-green-500 flex items-center justify-center relative after:content-[''] 
-                        after:hidden checked:after:block after:w-2.5 after:h-4 after:border-r-4 after:border-b-4 
-                        after:border-green-500 after:rotate-45 after:-mt-1">
-                    <span class="text-xl tracking-wide">Jogador</span>
-                </label>
-
-                <div id="campos-jogador" class="hidden flex-col  space-y-4 ml-8 mt-2 w-full max-w-md text-[#ffe58f] ">
-                    <form action="/atualiza_perfil_voleibolJogador" method="POST" class="flex flex-col space-y-4">
-
-                        <div class="flex flex-col">
-                            <label for="posicao" class="text-lg tracking-wide mb-1">Posição</label>
-                            <select id="posicao" name="posicao"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full cursor-pointer">
-                                <option value="" disabled selected>Selecione...</option>
                                 <option value="levantador">Levantador</option>
                                 <option value="oposto">Oposto</option>
                                 <option value="ponteiro">Ponteiro</option>
                                 <option value="central">Central</option>
                                 <option value="libero">Líbero</option>
+
                             </select>
                         </div>
 
-                        <div class="flex flex-col">
-                            <label for="tamanho" class="text-lg tracking-wide mb-1">Tamanho</label>
-                            <input type="text" id="tamanho" name="tamanho"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full">
+                        <div>
+                            <label class="block font-sans mb-1">
+                                Altura
+                            </label>
+                            <input type="text" name="tamanho" required
+                                class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
                         </div>
 
-                        <div class="flex flex-col">
-                            <label for="tempo" class="text-lg tracking-wide mb-1">Joga voleibol a
-                                quanto tempo</label>
-                            <select id="tempo" name="tempo"
-                                class="bg-[#f4edd7] text-black font-sans px-3 py-2 rounded-md outline-none h-10 w-full cursor-pointer">
-                                <option value="" disabled selected>Selecione...</option>
-                                <option value="menos_1_ano">Menos de 1 ano</option>
-                                <option value="1_a_3_anos">De 1 a 3 anos</option>
-                                <option value="3_a_5_anos">De 3 a 5 anos</option>
-                                <option value="mais_5_anos">Mais de 5 anos</option>
+                        <div>
+                            <label class="block font-sans mb-1">
+                                Joga voleibol há quanto tempo?
+                            </label>
+
+                            <select name="tempo" required class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
+                                <option value="" disabled selected>
+                                    Selecione...
+                                </option>
+
+                                <option value="menos_1_ano">
+                                    Menos de 1 ano
+                                </option>
+
+                                <option value="1_a_3_anos">
+                                    De 1 a 3 anos
+                                </option>
+
+                                <option value="3_a_5_anos">
+                                    De 3 a 5 anos
+                                </option>
+
+                                <option value="mais_5_anos">
+                                    Mais de 5 anos
+                                </option>
+
                             </select>
                         </div>
-                        <button type="submit" class="bg-[#c24e54] text-white w-1/4 font-semibold py-2 rounded cursor-pointer
-                                border-2 border-black hover:bg-[#a63f44] transition-colors shadow-[2px_2px_0px_rgba(0,0,0,1)] 
-                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]">
-                            Enviar
+
+                        <button type="submit" class="w-full bg-[#127fbf] text-white font-semibold py-3 rounded-lg border-2 border-black
+                    shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                    hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px] transition-all cursor-pointer">
+
+                            Cadastrar perfil
+
                         </button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <%- include('../mensagens') %>
+
+        <script>
+
+            const modal = document.getElementById('modalCadastro');
+
+            function abrirCadastro(esporte) {
+
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+
+                document.querySelectorAll('#modalCadastro form, #form-voleibol')
+                    .forEach(elemento => elemento.classList.add('hidden'));
+
+                const titulo = document.getElementById('tituloModal');
+
+                if (esporte === 'boxe') {
+
+                    titulo.textContent = 'Adicionar perfil de Boxe';
+
+                    document.getElementById('form-boxe')
+                        .classList.remove('hidden');
+
+                }
+
+                if (esporte === 'corrida') {
+
+                    titulo.textContent = 'Adicionar perfil de Corrida';
+
+                    document.getElementById('form-corrida')
+                        .classList.remove('hidden');
+
+                }
+
+                if (esporte === 'voleibol') {
+
+                    titulo.textContent = 'Adicionar perfil de Voleibol';
+
+                    document.getElementById('form-voleibol')
+                        .classList.remove('hidden');
+
+                }
+            }
+
+            function mostrarVoleibol(tipo) {
+
+                document.getElementById('voleibol-treinador')
+                    .classList.add('hidden');
+
+                document.getElementById('voleibol-jogador')
+                    .classList.add('hidden');
+
+
+                if (tipo === 'treinador') {
+
+                    document.getElementById('voleibol-treinador')
+                        .classList.remove('hidden');
+
+                }
+
+                if (tipo === 'jogador') {
+
+                    document.getElementById('voleibol-jogador')
+                        .classList.remove('hidden');
+
+                }
+
+            }
+
+
+            function fecharCadastro() {
+
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+
+            }
+
+
+            modal.addEventListener('click', function (event) {
+
+                if (event.target === modal) {
+                    fecharCadastro();
+                }
+
+            });
+
+        </script>
 
 </body>
-<script>
-    const checkBoxe = document.getElementById('check-boxe');
-    const camposBoxe = document.getElementById('campos-boxe');
-    const checkCorrida = document.getElementById('check-corrida');
-    const camposCorrida = document.getElementById('campos-corrida');
-    const checkVoleibol = document.getElementById('check-voleibol');
-    const camposVoleibol = document.getElementById('campos-voleibol');
-    const checkTreinador = document.getElementById('check-treinador');
-    const camposTreinador = document.getElementById('campos-treinador');
-    const checkJogador = document.getElementById('check-jogador');
-    const camposJogador = document.getElementById('campos-jogador');
-
-    checkBoxe.addEventListener('change', function () {
-        if (this.checked) {
-            camposBoxe.classList.remove('hidden');
-            camposBoxe.classList.add('flex');
-        } else {
-            camposBoxe.classList.add('hidden');
-            camposBoxe.classList.remove('flex');
-        }
-    });
-
-    checkCorrida.addEventListener('change', function () {
-        if (this.checked) {
-            camposCorrida.classList.remove('hidden');
-            camposCorrida.classList.add('flex');
-        } else {
-            camposCorrida.classList.add('hidden');
-            camposCorrida.classList.remove('flex');
-        }
-    });
-
-    checkVoleibol.addEventListener('change', function () {
-        if (this.checked) {
-            camposVoleibol.classList.remove('hidden');
-            camposVoleibol.classList.add('flex');
-        } else {
-            camposVoleibol.classList.add('hidden');
-            camposVoleibol.classList.remove('flex');
-        }
-    });
-
-    checkTreinador.addEventListener('change', function () {
-        if (this.checked) {
-            camposTreinador.classList.remove('hidden');
-            camposTreinador.classList.add('flex');
-        } else {
-            camposTreinador.classList.add('hidden');
-            camposTreinador.classList.remove('flex');
-        }
-    });
-
-    checkJogador.addEventListener('change', function () {
-        if (this.checked) {
-            camposJogador.classList.remove('hidden');
-            camposJogador.classList.add('flex');
-        } else {
-            camposJogador.classList.add('hidden');
-            camposJogador.classList.remove('flex');
-        }
-    });
-</script>
 
 </html>
