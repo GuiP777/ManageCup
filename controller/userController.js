@@ -158,7 +158,54 @@ module.exports = {
 
     },
 
-    pagEditarUsuario: function (req, res) {
-        res.render('user/editarUsuario.ejs');
+    pagEditarUsuario: async function (req, res) {
+
+        const id = req.session.usuario_id;
+
+        const dados = await User.findByPk(id);
+
+        res.render('user/editarUsuario.ejs', { dados: dados });
     },
+
+    atualizarUsuario: async function (req, res) {
+        const id = req.session.usuario_id;
+        const formidable = require('formidable');
+        const form = new formidable.IncomingForm({ allowEmptyFiles: true, minFileSize: 0 });
+
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                console.log("ERRO FORMDIABLE:", err);
+                return;
+            } if (files.avatar) {
+                var oldpath = files.avatar[0].filepath;
+                var hash = crypto.createHash('md5').update(Date.now().toString()).digest('hex');
+                var ext = path.extname(files.avatar[0].originalFilename)
+                var nomeimg = hash + ext
+                var newpath = path.join(__dirname, '../public/imagens/', nomeimg);
+                fs.rename(oldpath, newpath, function (err) {
+                    if (err) throw err;
+                });
+            }
+
+            const resultado = await User.update({
+                nome: fields['nome'][0], email: fields['email'][0], nascimento: fields['nascimento'][0], sexo: fields['sexo'][0],
+                ...(files.avatar && { avatar: nomeimg })
+            },
+                {
+                    where: {
+                        id: id
+                    }
+                })
+
+            if (resultado) {
+                req.session.avatar = nomeimg;
+                req.session.username = fields['nome'][0];
+
+                mensagem(req, 'sucesso', "Edição realizada com sucesso!");
+            }
+
+            res.redirect('/perfil');
+
+        });
+    }
 }

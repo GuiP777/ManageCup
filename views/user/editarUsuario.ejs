@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head> <%- include('../head'); %> </head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+    <header> <%- include('../menu'); %> </header>
+    <main class="flex-1 px-6 py-10">
+
+        <div class="max-w-3xl mx-auto">
+
+            <!-- TÍTULO -->
+            <div class="mb-8">
+                <h1 class="font-serif text-5xl tracking-wide text-[#127fbf]">
+                    Editar informações
+                </h1>
+            </div>
+
+            <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden">
+                   <div class="bg-[#127fbf] px-8 py-6">
+                    <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
+                        Informações pessoais
+                    </h2>
+                    <p class="font-sans text-sm text-[#e0fcff] mt-1">
+                        Altere seus dados e sua foto de perfil.
+                    </p>
+                </div>
+
+                <form action="/editar_usuario" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+
+                    <div class="flex flex-col items-center pb-6 border-b border-gray-200">
+                        <div class="relative">
+                            <img id="previewAvatar" src="/imagens/<%= dados.avatar %>" alt="Avatar"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-[#f4edd7] shadow-md">
+
+                            <label for="avatar" class="absolute bottom-1 right-1 bg-[#c24e54] text-white
+                        w-10 h-10 rounded-full flex items-center justify-center
+                        border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                        hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]
+                        transition-all cursor-pointer">
+
+                                ✎
+
+                            </label>
+                        </div>
+                        <p class="font-serif text-xl text-[#127fbf] mt-4">
+                            Foto de perfil
+                        </p>
+                       
+                        <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="nome" class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                            Nome
+                        </label>
+                        <input type="text" id="nome" name="nome" value="<%= dados.nome %>" required class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                    outline-none border-2 border-transparent
+                    focus:border-[#127fbf] transition">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="email" class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                            Email
+                        </label>
+                        <input type="email" id="email" name="email" value="<%= dados.email %>" required class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                    outline-none border-2 border-transparent
+                    focus:border-[#127fbf] transition">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col">
+                            <label for="nascimento" class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Data de nascimento
+                            </label>
+                            <input type="date" id="nascimento" name="nascimento"
+                                value="<%= dados.nascimento.toISOString().split('T')[0] %>" required class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                        outline-none border-2 border-transparent
+                        focus:border-[#127fbf] transition cursor-pointer">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label for="sexo" class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Sexo
+                            </label>
+                            <select id="sexo" name="sexo" required class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                        outline-none border-2 border-transparent
+                        focus:border-[#127fbf] transition cursor-pointer">
+                                <option value="masculino" <%=dados.sexo==='masculino' ? 'selected' : '' %>>
+                                    Masculino
+                                </option>
+                                <option value="feminino" <%=dados.sexo==='feminino' ? 'selected' : '' %>>
+                                    Feminino
+                                </option>
+                                <option value="outro" <%=dados.sexo==='outro' ? 'selected' : '' %>>
+                                    Outro
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-gray-200">
+
+                        <a href="/perfil" class="text-center bg-[#f4edd7] text-[#127fbf] px-6 py-3 rounded-lg
+                    font-semibold border-2 border-black
+                    shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                    hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]
+                    transition-all">
+
+                            Cancelar
+
+                        </a>
+                        <button type="submit" class="bg-[#c24e54] text-white px-8 py-3 rounded-lg font-semibold
+                    border-2 border-black
+                    shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                    hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                    transition-all cursor-pointer">
+
+                            Salvar alterações
+
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <script>
+
+            const inputAvatar = document.getElementById('avatar');
+            const previewAvatar = document.getElementById('previewAvatar');
+
+            inputAvatar.addEventListener('change', function () {
+
+                const arquivo = this.files[0];
+
+                if (arquivo) {
+                    previewAvatar.src = URL.createObjectURL(arquivo);
+                }
+
+            });
+
+        </script>
+    </main>
+
+    <%- include('../mensagens') %>
+</body>
+
+</html>
