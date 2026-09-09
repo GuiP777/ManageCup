@@ -46,7 +46,7 @@ module.exports = {
 
         req.session.perfis.corrida = true ;
 
-        res.redirect('/');
+        res.redirect('/perfil');
     },
 
 

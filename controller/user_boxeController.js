@@ -47,7 +47,7 @@ module.exports = {
 
         req.session.perfis.boxe = true ;
 
-        res.redirect('/');
+        res.redirect('/perfil');
     },
 
 

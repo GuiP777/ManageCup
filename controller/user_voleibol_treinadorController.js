@@ -53,7 +53,7 @@ module.exports = {
 
         req.session.perfis.voleibolTreinador = true ;
 
-        res.redirect('/');
+        res.redirect('/perfil');
     },
 
 

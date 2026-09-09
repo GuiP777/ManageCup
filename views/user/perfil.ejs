@@ -13,8 +13,11 @@
     </header>
 
     <main class="flex-1 px-6 py-10">
+
         <div class="max-w-5xl mx-auto">
+
             <div class="mb-8">
+
                 <h1 class="font-serif text-5xl tracking-wide text-[#127fbf]">
                     Meu perfil
                 </h1>
@@ -22,256 +25,479 @@
                 <p class="font-sans text-gray-600 mt-2">
                     Gerencie suas informações e seus perfis esportivos.
                 </p>
+
             </div>
 
+
             <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden mb-8">
+
                 <div class="bg-[#127fbf] px-8 py-5 flex items-center justify-between">
+
                     <div>
+
                         <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
                             Informações pessoais
                         </h2>
+
                         <p class="font-sans text-sm text-[#e0fcff] mt-1">
                             Dados da sua conta
                         </p>
+
                     </div>
+
                     <a href="editar_usuario">
+
                         <button class="bg-[#f4edd7] text-[#127fbf] px-5 py-2 rounded-lg font-semibold border-2 border-black
                                     shadow-[2px_2px_0px_rgba(0,0,0,1)]
                                     hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer ">
+
                             Editar
+
                         </button>
+
                     </a>
+
                 </div>
+
 
                 <div class="p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
 
                     <div class="flex-shrink-0">
+
                         <img src="../imagens/<%= dados.avatar %>" alt="Avatar do usuário"
                             class="w-32 h-32 rounded-full object-cover border-4 border-[#127fbf] shadow-md">
+
                     </div>
+
 
                     <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 w-full">
 
                         <div>
-                            <p class="text-sm text-gray-500 font-sans">Nome</p>
+
+                            <p class="text-sm text-gray-500 font-sans">
+                                Nome
+                            </p>
+
                             <p class="text-lg text-gray-900 font-sans font-medium">
                                 <%= dados.nome %>
                             </p>
+
                         </div>
 
+
                         <div>
-                            <p class="text-sm text-gray-500 font-sans">Email</p>
+
+                            <p class="text-sm text-gray-500 font-sans">
+                                Email
+                            </p>
+
                             <p class="text-lg text-gray-900 font-sans font-medium">
                                 <%= dados.email %>
                             </p>
+
                         </div>
 
+
                         <div>
-                            <p class="text-sm text-gray-500 font-sans">Nascimento</p>
+
+                            <p class="text-sm text-gray-500 font-sans">
+                                Nascimento
+                            </p>
+
                             <p class="text-lg text-gray-900 font-sans font-medium">
+
                                 <%= dados.nascimento.toLocaleDateString('pt-BR', { day: '2-digit' , month: 'long' ,
                                     year: 'numeric' }) %>
+
                             </p>
+
                         </div>
 
+
                         <div>
-                            <p class="text-sm text-gray-500 font-sans">Sexo</p>
+
+                            <p class="text-sm text-gray-500 font-sans">
+                                Sexo
+                            </p>
+
                             <p class="text-lg text-gray-900 font-sans font-medium">
                                 <%= dados.sexo %>
                             </p>
+
                         </div>
 
                     </div>
+
                 </div>
+
             </section>
 
 
+
             <section class="mb-8">
+
                 <% if(dados.perfilBoxe !=null || dados.perfilCorrida !=null || dados.perfilVoleibolTreinador !=null ||
                     dados.perfilVoleibolJogador !=null){ %>
+
                     <div class="mb-5">
+
                         <h2 class="font-serif text-4xl text-[#127fbf] tracking-wide">
                             Meus perfis esportivos
                         </h2>
+
                         <p class="font-sans text-gray-600 mt-1">
                             Veja e edite as informações dos seus esportes.
                         </p>
+
                     </div>
+
                     <% } %>
 
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
                             <% if(dados.perfilBoxe !=null){ %>
+
                                 <div class="bg-white rounded-2xl shadow-md border-2 border-[#c24e54] p-6">
+
                                     <div class="flex justify-between items-start mb-5">
-                                        <div>
-                                            <span class="text-4xl">🥊</span>
+
+                                        <div class="text-center">
+
+                                            <img src="/imagens/boxe.png"
+                                                class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
+
                                             <h3 class="font-serif text-3xl text-[#c24e54] tracking-wide mt-2">
                                                 Boxe
                                             </h3>
+
                                         </div>
+
+
                                         <a href="editar_perfil/boxe">
+
                                             <button
                                                 class="text-sm bg-[#c24e54] text-white px-4 py-2 rounded-lg border-2 border-black
                                                     shadow-[2px_2px_0px_rgba(0,0,0,1)]
                                                     hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+
                                                 Editar
+
                                             </button>
+
                                         </a>
+
                                     </div>
 
+
                                     <div class="space-y-3 font-sans">
+
                                         <p>
-                                            <span class="text-gray-500">Apelido:</span>
+
+                                            <span class="text-gray-500">
+                                                Apelido:
+                                            </span>
+
                                             <strong>
                                                 <%= dados.perfilBoxe.apelido %>
                                             </strong>
+
                                         </p>
+
+
                                         <p>
-                                            <span class="text-gray-500">Peso:</span>
+
+                                            <span class="text-gray-500">
+                                                Peso:
+                                            </span>
+
                                             <strong>
                                                 <%= dados.perfilBoxe.peso %>
                                             </strong>
+
                                         </p>
+
+
                                         <p>
-                                            <span class="text-gray-500">Treinador:</span>
+
+                                            <span class="text-gray-500">
+                                                Treinador:
+                                            </span>
+
                                             <strong>
                                                 <%= dados.perfilBoxe.treinador %>
                                             </strong>
+
                                         </p>
+
+
                                         <p>
-                                            <span class="text-gray-500">Quantidade de lutas:</span>
+
+                                            <span class="text-gray-500">
+                                                Quantidade de lutas:
+                                            </span>
+
                                             <strong>
                                                 <%= dados.perfilBoxe.quantidadeLutas %>
                                             </strong>
+
                                         </p>
+
                                     </div>
+
                                 </div>
 
                                 <% } %>
 
+
+
                                     <% if(dados.perfilCorrida !=null){ %>
-                                        <div class="bg-white rounded-2xl shadow-md border-2 border-[#127fbf] p-6">
+
+                                        <div
+                                            class="bg-white rounded-2xl shadow-md border-2 border-[#127fbf] p-6">
+
                                             <div class="flex justify-between items-start mb-5">
-                                                <div>
+
+                                                <div class="text-center">
+
                                                     <img src="/imagens/corrida.png"
-                                                        class="w-20 h-20 group-hover:translate-x-1 transition">
-                                                    <h3 class="font-serif text-3xl text-[#127fbf] tracking-wide mt-2">
+                                                        class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
+
+                                                    <h3
+                                                        class="font-serif text-3xl text-[#127fbf] tracking-wide mt-2">
+
                                                         Corrida
+
                                                     </h3>
+
                                                 </div>
+
+
                                                 <a href="editar_perfil/corrida">
+
                                                     <button class="text-sm bg-[#127fbf] text-white px-4 py-2 rounded-lg border-2 border-black
-                            shadow-[2px_2px_0px_rgba(0,0,0,1)]
-                            hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+                             shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                             hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+
                                                         Editar
+
                                                     </button>
+
                                                 </a>
+
                                             </div>
+
+
                                             <div class="space-y-3 font-sans">
+
                                                 <p>
-                                                    <span class="text-gray-500">Nível:</span>
+
+                                                    <span class="text-gray-500">
+                                                        Nível:
+                                                    </span>
+
                                                     <strong>
                                                         <%= dados.perfilCorrida.nivel %>
                                                     </strong>
+
                                                 </p>
+
+
                                                 <p>
-                                                    <span class="text-gray-500">Recorde pessoal:</span>
+
+                                                    <span class="text-gray-500">
+                                                        Recorde pessoal:
+                                                    </span>
+
                                                     <strong>
                                                         <%= dados.perfilCorrida.recordePessoal %>
                                                     </strong>
+
                                                 </p>
+
                                             </div>
+
                                         </div>
+
                                         <% } %>
 
+
+
                                             <% if(dados.perfilVoleibolTreinador !=null){ %>
+
                                                 <div
                                                     class="bg-white rounded-2xl shadow-md border-2 border-[#f0c84b] p-6">
+
                                                     <div class="flex justify-between items-start mb-5">
-                                                        <div>
-                                                            <span class="text-4xl">🏐</span>
+
+                                                        <div class="text-center">
+
+                                                            <img src="/imagens/volei.png"
+                                                                class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
+
                                                             <h3
                                                                 class="font-serif text-3xl text-[#b48a00] tracking-wide mt-2">
+
                                                                 Voleibol — Treinador
+
                                                             </h3>
+
                                                         </div>
+
+
                                                         <a href="editar_perfil/voleibolTreinador">
+
                                                             <button class="text-sm bg-[#f0c84b] text-black px-4 py-2 rounded-lg border-2 border-black
-                            shadow-[2px_2px_0px_rgba(0,0,0,1)]
-                            hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+                             shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                             hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+
                                                                 Editar
+
                                                             </button>
+
                                                         </a>
+
                                                     </div>
+
+
                                                     <div class="space-y-3 font-sans">
+
                                                         <p>
-                                                            <span class="text-gray-500">Equipe:</span>
+
+                                                            <span class="text-gray-500">
+                                                                Equipe:
+                                                            </span>
+
                                                             <strong>
                                                                 <%= dados.perfilVoleibolTreinador.nomeEquipe %>
                                                             </strong>
+
                                                         </p>
+
+
                                                         <p>
-                                                            <span class="text-gray-500">Categoria:</span>
+
+                                                            <span class="text-gray-500">
+                                                                Categoria:
+                                                            </span>
+
                                                             <strong>
                                                                 <%= dados.perfilVoleibolTreinador.categoria %>
                                                             </strong>
+
                                                         </p>
+
                                                     </div>
+
                                                 </div>
+
                                                 <% } %>
 
+
+
                                                     <% if(dados.perfilVoleibolJogador !=null){ %>
+
                                                         <div
                                                             class="bg-white rounded-2xl shadow-md border-2 border-[#127fbf] p-6">
+
                                                             <div class="flex justify-between items-start mb-5">
-                                                                <div>
-                                                                    <span class="text-4xl">🏐</span>
+
+                                                                <div class="text-center">
+
+                                                                    <img src="/imagens/volei.png"
+                                                                        class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
+
                                                                     <h3
                                                                         class="font-serif text-3xl text-[#127fbf] tracking-wide mt-2">
+
                                                                         Voleibol — Jogador
+
                                                                     </h3>
+
                                                                 </div>
+
+
                                                                 <a href="editar_perfil/voleibolJogador">
+
                                                                     <button class="text-sm bg-[#127fbf] text-white px-4 py-2 rounded-lg border-2 border-black
                                                                                     shadow-[2px_2px_0px_rgba(0,0,0,1)]
                                                                                     hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px] transition-all cursor-pointer">
+
                                                                         Editar
+
                                                                     </button>
+
                                                                 </a>
+
                                                             </div>
+
+
                                                             <div class="space-y-3 font-sans">
+
                                                                 <p>
-                                                                    <span class="text-gray-500">Posição:</span>
+
+                                                                    <span class="text-gray-500">
+                                                                        Posição:
+                                                                    </span>
+
                                                                     <strong>
                                                                         <%= dados.perfilVoleibolJogador.posicao %>
                                                                     </strong>
+
                                                                 </p>
+
+
                                                                 <p>
-                                                                    <span class="text-gray-500">Altura:</span>
+
+                                                                    <span class="text-gray-500">
+                                                                        Altura:
+                                                                    </span>
+
                                                                     <strong>
                                                                         <%= dados.perfilVoleibolJogador.tamanho %>
                                                                     </strong>
+
                                                                 </p>
+
+
                                                                 <p>
-                                                                    <span class="text-gray-500">Tempo jogando:</span>
+
+                                                                    <span class="text-gray-500">
+                                                                        Tempo jogando:
+                                                                    </span>
+
                                                                     <strong>
                                                                         <%= dados.perfilVoleibolJogador.tempo %>
                                                                     </strong>
+
                                                                 </p>
+
                                                             </div>
+
                                                         </div>
+
                                                         <% } %>
+
                         </div>
+
             </section>
 
+
+
             <section class="bg-[#127fbf] rounded-2xl shadow-lg p-8">
+
                 <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
                     Adicionar perfil esportivo
                 </h2>
+
                 <p class="font-sans text-[#e0fcff] mt-2 mb-6">
                     Escolha um esporte para completar seu perfil.
                 </p>
+
+
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
 
                     <% if(dados.perfilBoxe==null){ %>
 
@@ -280,16 +506,22 @@
                     hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
                     transition-all cursor-pointer">
 
-                            <span class="text-4xl">🥊</span>
+                            <img src="/imagens/boxe.png"
+                                class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
+
                             <p class="font-serif text-2xl text-[#c24e54] mt-2">
                                 Boxe
                             </p>
+
                             <p class="font-sans text-sm text-gray-600 mt-1">
                                 Adicionar perfil
                             </p>
+
                         </button>
 
                         <% } %>
+
+
 
                             <% if(dados.perfilCorrida==null){ %>
 
@@ -298,16 +530,22 @@
                     hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
                     transition-all cursor-pointer">
 
-                                    <span class="text-4xl">🏃</span>
+                                    <img src="/imagens/corrida.png"
+                                        class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
+
                                     <p class="font-serif text-2xl text-[#127fbf] mt-2">
                                         Corrida
                                     </p>
+
                                     <p class="font-sans text-sm text-gray-600 mt-1">
                                         Adicionar perfil
                                     </p>
+
                                 </button>
 
                                 <% } %>
+
+
 
                                     <% if(dados.perfilVoleibolTreinador==null || dados.perfilVoleibolJogador==null){ %>
 
@@ -316,13 +554,17 @@
                     hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
                     transition-all cursor-pointer">
 
-                                            <span class="text-4xl">🏐</span>
+                                            <img src="/imagens/volei.png"
+                                                class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
+
                                             <p class="font-serif text-2xl text-[#b48a00] mt-2">
                                                 Voleibol
                                             </p>
+
                                             <p class="font-sans text-sm text-gray-600 mt-1">
                                                 Adicionar perfil
                                             </p>
+
                                         </button>
 
                                         <% } %>
@@ -330,14 +572,21 @@
                 </div>
 
             </section>
+
         </div>
+
     </main>
+
 
     <%- include('../mensagens') %>
 
+
         <div id="modalCadastro" class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-5">
+
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+
                 <div class="bg-[#127fbf] p-6 flex justify-between items-center">
+
                     <h2 id="tituloModal" class="font-serif text-3xl text-[#f4edd7]">
                         Adicionar perfil
                     </h2>
@@ -345,124 +594,211 @@
                     <button onclick="fecharCadastro()" class="text-white text-3xl hover:scale-110 transition">
                         &times;
                     </button>
+
                 </div>
 
-                <form id="form-boxe" action="/atualiza_perfil_boxe" method="POST" class="hidden p-7 space-y-5">
+
+                <form id="form-boxe" action="/atualiza_perfil_boxe" method="POST"
+                    class="hidden p-7 space-y-5">
 
                     <h3 class="font-serif text-2xl text-[#c24e54]">
                         Perfil de Boxe
                     </h3>
+
+
                     <div>
-                        <label class="block font-sans mb-1">Apelido</label>
+
+                        <label class="block font-sans mb-1">
+                            Apelido
+                        </label>
+
                         <input type="text" name="apelido" required
                             class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
                     </div>
+
+
                     <div>
-                        <label class="block font-sans mb-1">Peso</label>
+
+                        <label class="block font-sans mb-1">
+                            Peso
+                        </label>
+
                         <input type="text" name="peso" required
                             class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
                     </div>
+
+
                     <div>
-                        <label class="block font-sans mb-1">Treinador/Academia</label>
+
+                        <label class="block font-sans mb-1">
+                            Treinador/Academia
+                        </label>
+
                         <input type="text" name="treinador"
                             class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
                     </div>
+
+
                     <div>
-                        <label class="block font-sans mb-1">Quantidade de lutas</label>
+
+                        <label class="block font-sans mb-1">
+                            Quantidade de lutas
+                        </label>
+
                         <input type="number" name="quantidadeLutas" required
                             class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
                     </div>
+
 
                     <button type="submit" class="w-full bg-[#c24e54] text-white font-semibold py-3 rounded-lg border-2 border-black
                 shadow-[3px_3px_0px_rgba(0,0,0,1)]
                 hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px] transition-all cursor-pointer">
+
                         Cadastrar perfil
+
                     </button>
 
                 </form>
 
-                <form id="form-corrida" action="/atualiza_perfil_corrida" method="POST" class="hidden p-7 space-y-5">
+
+
+                <form id="form-corrida" action="/atualiza_perfil_corrida" method="POST"
+                    class="hidden p-7 space-y-5">
 
                     <h3 class="font-serif text-2xl text-[#127fbf]">
                         Perfil de Corrida
                     </h3>
+
+
                     <div>
-                        <label class="block font-sans mb-1">Nível</label>
+
+                        <label class="block font-sans mb-1">
+                            Nível
+                        </label>
 
                         <select name="nivel" required
                             class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none cursor-pointer">
 
-                            <option value="" disabled selected>Selecione...</option>
-                            <option value="iniciante">Iniciante</option>
-                            <option value="intermediario">Intermediário</option>
-                            <option value="avancado">Avançado</option>
+                            <option value="" disabled selected>
+                                Selecione...
+                            </option>
+
+                            <option value="iniciante">
+                                Iniciante
+                            </option>
+
+                            <option value="intermediario">
+                                Intermediário
+                            </option>
+
+                            <option value="avancado">
+                                Avançado
+                            </option>
 
                         </select>
+
                     </div>
 
+
                     <div>
+
                         <label class="block font-sans mb-2">
                             Recorde pessoal
                         </label>
+
                         <div class="flex gap-3">
+
                             <input type="number" name="distancia" placeholder="Distância (Km)"
                                 class="w-1/2 bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
                             <input type="text" name="tempo" placeholder="hh:mm:ss" value="00:00:00"
                                 class="w-1/2 bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
 
                         </div>
+
                     </div>
+
 
                     <button type="submit" class="w-full bg-[#127fbf] text-white font-semibold py-3 rounded-lg border-2 border-black
                 shadow-[3px_3px_0px_rgba(0,0,0,1)]
                 hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px] transition-all cursor-pointer">
+
                         Cadastrar perfil
+
                     </button>
+
                 </form>
 
+
+
                 <div id="form-voleibol" class="hidden p-7">
+
                     <h3 class="font-serif text-2xl text-[#b48a00] mb-5">
                         Perfil de Voleibol
                     </h3>
+
                     <p class="font-sans text-gray-600 mb-5">
                         Escolha como você participa do voleibol:
                     </p>
+
+
                     <div class="grid grid-cols-2 gap-4">
+
 
                         <button type="button" onclick="mostrarVoleibol('treinador')" class="p-5 bg-[#f4edd7] rounded-xl border-2 border-black
                     hover:bg-[#ffe58f] transition">
-                            <span class="text-3xl">🏐</span>
+
+                            <img src="/imagens/volei.png"
+                                class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
 
                             <p class="font-serif text-xl mt-2">
                                 Treinador
                             </p>
 
                         </button>
+
+
                         <button type="button" onclick="mostrarVoleibol('jogador')" class="p-5 bg-[#f4edd7] rounded-xl border-2 border-black
                     hover:bg-[#e0fcff] transition">
 
-                            <span class="text-3xl">🏐</span>
+                            <img src="/imagens/volei.png"
+                                class="w-20 h-20 mx-auto object-contain group-hover:translate-x-1 transition">
 
                             <p class="font-serif text-xl mt-2">
                                 Jogador
                             </p>
+
                         </button>
+
                     </div>
+
+
 
                     <form id="voleibol-treinador" action="/atualiza_perfil_voleibolTreinador" method="POST"
                         class="hidden mt-6 space-y-5">
 
                         <div>
+
                             <label class="block font-sans mb-1">
                                 Nome da equipe
                             </label>
+
                             <input type="text" name="nomeEquipe" required
                                 class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
                         </div>
+
+
                         <div>
+
                             <label class="block font-sans mb-1">
                                 Categoria
                             </label>
+
                             <select name="categoria" required
                                 class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
 
@@ -495,7 +831,9 @@
                                 </option>
 
                             </select>
+
                         </div>
+
 
                         <button type="submit" class="w-full bg-[#c24e54] text-white font-semibold py-3 rounded-lg border-2 border-black
                     shadow-[3px_3px_0px_rgba(0,0,0,1)]
@@ -504,12 +842,16 @@
                             Cadastrar perfil
 
                         </button>
+
                     </form>
+
+
 
                     <form id="voleibol-jogador" action="/atualiza_perfil_voleibolJogador" method="POST"
                         class="hidden mt-6 space-y-5">
 
                         <div>
+
                             <label class="block font-sans mb-1">
                                 Posição
                             </label>
@@ -521,29 +863,51 @@
                                     Selecione...
                                 </option>
 
-                                <option value="levantador">Levantador</option>
-                                <option value="oposto">Oposto</option>
-                                <option value="ponteiro">Ponteiro</option>
-                                <option value="central">Central</option>
-                                <option value="libero">Líbero</option>
+                                <option value="levantador">
+                                    Levantador
+                                </option>
+
+                                <option value="oposto">
+                                    Oposto
+                                </option>
+
+                                <option value="ponteiro">
+                                    Ponteiro
+                                </option>
+
+                                <option value="central">
+                                    Central
+                                </option>
+
+                                <option value="libero">
+                                    Líbero
+                                </option>
 
                             </select>
+
                         </div>
 
+
                         <div>
+
                             <label class="block font-sans mb-1">
                                 Altura
                             </label>
+
                             <input type="text" name="tamanho" required
                                 class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+
                         </div>
 
+
                         <div>
+
                             <label class="block font-sans mb-1">
                                 Joga voleibol há quanto tempo?
                             </label>
 
-                            <select name="tempo" required class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
+                            <select name="tempo" required
+                                class="w-full bg-[#f4edd7] px-3 py-2 rounded-lg outline-none">
 
                                 <option value="" disabled selected>
                                     Selecione...
@@ -566,7 +930,9 @@
                                 </option>
 
                             </select>
+
                         </div>
+
 
                         <button type="submit" class="w-full bg-[#127fbf] text-white font-semibold py-3 rounded-lg border-2 border-black
                     shadow-[3px_3px_0px_rgba(0,0,0,1)]
@@ -575,24 +941,35 @@
                             Cadastrar perfil
 
                         </button>
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <script>
 
             const modal = document.getElementById('modalCadastro');
 
+
             function abrirCadastro(esporte) {
 
                 modal.classList.remove('hidden');
+
                 modal.classList.add('flex');
+
 
                 document.querySelectorAll('#modalCadastro form, #form-voleibol')
                     .forEach(elemento => elemento.classList.add('hidden'));
 
+
                 const titulo = document.getElementById('tituloModal');
+
 
                 if (esporte === 'boxe') {
 
@@ -603,6 +980,7 @@
 
                 }
 
+
                 if (esporte === 'corrida') {
 
                     titulo.textContent = 'Adicionar perfil de Corrida';
@@ -612,6 +990,7 @@
 
                 }
 
+
                 if (esporte === 'voleibol') {
 
                     titulo.textContent = 'Adicionar perfil de Voleibol';
@@ -620,7 +999,10 @@
                         .classList.remove('hidden');
 
                 }
+
             }
+
+
 
             function mostrarVoleibol(tipo) {
 
@@ -638,6 +1020,7 @@
 
                 }
 
+
                 if (tipo === 'jogador') {
 
                     document.getElementById('voleibol-jogador')
@@ -648,18 +1031,23 @@
             }
 
 
+
             function fecharCadastro() {
 
                 modal.classList.add('hidden');
+
                 modal.classList.remove('flex');
 
             }
 
 
+
             modal.addEventListener('click', function (event) {
 
                 if (event.target === modal) {
+
                     fecharCadastro();
+
                 }
 
             });

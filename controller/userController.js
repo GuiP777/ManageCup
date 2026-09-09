@@ -77,8 +77,8 @@ module.exports = {
                 if (result.length == 0) {
                     var oldpath = files.avatar[0].filepath;
                     var hash = crypto.createHash('md5').update(Date.now().toString()).digest('hex');
-                    var ext = path.extname(files.avatar[0].originalFilename)
-                    var nomeimg = hash + ext
+                    var ext = path.extname(files.avatar[0].originalFilename);
+                    var nomeimg = hash + ext;
                     var newpath = path.join(__dirname, '../public/imagens/', nomeimg);
                     fs.rename(oldpath, newpath, function (err) {
                         if (err) throw err;
@@ -176,11 +176,11 @@ module.exports = {
             if (err) {
                 console.log("ERRO FORMDIABLE:", err);
                 return;
-            } if (files.avatar) {
+            } if (files.avatar && files.avatar[0].size > 0) {
                 var oldpath = files.avatar[0].filepath;
                 var hash = crypto.createHash('md5').update(Date.now().toString()).digest('hex');
-                var ext = path.extname(files.avatar[0].originalFilename)
-                var nomeimg = hash + ext
+                var ext = path.extname(files.avatar[0].originalFilename);
+                var nomeimg = hash + ext;
                 var newpath = path.join(__dirname, '../public/imagens/', nomeimg);
                 fs.rename(oldpath, newpath, function (err) {
                     if (err) throw err;
@@ -189,7 +189,7 @@ module.exports = {
 
             const resultado = await User.update({
                 nome: fields['nome'][0], email: fields['email'][0], nascimento: fields['nascimento'][0], sexo: fields['sexo'][0],
-                ...(files.avatar && { avatar: nomeimg })
+                ...(files.avatar && files.avatar[0].size > 0 && { avatar: nomeimg })
             },
                 {
                     where: {
@@ -198,7 +198,9 @@ module.exports = {
                 })
 
             if (resultado) {
-                req.session.avatar = nomeimg;
+                if (files.avatar && files.avatar[0].size > 0) {
+                    req.session.avatar = nomeimg;
+                }
                 req.session.username = fields['nome'][0];
 
                 mensagem(req, 'sucesso', "Edição realizada com sucesso!");

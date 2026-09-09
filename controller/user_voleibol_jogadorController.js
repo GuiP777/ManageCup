@@ -44,7 +44,7 @@ module.exports = {
 
         req.session.perfis.voleibolJogador = true ;
 
-        res.redirect('/');
+        res.redirect('/perfil');
     },
 
 
