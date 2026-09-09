@@ -1,3 +1,12 @@
 node_modules/
 .env
-/images/
+/public/imagens/*
+!/public/imagens/avatarPadrao.png
+!/public/imagens/boxe.png
+!/public/imagens/corrida.png
+!/public/imagens/iconeBaixar.png
+!/public/imagens/logo.ico
+!/public/imagens/logo.png
+!/public/imagens/notificacao.png
+!/public/imagens/trofeu.jpg
+!/public/imagens/volei.png
