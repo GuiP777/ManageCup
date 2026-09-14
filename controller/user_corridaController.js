@@ -49,5 +49,17 @@ module.exports = {
         res.redirect('/perfil');
     },
 
+    pagEditar: async function (req, res) {
 
+        const id = req.session.usuario_id;
+
+        const dadosCorrida = await User_Corrida.findOne({
+            where:{
+                id_usuario: id
+            }
+        });
+
+
+        res.render('user/editarPerfil.ejs', { dados: dadosCorrida, perfil: 'corrida' });
+    }
 }

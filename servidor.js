@@ -108,7 +108,7 @@ app.get('/perfil', auth.logado, userController.pagPerfil);
 app.get('/editar_usuario', auth.logado, userController.pagEditarUsuario);
 app.post('/editar_usuario', auth.logado, userController.atualizarUsuario);
 
-app.get('/editar_perfil/:tipo', (req, res) => {
+app.get('/editar_perfil/:tipo', auth.logado, (req, res) => {
 
     const tipo = req.params.tipo;
 
@@ -121,11 +121,11 @@ app.get('/editar_perfil/:tipo', (req, res) => {
     }
 
     if (tipo === 'voleibolTreinador') {
-        return user_voleibol_treinadorController.pagEditarTreinador(req, res);
+        return user_voleibol_treinadorController.pagEditar(req, res);
     }
 
     if (tipo === 'voleibolJogador') {
-        return user_voleibol_jogadorController.pagEditarJogador(req, res);
+        return user_voleibol_jogadorController.pagEditar(req, res);
     }
 
     return res.status(404).send('Perfil não encontrado');

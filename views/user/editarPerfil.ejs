@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('../head'); %>
+</head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+
+    <header>
+        <%- include('../menu'); %>
+    </header>
+
+    <main class="flex-1 px-6 py-10">
+
+        <div class="max-w-3xl mx-auto">
+
+            <div class="mb-8">
+                <h1 class="font-serif text-5xl tracking-wide text-[#127fbf]">
+                    Editar perfil esportivo
+                </h1>
+
+                <p class="font-sans text-gray-600 mt-2">
+                    Altere as informações do seu perfil esportivo.
+                </p>
+            </div>
+
+
+            <% if (perfil === 'voleibolTreinador') { %>
+
+                <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden">
+
+                    <div class="bg-[#127fbf] px-8 py-6">
+                        <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
+                            Perfil de Treinador
+                        </h2>
+
+                        <p class="font-sans text-sm text-[#e0fcff] mt-1">
+                            Altere suas informações como treinador de voleibol.
+                        </p>
+                    </div>
+
+                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
+
+                        <input type="hidden" name="perfil" value="<%= perfil %>">
+
+                        <div class="flex flex-col">
+                            <label for="nomeEquipe"
+                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Nome da equipe
+                            </label>
+
+                            <input type="text"
+                                id="nomeEquipe"
+                                name="nomeEquipe"
+                                value="<%= dados.nomeEquipe || '' %>"
+                                required
+                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                outline-none border-2 border-transparent
+                                focus:border-[#127fbf] transition">
+                        </div>
+
+                        <div class="flex flex-col">
+                                <label for="categoria"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Categoria
+                                </label>
+
+                                <select id="categoria"
+                                    name="categoria"
+                                    required
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition cursor-pointer">
+
+                                    <option value="adultoMasculino"
+                                        <%= dados.categoria === 'adultoMasculino' ? 'selected' : '' %>>
+                                    Adulta - Masculino
+                                    </option>
+
+                                    <option value="adultoFeminino"
+                                        <%= dados.categoria === 'adultoFeminino' ? 'selected' : '' %>>
+                                        Adulta - Feminino
+                                    </option>
+
+                                    <option value="infantoMasculino"
+                                        <%= dados.categoria === 'infantoMasculino' ? 'selected' : '' %>>
+                                        Infanto - Masculino
+                                    </option>
+
+                                    <option value="infantoFeminino"
+                                        <%= dados.categoria === 'infantoFeminino' ? 'selected' : '' %>>
+                                        Infanto - Feminino
+                                    </option>
+
+                                    <option value="juvenilMasculino"
+                                        <%= dados.categoria === 'juvenilMasculino' ? 'selected' : '' %>>
+                                        Juvenil - Masculino
+                                    </option>
+
+                                      <option value="juvenilFeminino"
+                                        <%= dados.categoria === 'juvenilFeminino' ? 'selected' : '' %>>
+                                        Juvenil - Feminino
+                                    </option>
+
+                                </select>
+                            </div>
+
+
+                        <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-gray-200">
+
+                            <a href="/perfil"
+                                class="text-center bg-[#f4edd7] text-[#127fbf] px-6 py-3 rounded-lg
+                                font-semibold border-2 border-black
+                                shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]
+                                transition-all">
+
+                                Cancelar
+
+                            </a>
+
+                            <button type="submit"
+                                class="bg-[#c24e54] text-white px-8 py-3 rounded-lg font-semibold
+                                border-2 border-black
+                                shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                                transition-all cursor-pointer">
+
+                                Salvar alterações
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+
+            <!-- ===================================================== -->
+            <!-- VOLEIBOL - JOGADOR -->
+            <!-- ===================================================== -->
+
+            <% } else if (perfil === 'voleibolJogador') { %>
+
+                <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden">
+
+                    <div class="bg-[#127fbf] px-8 py-6">
+                        <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
+                            Perfil de Jogador
+                        </h2>
+
+                        <p class="font-sans text-sm text-[#e0fcff] mt-1">
+                            Altere suas informações como jogador de voleibol.
+                        </p>
+                    </div>
+
+                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
+
+                        <input type="hidden" name="perfil" value="<%= perfil %>">
+
+                        <div class="flex flex-col">
+                            <label for="apelido"
+                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Apelido
+                            </label>
+
+                            <input type="text"
+                                id="apelido"
+                                name="apelido"
+                                value="<%= dados.apelido || '' %>"
+                                required
+                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                outline-none border-2 border-transparent
+                                focus:border-[#127fbf] transition">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div class="flex flex-col">
+                                <label for="posicao"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Posição
+                                </label>
+
+                                <select id="posicao"
+                                    name="posicao"
+                                    required
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition cursor-pointer">
+
+                                    <option value="levantador"
+                                        <%= dados.posicao === 'levantador' ? 'selected' : '' %>>
+                                        Levantador
+                                    </option>
+
+                                    <option value="oposto"
+                                        <%= dados.posicao === 'oposto' ? 'selected' : '' %>>
+                                        Oposto
+                                    </option>
+
+                                    <option value="ponteiro"
+                                        <%= dados.posicao === 'ponteiro' ? 'selected' : '' %>>
+                                        Ponteiro
+                                    </option>
+
+                                    <option value="central"
+                                        <%= dados.posicao === 'central' ? 'selected' : '' %>>
+                                        Central
+                                    </option>
+
+                                    <option value="libero"
+                                        <%= dados.posicao === 'libero' ? 'selected' : '' %>>
+                                        Líbero
+                                    </option>
+
+                                </select>
+                            </div>
+
+
+                            <div class="flex flex-col">
+                                <label for="altura"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Altura
+                                </label>
+
+                                <input type="number"
+                                    id="altura"
+                                    name="altura"
+                                    value="<%= dados.altura || '' %>"
+                                    step="0.01"
+                                    placeholder="Ex.: 1.85"
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition">
+                            </div>
+
+                        </div>
+
+
+                        <div class="flex flex-col">
+                            <label for="descricao"
+                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Descrição
+                            </label>
+
+                            <textarea
+                                id="descricao"
+                                name="descricao"
+                                rows="4"
+                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                outline-none border-2 border-transparent
+                                focus:border-[#127fbf] transition resize-none"><%= dados.descricao || '' %></textarea>
+                        </div>
+
+                        <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-gray-200">
+
+                            <a href="/perfil"
+                                class="text-center bg-[#f4edd7] text-[#127fbf] px-6 py-3 rounded-lg
+                                font-semibold border-2 border-black
+                                shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]
+                                transition-all">
+
+                                Cancelar
+
+                            </a>
+
+                            <button type="submit"
+                                class="bg-[#c24e54] text-white px-8 py-3 rounded-lg font-semibold
+                                border-2 border-black
+                                shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                                transition-all cursor-pointer">
+
+                                Salvar alterações
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+            <% } else if (perfil === 'corrida') { %>
+
+                <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden">
+
+                    <div class="bg-[#127fbf] px-8 py-6">
+                        <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
+                            Perfil de Corrida
+                        </h2>
+
+                        <p class="font-sans text-sm text-[#e0fcff] mt-1">
+                            Altere suas informações como corredor.
+                        </p>
+                    </div>
+
+                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
+
+                        <input type="hidden" name="perfil" value="<%= perfil %>">
+
+                        <div class="flex flex-col">
+                            <label for="nivel"
+                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Nível
+                            </label>
+
+                            <select id="nivel"
+                                name="nivel"
+                                required
+                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                outline-none border-2 border-transparent
+                                focus:border-[#127fbf] transition cursor-pointer">
+
+                                <option value="iniciante" <%= dados.nivel === 'iniciante' ? 'selected' : '' %>>
+                                    Iniciante
+                                </option>
+
+                                <option value="intermediario" <%= dados.nivel === 'intermediario' ? 'selected' : '' %>>
+                                    Intermediário
+                                </option>
+
+                                <option value="avancado" <%= dados.nivel === 'avancado' ? 'selected' : '' %>>
+                                    Avançado
+                                </option>
+
+                            </select>
+                        </div>
+
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div class="flex flex-col">
+                                <label for="distancia"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Distância
+                                </label>
+
+                                <input type="text"
+                                    id="distancia"
+                                    name="distancia"
+                                    value="<%= dados.distancia || '' %>"
+                                    placeholder="Ex.: 10 km"
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition">
+                            </div>
+
+
+                            <div class="flex flex-col">
+                                <label for="tempo"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Melhor tempo
+                                </label>
+
+                                <input type="text"
+                                    id="tempo"
+                                    name="tempo"
+                                    value="<%= dados.tempo || '' %>"
+                                    placeholder="Ex.: 45:30"
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition">
+                            </div>
+
+                        </div>
+
+
+                        <div class="flex flex-col">
+                            <label for="descricao"
+                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Descrição
+                            </label>
+
+                            <textarea
+                                id="descricao"
+                                name="descricao"
+                                rows="4"
+                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                outline-none border-2 border-transparent
+                                focus:border-[#127fbf] transition resize-none"><%= dados.descricao || '' %></textarea>
+                        </div>
+
+                        <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-gray-200">
+
+                            <a href="/perfil"
+                                class="text-center bg-[#f4edd7] text-[#127fbf] px-6 py-3 rounded-lg
+                                font-semibold border-2 border-black
+                                shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]
+                                transition-all">
+
+                                Cancelar
+
+                            </a>
+
+                            <button type="submit"
+                                class="bg-[#c24e54] text-white px-8 py-3 rounded-lg font-semibold
+                                border-2 border-black
+                                shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                                transition-all cursor-pointer">
+
+                                Salvar alterações
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+            <% } else if (perfil === 'boxe') { %>
+
+                <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden">
+
+                    <div class="bg-[#127fbf] px-8 py-6">
+                        <h2 class="font-serif text-3xl text-[#f4edd7] tracking-wide">
+                            Perfil de Boxe
+                        </h2>
+
+                        <p class="font-sans text-sm text-[#e0fcff] mt-1">
+                            Altere suas informações como boxeador.
+                        </p>
+                    </div>
+
+                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
+
+                        <input type="hidden" name="perfil" value="<%= perfil %>">
+
+                        <div class="flex flex-col">
+                            <label for="apelido"
+                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                Apelido
+                            </label>
+
+                            <input type="text"
+                                id="apelido"
+                                name="apelido"
+                                value="<%= dados.apelido || '' %>"
+                                required
+                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                outline-none border-2 border-transparent
+                                focus:border-[#127fbf] transition">
+                        </div>
+
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div class="flex flex-col">
+                                <label for="peso"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Peso
+                                </label>
+
+                                <input type="number"
+                                    id="peso"
+                                    name="peso"
+                                    value="<%= dados.peso || '' %>"
+                                    step="0.1"
+                                    placeholder="Ex.: 75 kg"
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition">
+                            </div>
+
+
+                            <div class="flex flex-col">
+                                <label for="categoria"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Treinador
+                                </label>
+
+                                <input type="text"
+                                    id="categoria"
+                                    name="categoria"
+                                    value="<%= dados.treinador || '' %>"
+                                    placeholder=""
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition">
+                            </div>
+
+                        </div>
+
+
+                         <div class="flex flex-col">
+                                <label for="categoria"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Quantidade de Lutas
+                                </label>
+
+                                <input type="text"
+                                    id="categoria"
+                                    name="categoria"
+                                    value="<%= dados.quantidadeLutas || '' %>"
+                                    placeholder=""
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition">
+                            </div>
+
+                        <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-gray-200">
+
+                            <a href="/perfil"
+                                class="text-center bg-[#f4edd7] text-[#127fbf] px-6 py-3 rounded-lg
+                                font-semibold border-2 border-black
+                                shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[2px] hover:translate-x-[2px]
+                                transition-all">
+
+                                Cancelar
+
+                            </a>
+
+                            <button type="submit"
+                                class="bg-[#c24e54] text-white px-8 py-3 rounded-lg font-semibold
+                                border-2 border-black
+                                shadow-[3px_3px_0px_rgba(0,0,0,1)]
+                                hover:shadow-none hover:translate-y-[3px] hover:translate-x-[3px]
+                                transition-all cursor-pointer">
+
+                                Salvar alterações
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+            <% } %>
+
+        </div>
+
+    </main>
+
+    <%- include('../mensagens') %>
+
+</body>
+
+</html>
+

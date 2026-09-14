@@ -47,5 +47,17 @@ module.exports = {
         res.redirect('/perfil');
     },
 
+    pagEditar: async function (req, res) {
 
+        const id = req.session.usuario_id;
+
+        const dadosJogador = await User_Voleibol_Jogador.findOne({
+            where:{
+                id_usuario: id
+            }
+        });
+
+
+        res.render('user/editarPerfil.ejs', { dados: dadosJogador, perfil: 'voleibolJogador' });
+    }
 }
