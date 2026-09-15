@@ -159,24 +159,7 @@
                     <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
 
                         <input type="hidden" name="perfil" value="<%= perfil %>">
-
-                        <div class="flex flex-col">
-                            <label for="apelido"
-                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
-                                Apelido
-                            </label>
-
-                            <input type="text"
-                                id="apelido"
-                                name="apelido"
-                                value="<%= dados.apelido || '' %>"
-                                required
-                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
-                                outline-none border-2 border-transparent
-                                focus:border-[#127fbf] transition">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             <div class="flex flex-col">
                                 <label for="posicao"
@@ -219,41 +202,61 @@
                                 </select>
                             </div>
 
-
                             <div class="flex flex-col">
-                                <label for="altura"
+                                <label for="posicao"
                                     class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
                                     Altura
                                 </label>
 
-                                <input type="number"
+                                <input type="text"
                                     id="altura"
                                     name="altura"
-                                    value="<%= dados.altura || '' %>"
-                                    step="0.01"
-                                    placeholder="Ex.: 1.85"
+                                    value="<%= dados.tamanho || '' %>"
+                                    required
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                     outline-none border-2 border-transparent
                                     focus:border-[#127fbf] transition">
                             </div>
 
+                           
+
                         </div>
 
 
-                        <div class="flex flex-col">
-                            <label for="descricao"
-                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
-                                Descrição
-                            </label>
+                       <div class="flex flex-col">
+                                <label for="posicao"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                    Tempo Jogando
+                                </label>
 
-                            <textarea
-                                id="descricao"
-                                name="descricao"
-                                rows="4"
-                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
-                                outline-none border-2 border-transparent
-                                focus:border-[#127fbf] transition resize-none"><%= dados.descricao || '' %></textarea>
-                        </div>
+                                <select id="posicao"
+                                    name="posicao"
+                                    required
+                                    class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
+                                    outline-none border-2 border-transparent
+                                    focus:border-[#127fbf] transition cursor-pointer">
+
+                                    <option value="menos_1_ano"
+                                        <%= dados.tempo === 'menos_1_ano' ? 'selected' : '' %>>
+                                        Menos de 1 ano
+                                    </option>
+
+                                    <option value="1_a_3_anos"
+                                        <%= dados.tempo === '1_a_3_anos' ? 'selected' : '' %>>
+                                        De 1 a 3 anos
+                                    </option>
+
+                                    <option value="3_a_5_anos"
+                                        <%= dados.tempo === '3_a_5_anos' ? 'selected' : '' %>>
+                                        De 3 a 5 anos
+                                    </option>
+
+                                    <option value="mais_5_anos"
+                                        <%= dados.tempo === 'mais_5_anos' ? 'selected' : '' %>>
+                                        Mais de 5 anos
+                                    </option>
+
+                                </select>      
 
                         <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-gray-200">
 
@@ -336,10 +339,14 @@
 
                             <div class="flex flex-col">
                                 <label for="distancia"
-                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
-                                    Distância
+                                    class="font-serif text-xl text-black mb-2 tracking-wide">
+                                    Recorde Pessoal: <%= dados.recordePessoal || '' %>
                                 </label>
 
+                                <label for="distancia"
+                                    class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
+                                   Distância
+                                </label>
                                 <input type="text"
                                     id="distancia"
                                     name="distancia"
@@ -348,16 +355,13 @@
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                     outline-none border-2 border-transparent
                                     focus:border-[#127fbf] transition">
-                            </div>
-
-
-                            <div class="flex flex-col">
+                                    <br>
+                                    
                                 <label for="tempo"
                                     class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
-                                    Melhor tempo
+                                   Tempo
                                 </label>
-
-                                <input type="text"
+                                     <input type="text"
                                     id="tempo"
                                     name="tempo"
                                     value="<%= dados.tempo || '' %>"
@@ -365,24 +369,8 @@
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                     outline-none border-2 border-transparent
                                     focus:border-[#127fbf] transition">
-                            </div>
+                            </div>                              
 
-                        </div>
-
-
-                        <div class="flex flex-col">
-                            <label for="descricao"
-                                class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
-                                Descrição
-                            </label>
-
-                            <textarea
-                                id="descricao"
-                                name="descricao"
-                                rows="4"
-                                class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
-                                outline-none border-2 border-transparent
-                                focus:border-[#127fbf] transition resize-none"><%= dados.descricao || '' %></textarea>
                         </div>
 
                         <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-4 border-t border-gray-200">

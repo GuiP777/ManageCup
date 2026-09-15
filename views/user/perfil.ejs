@@ -383,7 +383,19 @@
                                                             </span>
 
                                                             <strong>
-                                                                <%= dados.perfilVoleibolTreinador.categoria %>
+                                                                <% if (dados.perfilVoleibolTreinador.categoria === 'adultoMasculino') { %>
+                                                                    Adulto - Masculino
+                                                                <% } else if (dados.perfilVoleibolTreinador.categoria === 'adultoFeminino') { %>
+                                                                    Adulto - Feminino
+                                                                <% } else if (dados.perfilVoleibolTreinador.categoria === 'infantoMasculino') { %>
+                                                                    Infanto - Masculino
+                                                                <% } else if (dados.perfilVoleibolTreinador.categoria === 'infantoFeminino') { %>
+                                                                    Infanto - Feminino
+                                                                <% } else if (dados.perfilVoleibolTreinador.categoria === 'juvenilMasculino') { %>
+                                                                    Juvenil - Masculino
+                                                                <% } else if (dados.perfilVoleibolTreinador.categoria === 'juvenilFeminino') { %>
+                                                                    Juvenil - Feminino                                                                        
+                                                                <% } %>   
                                                             </strong>
 
                                                         </p>
@@ -468,7 +480,15 @@
                                                                     </span>
 
                                                                     <strong>
-                                                                        <%= dados.perfilVoleibolJogador.tempo %>
+                                                                        <% if (dados.perfilVoleibolJogador.tempo === 'menos_1_ano') { %>
+                                                                            Menos de 1 ano
+                                                                        <% } else if (dados.perfilVoleibolJogador.tempo === '1_a_3_anos') { %>
+                                                                            De 1 a 3 anos
+                                                                        <% } else if (dados.perfilVoleibolJogador.tempo === '3_a_5_anos') { %>
+                                                                            De 3 a 5 anos
+                                                                        <% } else if (dados.perfilVoleibolJogador.tempo === 'mais_5_anos') { %>
+                                                                            Mais de 5 anos
+                                                                        <% } %>                                                                
                                                                     </strong>
 
                                                                 </p>
