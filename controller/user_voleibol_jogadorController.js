@@ -15,20 +15,8 @@ module.exports = {
         });
 
         if (perfilExiste) {
-            await User_Voleibol_Jogador.update({
-
-                posicao: posicao,
-                tamanho: tamanho,
-                tempo: tempo,
-
-            },
-                {
-                    where: {
-                        id_usuario: req.session.usuario_id
-                    }
-                });
-
-            mensagem(req, 'sucesso', "Perfil atualizado com sucesso!");
+            mensagem(req, 'erro', "Perfil ja criado!");
+            return res.redirect('/perfil');
 
         } else {
             await User_Voleibol_Jogador.create({
@@ -42,7 +30,7 @@ module.exports = {
             mensagem(req, 'sucesso', "Perfil criado com sucesso!");
         }
 
-        req.session.perfis.voleibolJogador = true ;
+        req.session.perfis.voleibolJogador = true;
 
         res.redirect('/perfil');
     },
@@ -52,12 +40,38 @@ module.exports = {
         const id = req.session.usuario_id;
 
         const dadosJogador = await User_Voleibol_Jogador.findOne({
-            where:{
+            where: {
                 id_usuario: id
             }
         });
 
 
         res.render('user/editarPerfil.ejs', { dados: dadosJogador, perfil: 'voleibolJogador' });
+    },
+
+    atualizarPerfilJogador: async function (req, res) {
+        var posicao = req.body['posicao'];
+        var tamanho = req.body['tamanho'];
+        var tempo = req.body['tempo'];
+
+        if (!posicao && !tamanho && !tempo) {
+            mensagem(req, 'erro', "Preencha pelo menos uma informação!");
+            return res.redirect('/perfil');
+        }
+
+        await User_Voleibol_Jogador.update({
+            ...(posicao && { posicao: posicao }),
+            ...(tamanho && { tamanho: tamanho }),
+            ...(tempo && { tempo: tempo })
+        },
+            {
+                where: {
+                    id_usuario: req.session.usuario_id
+                }
+            });
+
+        mensagem(req, 'sucesso', "Perfil atualizado com sucesso!");
+
+        res.redirect('/perfil');
     }
 }

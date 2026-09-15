@@ -143,8 +143,9 @@ module.exports = {
     },
 
     verPerfil: async function (req, res) {
-        const id = req.session.usuario_id;
-        const usuario = await User.findByPk(req.session.usuario_id, {
+        const id = req.params.id_usuario;
+
+        const usuario = await User.findByPk(id, {
             raw: false,
             include: [
                 { model: User_Voleibol_Treinador, as: 'perfilVoleibolTreinador' },
@@ -154,7 +155,7 @@ module.exports = {
             ]
         });
 
-        res.render('user/perfil', { dados: usuario });
+        res.render('user/verPerfil', { dados: usuario });
 
     },
 

@@ -23,16 +23,8 @@ module.exports = {
         });
 
         if (perfilExiste) {
-            await User_Corrida.update({
-                recordePessoal: recordePessoal,
-                nivel: nivel,
-            },
-                {
-                    where: {
-                        id_usuario: req.session.usuario_id
-                    }
-                });
-            mensagem(req, 'sucesso', "Perfil atualizado com sucesso!");
+            mensagem(req, 'erro', "Perfil ja criado!");
+            return res.redirect('/perfil');
 
         } else {
             await User_Corrida.create({
@@ -44,7 +36,7 @@ module.exports = {
             mensagem(req, 'sucesso', "Perfil criado com sucesso!");
         }
 
-        req.session.perfis.corrida = true ;
+        req.session.perfis.corrida = true;
 
         res.redirect('/perfil');
     },
@@ -54,12 +46,39 @@ module.exports = {
         const id = req.session.usuario_id;
 
         const dadosCorrida = await User_Corrida.findOne({
-            where:{
+            where: {
                 id_usuario: id
             }
         });
 
 
         res.render('user/editarPerfil.ejs', { dados: dadosCorrida, perfil: 'corrida' });
+    },
+
+    atualizarPerfilCorrida: async function (req, res) {
+        var distancia = req.body['distancia'];
+        var tempo = req.body['tempo'];
+        var nivel = req.body['nivel'];
+
+        var recordePessoal = distancia + "Km em " + tempo;
+
+        if (!distancia && !tempo && !nivel) {
+            mensagem(req, 'erro', "Preencha pelo menos uma informação!");
+            return res.redirect('/perfil');
+        }
+
+        await User_Corrida.update({
+            ...(recordePessoal && { recordePessoal: recordePessoal }),
+            ...(nivel && { nivel: nivel })
+        },
+            {
+                where: {
+                    id_usuario: req.session.usuario_id
+                }
+            });
+
+        mensagem(req, 'sucesso', "Perfil atualizado com sucesso!");
+
+        res.redirect('/perfil');
     }
 }

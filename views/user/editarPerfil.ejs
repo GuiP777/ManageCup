@@ -40,9 +40,7 @@
                         </p>
                     </div>
 
-                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
-
-                        <input type="hidden" name="perfil" value="<%= perfil %>">
+                    <form action="/editar_perfil/<%= perfil %>" method="POST" class="p-8 space-y-6">
 
                         <div class="flex flex-col">
                             <label for="nomeEquipe"
@@ -54,7 +52,6 @@
                                 id="nomeEquipe"
                                 name="nomeEquipe"
                                 value="<%= dados.nomeEquipe || '' %>"
-                                required
                                 class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                 outline-none border-2 border-transparent
                                 focus:border-[#127fbf] transition">
@@ -68,7 +65,7 @@
 
                                 <select id="categoria"
                                     name="categoria"
-                                    required
+
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                     outline-none border-2 border-transparent
                                     focus:border-[#127fbf] transition cursor-pointer">
@@ -137,11 +134,6 @@
 
                 </section>
 
-
-            <!-- ===================================================== -->
-            <!-- VOLEIBOL - JOGADOR -->
-            <!-- ===================================================== -->
-
             <% } else if (perfil === 'voleibolJogador') { %>
 
                 <section class="bg-white rounded-2xl shadow-lg border-2 border-[#127fbf] overflow-hidden">
@@ -156,10 +148,9 @@
                         </p>
                     </div>
 
-                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
+                    <form action="/editar_perfil/<%= perfil %>" method="POST" class="p-8 space-y-6">
 
-                        <input type="hidden" name="perfil" value="<%= perfil %>">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             <div class="flex flex-col">
                                 <label for="posicao"
@@ -169,7 +160,7 @@
 
                                 <select id="posicao"
                                     name="posicao"
-                                    required
+
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                     outline-none border-2 border-transparent
                                     focus:border-[#127fbf] transition cursor-pointer">
@@ -203,16 +194,16 @@
                             </div>
 
                             <div class="flex flex-col">
-                                <label for="posicao"
+                                <label for="tamanho"
                                     class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
                                     Altura
                                 </label>
 
                                 <input type="text"
-                                    id="altura"
-                                    name="altura"
+                                    id="tamanho"
+                                    name="tamanho"
                                     value="<%= dados.tamanho || '' %>"
-                                    required
+
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                     outline-none border-2 border-transparent
                                     focus:border-[#127fbf] transition">
@@ -224,14 +215,14 @@
 
 
                        <div class="flex flex-col">
-                                <label for="posicao"
+                                <label for="tempo"
                                     class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
                                     Tempo Jogando
                                 </label>
 
-                                <select id="posicao"
-                                    name="posicao"
-                                    required
+                                <select id="tempo"
+                                    name="tempo"
+
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                     outline-none border-2 border-transparent
                                     focus:border-[#127fbf] transition cursor-pointer">
@@ -302,9 +293,7 @@
                         </p>
                     </div>
 
-                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
-
-                        <input type="hidden" name="perfil" value="<%= perfil %>">
+                    <form action="/editar_perfil/<%= perfil %>" method="POST" class="p-8 space-y-6">
 
                         <div class="flex flex-col">
                             <label for="nivel"
@@ -314,7 +303,7 @@
 
                             <select id="nivel"
                                 name="nivel"
-                                required
+                                
                                 class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                 outline-none border-2 border-transparent
                                 focus:border-[#127fbf] transition cursor-pointer">
@@ -350,6 +339,7 @@
                                 <input type="text"
                                     id="distancia"
                                     name="distancia"
+                                    required
                                     value="<%= dados.distancia || '' %>"
                                     placeholder="Ex.: 10 km"
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
@@ -363,6 +353,7 @@
                                 </label>
                                      <input type="text"
                                     id="tempo"
+                                    required
                                     name="tempo"
                                     value="<%= dados.tempo || '' %>"
                                     placeholder="Ex.: 45:30"
@@ -417,9 +408,7 @@
                         </p>
                     </div>
 
-                    <form action="/editar_perfil" method="POST" class="p-8 space-y-6">
-
-                        <input type="hidden" name="perfil" value="<%= perfil %>">
+                    <form action="/editar_perfil/<%= perfil %>" method="POST" class="p-8 space-y-6">
 
                         <div class="flex flex-col">
                             <label for="apelido"
@@ -431,7 +420,7 @@
                                 id="apelido"
                                 name="apelido"
                                 value="<%= dados.apelido || '' %>"
-                                required
+                                
                                 class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
                                 outline-none border-2 border-transparent
                                 focus:border-[#127fbf] transition">
@@ -459,14 +448,14 @@
 
 
                             <div class="flex flex-col">
-                                <label for="categoria"
+                                <label for="treinador"
                                     class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
                                     Treinador
                                 </label>
 
                                 <input type="text"
-                                    id="categoria"
-                                    name="categoria"
+                                    id="treinador"
+                                    name="treinador"
                                     value="<%= dados.treinador || '' %>"
                                     placeholder=""
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg
@@ -478,14 +467,14 @@
 
 
                          <div class="flex flex-col">
-                                <label for="categoria"
+                                <label for="quantidadeLutas"
                                     class="font-serif text-xl text-[#127fbf] mb-2 tracking-wide">
                                     Quantidade de Lutas
                                 </label>
 
                                 <input type="text"
-                                    id="categoria"
-                                    name="categoria"
+                                    id="quantidadeLutas"
+                                    name="quantidadeLutas"
                                     value="<%= dados.quantidadeLutas || '' %>"
                                     placeholder=""
                                     class="bg-[#f4edd7] text-black font-sans px-4 py-3 rounded-lg

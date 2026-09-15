@@ -107,6 +107,7 @@ app.post('/cadastro', userController.efetuaCadastro);
 app.get('/perfil', auth.logado, userController.pagPerfil);
 app.get('/editar_usuario', auth.logado, userController.pagEditarUsuario);
 app.post('/editar_usuario', auth.logado, userController.atualizarUsuario);
+app.get('/verPerfil/:id_usuario', auth.logado, userController.verPerfil);
 
 app.get('/editar_perfil/:tipo', auth.logado, (req, res) => {
 
@@ -127,17 +128,19 @@ app.get('/editar_perfil/:tipo', auth.logado, (req, res) => {
     if (tipo === 'voleibolJogador') {
         return user_voleibol_jogadorController.pagEditar(req, res);
     }
-
-    return res.status(404).send('Perfil não encontrado');
 });
 
-app.post('/atualiza_perfil_boxe', auth.logado, user_boxeController.SalvarPerfilBoxe);
+app.post('/cria_perfil_boxe', auth.logado, user_boxeController.SalvarPerfilBoxe);
+app.post('/editar_perfil/boxe', auth.logado, user_boxeController.atualizarPerfilBoxe);
 
-app.post('/atualiza_perfil_corrida', auth.logado, user_corridaController.SalvarPerfilCorrida);
+app.post('/cria_perfil_corrida', auth.logado, user_corridaController.SalvarPerfilCorrida);
+app.post('/editar_perfil/corrida', auth.logado, user_corridaController.atualizarPerfilCorrida);
 
-app.post('/atualiza_perfil_voleibolTreinador', auth.logado, user_voleibol_treinadorController.SalvarPerfilTreinador);
+app.post('/cria_perfil_voleibolTreinador', auth.logado, user_voleibol_treinadorController.SalvarPerfilTreinador);
+app.post('/editar_perfil/voleibolTreinador', auth.logado, user_voleibol_treinadorController.atualizarPerfilTreinador);
 
-app.post('/atualiza_perfil_voleibolJogador', auth.logado, user_voleibol_jogadorController.SalvarPerfilJogador);
+app.post('/cria_perfil_voleibolJogador', auth.logado, user_voleibol_jogadorController.SalvarPerfilJogador);
+app.post('/editar_perfil/voleibolJogador', auth.logado, user_voleibol_jogadorController.atualizarPerfilJogador);
 
 app.get('/campeonato', campeonatoController.pagCampeonatos);
 app.get('/filtrarCampeonatos', campeonatoController.filtrarCampeonatos);
