@@ -163,6 +163,10 @@ app.get('/notificacao', auth.logado, notificacaoController.pagNotificacao);
 app.get('/chat/:id_destinatario', auth.logado, chatController.chatConversa);
 app.get('/chat', auth.logado, chatController.pagChat);
 
+app.get('/postagens/:esporte', auth.logado, postagemController.pagPostagens);
+app.get('/criarPostagem/:esporte', auth.logado, postagemController.pagCriarPostagem);
+app.post('/criarPostagem', auth.logado, postagemController.criarPostagem);
+
 
 server.listen(3000, () => {
 
