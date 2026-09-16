@@ -18,16 +18,20 @@ const Postagem = database.define('postagem', {
         type: Sequelize.TIME,
         allowNull: false,
     },
+    imagem: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
     id_usuario: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                references: {
-                    model: 'usuarios',
-                    key: 'id'
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE'
-            },
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'usuarios',
+            key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+    },
 },
 )
 module.exports = Postagem;
