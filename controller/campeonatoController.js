@@ -23,17 +23,17 @@ module.exports = {
         const perfis = res.locals.perfis;
 
 
-        if(perfis.voleibolTreinador || perfis.voleibolJogador){
+        if (perfis.voleibolTreinador || perfis.voleibolJogador) {
             modalidade = "Voleibol"
         }
-         if(perfis.boxe){
+        if (perfis.boxe) {
             modalidade = "Boxe"
         }
-         if(perfis.corrida){
+        if (perfis.corrida) {
             modalidade = "Corrida"
         }
 
-        res.render('campeonato/criarCampeonato',{ dadosUsuario: usuario, modalidade });
+        res.render('campeonato/criarCampeonato', { dadosUsuario: usuario, modalidade });
     },
 
     infoCampeonato: async function (req, res) {
@@ -52,6 +52,20 @@ module.exports = {
         var formidable = require('formidable');
         var form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
+            const extensoesPermitidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+            const extencao = path.extname(files.imagem[0].originalFilename).toLowerCase();
+
+            const tiposPermitidos = [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/webp'
+            ];
+
+            if (!extensoesPermitidas.includes(extencao) || !tiposPermitidos.includes(files.imagem[0].mimetype)) {
+                mensagem(req, 'erro', 'Envie apenas arquivos de imagem válidos!');
+                return res.redirect('/cadastroCampeonato');
+            }
             var oldpath = files.imagem[0].filepath;
             var hash = crypto.createHash('md5').update(Date.now().toString()).digest('hex');
             var ext = path.extname(files.imagem[0].originalFilename)

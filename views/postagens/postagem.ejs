@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('../head'); %>
+</head>
+
+<body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
+
+    <header>
+        <%- include('../menu'); %>
+    </header>
+
+    <main class="flex-1 flex justify-center items-start pt-10 font-serif p-6">
+
+        <div class="w-full max-w-3xl flex flex-col gap-6">
+
+            <!-- BOTÃO VOLTAR -->
+            <div>
+                <a href="/postagens/<%= postagem.esporte %>"
+                    class="inline-flex items-center bg-[#1a83b8] text-[#f4edd7]
+                    font-sans font-semibold px-4 py-2 rounded-lg
+                    border-2 border-black cursor-pointer
+                    shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                    hover:bg-[#126d9b]
+                    hover:shadow-none
+                    hover:translate-y-[2px]
+                    hover:translate-x-[2px]">
+
+                    ← Voltar para postagens
+
+                </a>
+            </div>
+
+            <!-- POSTAGEM -->
+            <div class="bg-[#1a83b8] rounded-xl p-8 shadow-lg">
+
+                <!-- Informações do usuário -->
+                <div class="flex items-center gap-4 mb-6">
+
+                    <div class="size-14 rounded-full bg-[#f4edd7]
+                        border-2 border-black overflow-hidden flex-shrink-0">
+                        <a href="/verPerfil/<%= postagem.userPostagem.id %>">
+                            <img src="/imagens/<%= postagem.userPostagem.avatar %>" class="w-full h-full object-cover"
+                                alt="Avatar do usuário">
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col">
+
+                        <h2 class="text-[#f4edd7] text-xl font-semibold">
+                            <%= postagem.userPostagem.nome %>
+                        </h2>
+                    </div>
+
+                </div>
+
+                <!-- Mensagem -->
+                <div class="mb-6">
+
+                    <p class="text-[#f4edd7] text-xl leading-relaxed whitespace-pre-wrap">
+                        <%= postagem.mensagem %>
+                    </p>
+
+                </div>
+
+                <!-- Imagem opcional -->
+                <% if (postagem.imagem) { %>
+
+                    <div class="w-full flex justify-center mb-6">
+
+                        <img src="/imagens/<%= postagem.imagem %>" class="max-h-[500px] max-w-full object-contain
+                            rounded-lg border-2 border-black">
+
+                    </div>
+
+                    <% } %>
+
+                        <!-- Esporte e data -->
+                        <div class="flex flex-wrap justify-between items-center
+                    gap-3 text-[#f4edd7] text-sm border-t
+                    border-[#f4edd7]/40 pt-4">
+
+                            <span class="capitalize">
+                                Esporte: <%= postagem.esporte %>
+                            </span>
+
+                            <span>
+                                Criado em:
+                                <%= postagem.creat_at %>
+                            </span>
+
+                        </div>
+
+            </div>
+
+
+            <!-- ÁREA DE COMENTÁRIOS -->
+            <div class="bg-[#1a83b8] rounded-xl p-8 shadow-lg">
+
+                <div class="flex justify-between items-center mb-5">
+
+                    <h2 class="text-[#f4edd7] text-2xl font-semibold">
+                        Comentários
+                    </h2>
+
+                    <button type="button" id="btnComentar" class="bg-[#c24e54] text-white font-sans
+                        font-semibold px-4 py-2 border-2 border-black
+                        rounded-lg cursor-pointer
+                        shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                        hover:bg-[#a63f44]
+                        hover:shadow-none
+                        hover:translate-y-[2px]
+                        hover:translate-x-[2px]">
+
+                        Comentar
+
+                    </button>
+
+                </div>
+
+
+                <!-- FORMULÁRIO ESCONDIDO -->
+                <div id="areaComentario" class="hidden">
+
+                    <form action="/criarComentario/<%= postagem.id %>" method="POST" class="flex flex-col gap-4">
+
+
+                        <textarea name="comentario" rows="4" required placeholder="Escreva seu comentário..." class="w-full bg-[#f4edd7] text-black
+                            rounded-lg px-4 py-3 resize-none
+                            focus:outline-none shadow-sm"></textarea>
+
+                        <div class="flex justify-end gap-3">
+
+                            <button type="button" id="btnCancelar" class="bg-[#f4edd7] text-black
+                                font-sans font-semibold px-4 py-2
+                                rounded-lg border-2 border-black
+                                cursor-pointer hover:bg-[#e5dcc1]">
+
+                                Cancelar
+
+                            </button>
+
+                            <button type="submit" class="bg-[#c24e54] text-white
+                                font-sans font-semibold px-5 py-2
+                                rounded-lg border-2 border-black
+                                cursor-pointer
+                                shadow-[2px_2px_0px_rgba(0,0,0,1)]
+                                hover:bg-[#a63f44]
+                                hover:shadow-none
+                                hover:translate-y-[2px]
+                                hover:translate-x-[2px]">
+
+                                Enviar
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- LISTA DE COMENTÁRIOS -->
+                <div class="mt-6 flex flex-col gap-4">
+
+                    <% if (postagem.comentarios && postagem.comentarios.length> 0) { %>
+
+                        <% postagem.comentarios.forEach(comentario=> { %>
+
+                            <div class="bg-[#f4edd7] text-black rounded-lg p-4">
+
+                                <div class="flex items-center gap-3 mb-2">
+                                    <a href="/verPerfil/<%= comentario.userPostagemComentario.id %>">
+                                    <img src="/imagens/<%= comentario.userPostagemComentario.avatar %>"
+                                        class="size-10 object-cover rounded-full border-2 border-black">
+                                    </a>
+                                    <div class="flex flex-col">
+
+                                        <span class="font-semibold">
+                                            <%= comentario.userPostagemComentario.nome %>
+                                        </span>
+
+                                        <span class="text-sm text-gray-600">
+                                            <%= comentario.creat_at %>
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <p class="text-base">
+                                    <%= comentario.comentario %>
+                                </p>
+
+                            </div>
+
+                            <% }) %>
+
+                                <% } else { %>
+
+                                    <p class="text-[#f4edd7] text-center py-4">
+                                        Ainda não há comentários.
+                                        Seja o primeiro a comentar!
+                                    </p>
+
+                                    <% } %>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <%- include('../mensagens') %>
+
+
+        <!-- SCRIPT DO BOTÃO COMENTAR -->
+        <script>
+
+            const btnComentar = document.getElementById('btnComentar');
+
+            const areaComentario = document.getElementById('areaComentario');
+
+            const btnCancelar = document.getElementById('btnCancelar');
+
+
+            btnComentar.addEventListener('click', () => {
+
+                areaComentario.classList.toggle('hidden');
+
+                if (!areaComentario.classList.contains('hidden')) {
+
+                    btnComentar.textContent = 'Fechar';
+
+                } else {
+
+                    btnComentar.textContent = 'Comentar';
+
+                }
+
+            });
+
+
+            btnCancelar.addEventListener('click', () => {
+
+                areaComentario.classList.add('hidden');
+
+                btnComentar.textContent = 'Comentar';
+
+            });
+
+        </script>
+
+</body>
+
+</html>

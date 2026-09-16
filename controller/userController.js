@@ -75,6 +75,20 @@ module.exports = {
                 }
             }).then(result => {
                 if (result.length == 0) {
+                    const extensoesPermitidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+                    const extencao = path.extname(files.avatar[0].originalFilename).toLowerCase();
+
+                    const tiposPermitidos = [
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/webp'
+                    ];
+
+                    if (!extensoesPermitidas.includes(extencao) || !tiposPermitidos.includes(files.avatar[0].mimetype)) {
+                        mensagem(req, 'erro', 'Envie apenas arquivos de imagem válidos!');
+                        return res.redirect('/cadastro');
+                    }
                     var oldpath = files.avatar[0].filepath;
                     var hash = crypto.createHash('md5').update(Date.now().toString()).digest('hex');
                     var ext = path.extname(files.avatar[0].originalFilename);
@@ -178,6 +192,20 @@ module.exports = {
                 console.log("ERRO FORMDIABLE:", err);
                 return;
             } if (files.avatar && files.avatar[0].size > 0) {
+                const extensoesPermitidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+                const extencao = path.extname(files.avatar[0].originalFilename).toLowerCase();
+
+                const tiposPermitidos = [
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'image/webp'
+                ];
+
+                if (!extensoesPermitidas.includes(extencao) || !tiposPermitidos.includes(files.avatar[0].mimetype)) {
+                    mensagem(req, 'erro', 'Envie apenas arquivos de imagem válidos!');
+                    return res.redirect('/editar_usuario');
+                }
                 var oldpath = files.avatar[0].filepath;
                 var hash = crypto.createHash('md5').update(Date.now().toString()).digest('hex');
                 var ext = path.extname(files.avatar[0].originalFilename);

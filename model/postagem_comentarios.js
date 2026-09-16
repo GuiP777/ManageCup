@@ -6,7 +6,7 @@ const Postagem_Comentarios = database.define('postagem_comentarios', {
         autoIncrement: true,
         primaryKey: true
     },
-    resposta: {
+    comentario: {
         type: Sequelize.TEXT,
         allowNull: false,
     },

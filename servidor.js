@@ -165,7 +165,9 @@ app.get('/chat', auth.logado, chatController.pagChat);
 
 app.get('/postagens/:esporte', auth.logado, postagemController.pagPostagens);
 app.get('/criarPostagem/:esporte', auth.logado, postagemController.pagCriarPostagem);
-app.post('/criarPostagem', auth.logado, postagemController.criarPostagem);
+app.post('/criarPostagem/:esporte', auth.logado, postagemController.criarPostagem);
+app.get('/postagem/:id', auth.logado, postagemController.verPostagem);
+app.post('/criarComentario/:id', auth.logado, postagemController.criarComentario);
 
 
 server.listen(3000, () => {

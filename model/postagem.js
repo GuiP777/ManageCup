@@ -20,7 +20,7 @@ const Postagem = database.define('postagem', {
     },
     imagem: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     id_usuario: {
         type: Sequelize.INTEGER,
