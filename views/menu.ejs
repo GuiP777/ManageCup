@@ -1,19 +1,8 @@
-<%
-function isActive(...rotas) {
-
-    for(let i = 0; i < rotas.length; i++){
-
-        if(rotas[i] === '/' && rotaAtual === '/'){
-            return 'bg-[#1a83b8] text-[#f4edd7] px-4 py-1 rounded-lg';
-        }
-        if(rotas[i] !== '/' && rotaAtual.startsWith(rotas[i])){
-            return 'bg-[#1a83b8] text-[#f4edd7] px-4 py-1 rounded-lg';
-        }
-    }
-
-    return 'relative text-black after:block after:h-[2px] after:bg-black after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100 after:origin-left';
-}
-%>
+<% function isActive(...rotas) { for(let i=0; i < rotas.length; i++){ if(rotas[i]==='/' && rotaAtual==='/' ){
+    return 'bg-[#1a83b8] text-[#f4edd7] px-4 py-1 rounded-lg' ; } if(rotas[i] !=='/' && rotaAtual.startsWith(rotas[i])){
+    return 'bg-[#1a83b8] text-[#f4edd7] px-4 py-1 rounded-lg' ; } }
+    return 'relative text-black after:block after:h-[2px] after:bg-black after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100 after:origin-left'
+    ; } %>
     <nav class=" px-6 flex items-center justify-between mx-auto font-sans">
 
         <div class="flex items-center gap-2">
@@ -24,7 +13,8 @@ function isActive(...rotas) {
 
             <a href="/" class="<%= isActive('/') %> ">Início</a>
 
-            <a href="/campeonato" class="<%= isActive('/campeonato', '/infoCampeonato/', '/filtrarCampeonatos') %>">Campeonatos</a>
+            <a href="/campeonato"
+                class="<%= isActive('/campeonato', '/infoCampeonato/', '/filtrarCampeonatos') %>">Campeonatos</a>
 
             <% if (perfis.voleibolTreinador) { %>
                 <a href="/equipe" class="<%= isActive('/equipe') %>">Equipe</a>
@@ -94,7 +84,11 @@ function isActive(...rotas) {
                             Logout
                         </a>
                         <a href="/notificacao">
-                            <img src="/imagens/notificacao.png" class="w-5 h-5 cursor-pointer">
+                           <% if (temNotificacao) { %>
+                                <img src="/imagens/notificacaoBolinha.png" class="w-5 h-5 cursor-pointer">
+                            <% } else { %>
+                                <img id="iconeNotificacao" src="/imagens/notificacao.png" class="w-5 h-5 cursor-pointer">
+                            <% } %>
                         </a>
                         <% } else{%>
                             <a href="/cadastro" class="<%= isActive('/cadastro') %>">Cadastro</a>
@@ -112,3 +106,25 @@ function isActive(...rotas) {
         </div>
 
     </nav>
+    <div id="dados" data-usuario-id="<%= usuario_id %>" hidden>
+
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            const socket = io();
+
+            const dados = document.getElementById('dados');
+
+            const usuarioId = dados.dataset.usuarioId;
+
+            socket.emit('identificarUsuario', usuarioId);
+
+            socket.on('novaNotificacao', (temNotificacao) => {
+
+                if (temNotificacao === true) {
+                    document.getElementById('iconeNotificacao').src =
+                        '/imagens/notificacaoBolinha.png';
+                }
+
+            });
+        </script>

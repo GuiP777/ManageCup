@@ -13,6 +13,11 @@ module.exports = {
             }
         });
 
+        if (!treinador) {
+            mensagem(req, 'info', "Não foi possivel achar o Treinador");
+            res.redirect('/');
+        }
+
         let dados = await Equipes.findOne({
             raw: false,
             include: [

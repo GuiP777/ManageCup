@@ -16,11 +16,18 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server);
 
+app.set('io', io);
+
 io.on('connection', (socket) => {
 
     socket.on('identificarUsuario', (usuarioId) => {
 
+        console.log("Usuário identificado:", usuarioId);
+
         socket.join(`usuario_${usuarioId}`);
+
+        console.log("Entrou na sala:", `usuario_${usuarioId}`);
+
 
     });
 
@@ -61,7 +68,7 @@ io.on('connection', (socket) => {
     }
 })();
 
-const { Chat } = require("./model");
+const { Chat, User_Voleibol_Jogador, Convite, User_Voleibol_Treinador, Equipes } = require("./model");
 const auth = require("./middleware/auth");
 const userController = require("./controller/userController");
 const user_boxeController = require("./controller/user_boxeController");
@@ -91,6 +98,46 @@ app.use(async (req, res, next) => {
     res.locals.formatarDataMensagem = formatarDataMensagem;
     res.locals.mensagem = req.session.mensagem;
     delete req.session.mensagem;
+
+    if (req.session.usuario_id) {
+        const jogador = await User_Voleibol_Jogador.findOne({
+            where: { id_usuario: req.session.usuario_id }
+        });
+
+        const treinador = await User_Voleibol_Treinador.findOne({
+            where: { id_usuario: req.session.usuario_id }
+        });
+
+        const equipe = await Equipes.findOne({
+            where: { id_treinador: treinador ? treinador.id : null }
+        });
+
+        if (jogador) {
+            const convite = await Convite.findOne({
+                where: {
+                    id_jogador: jogador.id,
+                    status: 'pendente'
+                }
+            });
+            res.locals.temNotificacao = !!convite;
+
+        } else if (treinador && equipe) {
+            const convite = await Convite.findOne({
+                where: {
+                    id_equipe: equipe.id,
+                    status: 'recusado'
+                }
+            });
+            res.locals.temNotificacao = !!convite;
+
+        } else {
+            res.locals.temNotificacao = false;
+        }
+
+    } else {
+        res.locals.temNotificacao = false;
+    }
+
 
     next();
 });
