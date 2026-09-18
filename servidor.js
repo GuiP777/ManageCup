@@ -22,12 +22,7 @@ io.on('connection', (socket) => {
 
     socket.on('identificarUsuario', (usuarioId) => {
 
-        console.log("Usuário identificado:", usuarioId);
-
         socket.join(`usuario_${usuarioId}`);
-
-        console.log("Entrou na sala:", `usuario_${usuarioId}`);
-
 
     });
 
