@@ -1,348 +1,225 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
     <%- include('../head'); %>
-
 </head>
-
 <body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
-
     <header>
         <%- include('../menu'); %>
     </header>
-
     <main class="flex-1 p-6 md:p-10">
-
         <div class="max-w-7xl mx-auto">
-
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-
                 <div>
-
-                    <h1 class="font-serif text-4xl text-[#127fbf] tracking-wide">
-
-                        Chaveamento
-
-                    </h1>
-
-                    <p class="text-gray-600 mt-2">
-
+                    <h1 class="font-serif text-4xl text-[#127fbf] tracking-wide mb-4">
                         <%= campeonato.nome %>
-
-                    </p>
-
+                    </h1>
                 </div>
-
-
                 <a href="/campeonato" class="bg-[#f4edd7] text-[#127fbf] px-5 py-2 rounded-lg
                        hover:bg-[#fce597] transition">
-
                     Voltar
-
                 </a>
-
             </div>
-
             <div id="bracket" class="brackets-viewer bg-white/80 rounded-2xl shadow-md
                    border border-gray-100 p-4 md:p-6
-                   overflow-x-auto">
-
+                   overflow-x-auto scale-[1.15]">
             </div>
-
         </div>
-
     </main>
-
     <div id="modalOverlay" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm
            items-center justify-center p-4">
-
         <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl
                shadow-2xl p-6 md:p-8">
-
             <div class="flex items-start justify-between gap-4 mb-6">
                 <div>
                     <h2 id="modalTitulo" class="font-serif text-3xl text-[#127fbf]">
                         Partida
                     </h2>
-
                     <p id="modalSubtitulo" class="text-gray-500 mt-1">
-
                     </p>
-
                 </div>
-
-
                 <button id="fecharModal" type="button" class="text-gray-400 hover:text-gray-700
                        text-3xl leading-none transition">
-
                 </button>
-
             </div>
-
             <div id="modalConteudo"></div>
-
-
         </div>
-
     </div>
-
     <div id="bracketData" data-bracket="<%= JSON.stringify(bracketData) %>" hidden></div>
     <div id="campeonatoId" data-campeonato="<%= campeonato.id %>" hidden></div>
     <div id="esporte" data-esporte="<%= campeonato.esporte %>" hidden></div>
-
     <%- include('../mensagens') %>
+    <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
+    <script>
+        const campeonatoId = document.getElementById('campeonatoId').dataset.campeonato;
+        const esporte = document.getElementById('esporte').dataset.esporte;
+        const bracketData = JSON.parse(document.getElementById('bracketData').dataset.bracket);
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitulo = document.getElementById('modalTitulo');
+        const modalSubtitulo = document.getElementById('modalSubtitulo');
+        const modalConteudo = document.getElementById('modalConteudo');
+        const fecharModal = document.getElementById('fecharModal');
+        let partidaSelecionada = null;
 
-        <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
+        function pegarParticipante(id) {
+            return bracketData.participant.find(
+                participante =>
+                    participante.id === id
+            );
+        }
 
-        <script>
+        function nomeParticipante(id) {
+            if (id === null || id === undefined) {
+                return 'A definir';
+            }
+            const participante = pegarParticipante(id);
+            if (!participante) {
+                return 'A definir';
+            }
+            return participante.name;
+        }
 
+        function abrirModal(match) {
+            partidaSelecionada = match;
+            if (!match.opponent1 || !match.opponent2 ||
+                match.opponent1.id === null || match.opponent2.id === null) {
+                
+                return;
+            }
+            const nome1 = nomeParticipante(match.opponent1.id);
+            const nome2 = nomeParticipante(match.opponent2.id);
+            modalTitulo.textContent = `${nome1} x ${nome2}`;
+            modalSubtitulo.textContent = 'Registrar resultado';
 
-            const campeonatoId = document.getElementById('campeonatoId').dataset.campeonato;
-            const esporte = document.getElementById('esporte').dataset.esporte;
-            const bracketData = JSON.parse(document.getElementById('bracketData').dataset.bracket);
-
-            const modalOverlay = document.getElementById('modalOverlay');
-            const modalTitulo = document.getElementById('modalTitulo');
-            const modalSubtitulo = document.getElementById('modalSubtitulo');
-            const modalConteudo = document.getElementById('modalConteudo');
-            const fecharModal = document.getElementById('fecharModal');
-
-            let partidaSelecionada = null;
-
-            function pegarParticipante(id) {
-
-                return bracketData.participant.find(
-                    participante =>
-                        participante.id === id
+            if (esporte === 'voleibol') {
+                criarModalVolei(
+                    match,
+                    nome1,
+                    nome2
                 );
-
             }
-
-
-            function nomeParticipante(id) {
-
-                if (id === null || id === undefined) {
-                    return 'A definir';
-                }
-
-                const participante = pegarParticipante(id);
-
-                if (!participante) {
-                    return 'A definir';
-                }
-
-                return participante.name;
-
-            }
-
-            function abrirModal(match) {
-
-                partidaSelecionada = match;
-
-                if (!match.opponent1 || !match.opponent2 ||
-                    match.opponent1.id === null || match.opponent2.id === null) {
-
-                    alert('Esta partida ainda não possui os dois participantes');
-                    return;
-
-                }
-
-                const nome1 = nomeParticipante(match.opponent1.id);
-                const nome2 = nomeParticipante(match.opponent2.id);
-
-
-                modalTitulo.textContent =
-                    `${nome1} x ${nome2}`;
-
-
-                modalSubtitulo.textContent =
-                    'Registrar resultado';
-
-
-
-                if (esporte === 'voleibol') {
-
-                    criarModalVolei(
-                        match,
-                        nome1,
-                        nome2
-                    );
-
-                }
-
-                else if (esporte === 'boxe') {
-
-                    criarModalBoxe(
-                        match,
-                        nome1,
-                        nome2
-                    );
-
-                }
-
-                else if (esporte === 'corrida') {
-
-                    criarModalCorrida(
-                        match,
-                        nome1,
-                        nome2
-                    );
-
-                }
-
-
-                modalOverlay.classList.remove('hidden');
-                modalOverlay.classList.add('flex');
-
-            }
-
-            function criarModalVolei(match, nome1, nome2) {
-
-                const games =
-                    (bracketData.match_game || [])
-                        .filter(
-                            game =>
-                                game.parent_id === match.id
-                        )
-                        .sort(
-                            (a, b) =>
-                                a.number - b.number
-                        );
-
-
-                const setsConcluidos = games.filter(game =>
-                    game.opponent1?.result ||
-                    game.opponent2?.result
+            else if (esporte === 'boxe') {
+                criarModalBoxe(
+                    match,
+                    nome1,
+                    nome2
                 );
-                let vitorias1 = 0;
-                let vitorias2 = 0;
+            }
+            else if (esporte === 'corrida') {
+                criarModalCorrida(
+                    match,
+                    nome1,
+                    nome2
+                );
+            }
 
+            modalOverlay.classList.remove('hidden');
+            modalOverlay.classList.add('flex');
+        }
 
-                for (const game of setsConcluidos) {
-                    if (game.opponent1 && game.opponent1.result === 'win') {
-                        vitorias1++;
-                    }
+        function criarModalVolei(match, nome1, nome2) {
+            const games =
+                (bracketData.match_game || [])
+                    .filter(
+                        game =>
+                            game.parent_id === match.id
+                    )
+                    .sort(
+                        (a, b) =>
+                            a.number - b.number
+                    );
 
-                    if (game.opponent2 && game.opponent2.result === 'win') {
-                        vitorias2++;
-                    }
+            const setsConcluidos = games.filter(game =>
+                game.opponent1?.result ||
+                game.opponent2?.result
+            );
+            let vitorias1 = 0;
+            let vitorias2 = 0;
+
+            for (const game of setsConcluidos) {
+                if (game.opponent1 && game.opponent1.result === 'win') {
+                    vitorias1++;
                 }
+                if (game.opponent2 && game.opponent2.result === 'win') {
+                    vitorias2++;
+                }
+            }
 
-                let html = `
+            let html = `
                     <div
                         class="bg-[#e0fcff]
                             rounded-xl
                             p-5
                             mb-6
                             text-center">
-
                         <p class="text-gray-600 text-sm mb-1">
-
                             Placar da partida
-
                         </p>
-
                         <p class="font-serif text-4xl text-[#127fbf]">
-
                             ${vitorias1}
                             <span class="text-gray-400 mx-2">
                                 x
                             </span>
                             ${vitorias2}
-
                         </p>
-
                     </div>
-
                 `;
 
+            const partidaTerminou = vitorias1 >= 3 || vitorias2 >= 3;
 
-                const partidaTerminou = vitorias1 >= 3 || vitorias2 >= 3;
-
-
-                if (partidaTerminou) {
-
-                    html += `
-
+            if (partidaTerminou) {
+                html += `
                 <div
                     class="bg-[#f4edd7]
                            rounded-xl
                            p-6
                            text-center">
-
                     <p
                         class="font-serif text-2xl
                                text-[#127fbf]
                                mb-2">
-
                         Partida encerrada
-
                     </p>
-
                     <p class="text-gray-600">
-
                         ${vitorias1 > vitorias2
                             ? nome1
                             : nome2
                         }
                         venceu.
-
                     </p>
-
                 </div>
-
             `;
 
+                modalConteudo.innerHTML = html;
+                return;
+            }
 
-                    modalConteudo.innerHTML = html;
+            const numeroSet = setsConcluidos.length + 1;
 
-                    return;
-
-                }
-
-
-                const numeroSet = setsConcluidos.length + 1;
-
-                html += `
-
+            html += `
             <form
                 id="formResultado"
                 class="space-y-6">
-
-
                 <div>
-
                     <p
                         class="font-serif
                                text-2xl
                                text-[#127fbf]
                                mb-4">
-
                         Set ${numeroSet}
-
                     </p>
-
-
                     <div
                         class="grid
                                grid-cols-1
                                sm:grid-cols-2
                                gap-4">
-
-
                         <div>
-
                             <label
                                 class="block
                                        text-gray-700
                                        mb-2">
-
                                 ${nome1}
-
                             </label>
-
                             <input
                                 type="number"
                                 name="pontos1"
@@ -356,21 +233,14 @@
                                        outline-none
                                        focus:ring-2
                                        focus:ring-[#127fbf]">
-
                         </div>
-
-
                         <div>
-
                             <label
                                 class="block
                                        text-gray-700
                                        mb-2">
-
                                 ${nome2}
-
                             </label>
-
                             <input
                                 type="number"
                                 name="pontos2"
@@ -384,14 +254,9 @@
                                        outline-none
                                        focus:ring-2
                                        focus:ring-[#127fbf]">
-
                         </div>
-
                     </div>
-
                 </div>
-
-
                 <button
                     type="submit"
                     class="w-full
@@ -401,74 +266,51 @@
                            rounded-lg
                            hover:bg-[#106fa8]
                            transition">
-
                     Salvar set
-
                 </button>
-
             </form>
-
         `;
 
+            modalConteudo.innerHTML = html;
+            document.getElementById('formResultado').addEventListener('submit', enviarResultadoVolei);
+        }
 
-                modalConteudo.innerHTML = html;
-                document.getElementById('formResultado').addEventListener('submit', enviarResultadoVolei);
+        async function enviarResultadoVolei(event) {
+            event.preventDefault();
+            const form = event.target;
+            const dados = new FormData(form);
+            const games =
+                (bracketData.match_game || [])
+                    .filter(
+                        game =>
+                            game.parent_id ===
+                            partidaSelecionada.id
+                    );
+            const setsConcluidos = games.filter(game =>
+                game.opponent1?.result ||
+                game.opponent2?.result
+            );
+            const numeroSet = setsConcluidos.length + 1;
+            dados.append('numeroSet', numeroSet);
+            await enviarResultado(dados);
+        }
 
-            }
-
-            async function enviarResultadoVolei(event) {
-
-                event.preventDefault();
-
-                const form = event.target;
-                const dados = new FormData(form);
-
-                const games =
-                    (bracketData.match_game || [])
-                        .filter(
-                            game =>
-                                game.parent_id ===
-                                partidaSelecionada.id
-                        );
-
-
-                const setsConcluidos = games.filter(game =>
-                    game.opponent1?.result ||
-                    game.opponent2?.result
-                );
-
-                const numeroSet = setsConcluidos.length + 1;
-
-                dados.append('numeroSet', numeroSet);
-
-                await enviarResultado(dados);
-            }
-
-            function criarModalBoxe(
-                match,
-                nome1,
-                nome2
-            ) {
-
-                let html = `
-
+        function criarModalBoxe(
+            match,
+            nome1,
+            nome2
+        ) {
+            let html = `
             <form
                 id="formResultado"
                 class="space-y-6">
-
-
                 <div>
-
                     <label
                         class="block
                                text-gray-700
                                mb-2">
-
                         Tipo de resultado
-
                     </label>
-
-
                     <select
                         id="tipoResultado"
                         name="tipoResultado"
@@ -480,77 +322,50 @@
                                outline-none
                                focus:ring-2
                                focus:ring-[#127fbf]">
-
                         <option value="decisao">
                             Decisão
                         </option>
-
                         <option value="ko">
                             KO
                         </option>
-
                     </select>
-
                 </div>
-
-
-
                 <div id="areaDecisao">
-
                     <p
                         class="font-serif
                                text-2xl
                                text-[#127fbf]
                                mb-4">
-
                         Pontuação dos rounds
-
                     </p>
-
         `;
 
-
-                for (let i = 1; i <= 3; i++) {
-
-                    html += `
-
+            for (let i = 1; i <= 3; i++) {
+                html += `
                 <div
                     class="bg-gray-50
                            rounded-xl
                            p-4
                            mb-4">
-
-
                     <p
                         class="font-semibold
                                text-gray-700
                                mb-3">
-
                         Round ${i}
-
                     </p>
-
-
                     <div
                         class="grid
                                grid-cols-1
                                sm:grid-cols-2
                                gap-4">
-
-
                         <div>
-
                             <label
                                 class="block
                                        text-sm
                                        text-gray-600
                                        mb-1">
-
                                 ${nome1}
-
                             </label>
-
-
                             <input
                                 type="number"
                                 name="round${i}_pontos1"
@@ -565,23 +380,15 @@
                                        outline-none
                                        focus:ring-2
                                        focus:ring-[#127fbf]">
-
                         </div>
-
-
                         <div>
-
                             <label
                                 class="block
                                        text-sm
                                        text-gray-600
                                        mb-1">
-
                                 ${nome2}
-
                             </label>
-
-
                             <input
                                 type="number"
                                 name="round${i}_pontos2"
@@ -596,41 +403,24 @@
                                        outline-none
                                        focus:ring-2
                                        focus:ring-[#127fbf]">
-
                         </div>
-
                     </div>
-
                 </div>
-
             `;
+            }
 
-                }
-
-
-                html += `
-
+            html += `
                 </div>
-
-
-
                 <div
                     id="areaKo"
                     class="hidden space-y-5">
-
-
                     <div>
-
                         <label
                             class="block
                                    text-gray-700
                                    mb-2">
-
                             Round do KO
-
                         </label>
-
-
                         <select
                             name="roundFinal"
                             class="w-full
@@ -641,37 +431,24 @@
                                    outline-none
                                    focus:ring-2
                                    focus:ring-[#127fbf]">
-
                             <option value="1">
                                 Round 1
                             </option>
-
                             <option value="2">
                                 Round 2
                             </option>
-
                             <option value="3">
                                 Round 3
                             </option>
-
                         </select>
-
                     </div>
-
-
-
                     <div>
-
                         <label
                             class="block
                                    text-gray-700
                                    mb-2">
-
                             Vencedor
-
                         </label>
-
-
                         <select
                             name="vencedor"
                             class="w-full
@@ -682,24 +459,15 @@
                                    outline-none
                                    focus:ring-2
                                    focus:ring-[#127fbf]">
-
                             <option value="1">
                                 ${nome1}
                             </option>
-
                             <option value="2">
                                 ${nome2}
                             </option>
-
                         </select>
-
                     </div>
-
-
                 </div>
-
-
-
                 <button
                     type="submit"
                     class="w-full
@@ -709,102 +477,70 @@
                            rounded-lg
                            hover:bg-[#106fa8]
                            transition">
-
                     Salvar resultado
-
                 </button>
-
-
             </form>
-
         `;
 
+            modalConteudo.innerHTML = html;
+            const tipoResultado = document.getElementById('tipoResultado');
+            const areaDecisao = document.getElementById('areaDecisao');
+            const areaKo = document.getElementById('areaKo');
 
-                modalConteudo.innerHTML = html;
-
-                const tipoResultado = document.getElementById('tipoResultado');
-                const areaDecisao = document.getElementById('areaDecisao');
-                const areaKo = document.getElementById('areaKo');
-
-                function atualizarTipo() {
-
-                    if (tipoResultado.value === 'decisao') {
-                        areaDecisao.classList.remove('hidden');
-                        areaKo.classList.add('hidden');
-                    }
-                    else {
-                        areaDecisao.classList.add('hidden');
-                        areaKo.classList.remove('hidden');
-                    }
+            function atualizarTipo() {
+                if (tipoResultado.value === 'decisao') {
+                    areaDecisao.classList.remove('hidden');
+                    areaKo.classList.add('hidden');
                 }
-
-                tipoResultado.addEventListener('change', atualizarTipo);
-                document.getElementById('formResultado').addEventListener('submit', enviarResultadoBoxe);
+                else {
+                    areaDecisao.classList.add('hidden');
+                    areaKo.classList.remove('hidden');
+                }
             }
 
-            async function enviarResultadoBoxe(event) {
+            tipoResultado.addEventListener('change', atualizarTipo);
+            document.getElementById('formResultado').addEventListener('submit', enviarResultadoBoxe);
+        }
 
-                event.preventDefault();
+        async function enviarResultadoBoxe(event) {
+            event.preventDefault();
+            const form = event.target;
+            const dados = new FormData(form);
+            await enviarResultado(dados);
+        }
 
-                const form = event.target;
-                const dados = new FormData(form);
-
-                await enviarResultado(dados);
-            }
-
-            function criarModalCorrida(match, nome1, nome2) {
-
-                const html = `
-
+        function criarModalCorrida(match, nome1, nome2) {
+            const html = `
             <form
                 id="formResultado"
                 class="space-y-6">
-
-
                 <div
                     class="bg-[#e0fcff]
                            rounded-xl
                            p-5">
-
                     <p
                         class="text-gray-700
                                mb-1">
-
                         Informe o tempo de chegada
-
                     </p>
-
                     <p
                         class="text-sm
                                text-gray-500">
-
                         Exemplo: 10.520 segundos
-
                     </p>
-
                 </div>
-
-
-
                 <div
                     class="grid
                            grid-cols-1
                            sm:grid-cols-2
                            gap-4">
-
-
                     <div>
-
                         <label
                             class="block
                                    text-gray-700
                                    mb-2">
-
                             ${nome1}
-
                         </label>
-
-
                         <input
                             type="number"
                             name="tempo1"
@@ -819,23 +555,14 @@
                                    outline-none
                                    focus:ring-2
                                    focus:ring-[#127fbf]">
-
                     </div>
-
-
-
                     <div>
-
                         <label
                             class="block
                                    text-gray-700
                                    mb-2">
-
                             ${nome2}
-
                         </label>
-
-
                         <input
                             type="number"
                             name="tempo2"
@@ -850,13 +577,8 @@
                                    outline-none
                                    focus:ring-2
                                    focus:ring-[#127fbf]">
-
                     </div>
-
                 </div>
-
-
-
                 <button
                     type="submit"
                     class="w-full
@@ -866,96 +588,73 @@
                            rounded-lg
                            hover:bg-[#106fa8]
                            transition">
-
                     Salvar resultado
-
                 </button>
-
-
             </form>
-
         `;
 
+            modalConteudo.innerHTML = html;
+            document.getElementById('formResultado').addEventListener('submit', enviarResultadoCorrida);
+        }
 
-                modalConteudo.innerHTML = html;
+        async function enviarResultadoCorrida(event) {
+            event.preventDefault();
+            const form = event.target;
+            const dados = new FormData(form);
+            await enviarResultado(dados);
+        }
 
-                document.getElementById('formResultado').addEventListener('submit', enviarResultadoCorrida);
-            }
-
-            async function enviarResultadoCorrida(event) {
-
-                event.preventDefault();
-
-                const form = event.target;
-                const dados = new FormData(form);
-
-                await enviarResultado(dados);
-            }
-
-            async function enviarResultado(dados) {
-
-                try {
-
-                    const resposta = await fetch(
-                        `/campeonato/${campeonatoId}/chaveamento/${partidaSelecionada.id}/resultado`,
-                        {
-                            method: 'POST',
-                            body: new URLSearchParams(dados)
-                        }
-                    );
-
-                    const texto = await resposta.text();
-                    const resultado = JSON.parse(texto);
-
-                    if (!resposta.ok) {
-                        window.location.reload();
-                        return;
+        async function enviarResultado(dados) {
+            try {
+                const resposta = await fetch(
+                    `/campeonato/${campeonatoId}/chaveamento/${partidaSelecionada.id}/resultado`,
+                    {
+                        method: 'POST',
+                        body: new URLSearchParams(dados)
                     }
-
+                );
+                const texto = await resposta.text();
+                const resultado = JSON.parse(texto);
+                if (!resposta.ok) {
                     window.location.reload();
-
-                } catch (erro) {
-                    console.error(erro);
+                    return;
                 }
-
+                window.location.reload();
+            } catch (erro) {
+                console.error(erro);
             }
+        }
 
-            function fechar() {
+        function fechar() {
+            modalOverlay.classList.remove('flex');
+            modalOverlay.classList.add('hidden');
+        }
 
-                modalOverlay.classList.remove('flex');
-                modalOverlay.classList.add('hidden');
-
+        fecharModal.addEventListener('click', fechar);
+        modalOverlay.addEventListener('click', (event) => {
+            if (
+                event.target === modalOverlay
+            ) {
+                fechar();
             }
+        });
 
-            fecharModal.addEventListener('click', fechar);
-            modalOverlay.addEventListener('click', (event) => {
-                if (
-                    event.target === modalOverlay
-                ) {
-                    fechar();
-                }
+        window.bracketsViewer.render(
+            {
+                stages: bracketData.stage,
+                matches: bracketData.match,
+                matchGames: bracketData.match_game,
+                participants: bracketData.participant
+            },
+            {
+                selector: '#bracket',
+                clear: true,
+                participantOriginPlacement: 'before',
+                separatedChildCountLabel: true,
+                highlightParticipantOnHover: true,
+                onMatchClick: abrirModal
             }
-            );
-
-            window.bracketsViewer.render(
-                {
-                    stages: bracketData.stage,
-                    matches: bracketData.match,
-                    matchGames: bracketData.match_game,
-                    participants: bracketData.participant
-                },
-                {
-                    selector: '#bracket',
-                    clear: true,
-                    participantOriginPlacement: 'before',
-                    separatedChildCountLabel: true,
-                    highlightParticipantOnHover: true,
-                    onMatchClick: abrirModal
-                }
-            );
-
-
-        </script>
+        );
+    </script>
 </body>
-
 </html>
