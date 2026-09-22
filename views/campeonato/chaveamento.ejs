@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <%- include('../head'); %>
 </head>
+<style>
+    .brackets-viewer .match {
+        transform: scale(1.05);
+    }
+</style>
+
 <body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
     <header>
         <%- include('../menu'); %>
@@ -15,32 +22,30 @@
                         <%= campeonato.nome %>
                     </h1>
                 </div>
-                <a href="/campeonato" class="bg-[#f4edd7] text-[#127fbf] px-5 py-2 rounded-lg
-                       hover:bg-[#fce597] transition">
+                <a href="/campeonato"
+                    class="bg-[#f4edd7] text-[#127fbf] px-5 py-2 rounded-lg hover:bg-[#fce597] transition">
                     Voltar
                 </a>
             </div>
-            <div id="bracket" class="brackets-viewer bg-white/80 rounded-2xl shadow-md
-                   border border-gray-100 p-4 md:p-6
-                   overflow-x-auto scale-[1.15]">
+            <div
+                class="bg-white/80 rounded-2xl shadow-md border border-gray-100 p-4 md:p-6 w-[90vw] max-w-none mx-auto overflow-hidden">
+                <div id="bracket" class="brackets-viewer w-full"></div>
+                <div id="corrida" class="hidden w-full"></div>
             </div>
         </div>
     </main>
-    <div id="modalOverlay" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm
-           items-center justify-center p-4">
-        <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl
-               shadow-2xl p-6 md:p-8">
+    <div id="modalOverlay"
+        class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm items-center justify-center p-4">
+        <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
             <div class="flex items-start justify-between gap-4 mb-6">
                 <div>
                     <h2 id="modalTitulo" class="font-serif text-3xl text-[#127fbf]">
                         Partida
                     </h2>
-                    <p id="modalSubtitulo" class="text-gray-500 mt-1">
-                    </p>
+                    <p id="modalSubtitulo" class="text-gray-500 mt-1"></p>
                 </div>
-                <button id="fecharModal" type="button" class="text-gray-400 hover:text-gray-700
-                       text-3xl leading-none transition">
-                </button>
+                <button id="fecharModal" type="button"
+                    class="text-gray-400 hover:text-gray-700 text-3xl leading-none transition"></button>
             </div>
             <div id="modalConteudo"></div>
         </div>
@@ -49,612 +54,785 @@
     <div id="campeonatoId" data-campeonato="<%= campeonato.id %>" hidden></div>
     <div id="esporte" data-esporte="<%= campeonato.esporte %>" hidden></div>
     <%- include('../mensagens') %>
-    <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
-    <script>
-        const campeonatoId = document.getElementById('campeonatoId').dataset.campeonato;
-        const esporte = document.getElementById('esporte').dataset.esporte;
-        const bracketData = JSON.parse(document.getElementById('bracketData').dataset.bracket);
-        const modalOverlay = document.getElementById('modalOverlay');
-        const modalTitulo = document.getElementById('modalTitulo');
-        const modalSubtitulo = document.getElementById('modalSubtitulo');
-        const modalConteudo = document.getElementById('modalConteudo');
-        const fecharModal = document.getElementById('fecharModal');
-        let partidaSelecionada = null;
+        <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
+        <script>
+            const campeonatoId = document.getElementById('campeonatoId').dataset.campeonato;
+            const esporte = document.getElementById('esporte').dataset.esporte;
+            const bracketData = JSON.parse(document.getElementById('bracketData').dataset.bracket);
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalTitulo = document.getElementById('modalTitulo');
+            const modalSubtitulo = document.getElementById('modalSubtitulo');
+            const modalConteudo = document.getElementById('modalConteudo');
+            const fecharModal = document.getElementById('fecharModal');
+            let partidaSelecionada = null;
 
-        function pegarParticipante(id) {
-            return bracketData.participant.find(
-                participante =>
-                    participante.id === id
-            );
-        }
-
-        function nomeParticipante(id) {
-            if (id === null || id === undefined) {
-                return 'A definir';
-            }
-            const participante = pegarParticipante(id);
-            if (!participante) {
-                return 'A definir';
-            }
-            return participante.name;
-        }
-
-        function abrirModal(match) {
-            partidaSelecionada = match;
-            if (!match.opponent1 || !match.opponent2 ||
-                match.opponent1.id === null || match.opponent2.id === null) {
-                
-                return;
-            }
-            const nome1 = nomeParticipante(match.opponent1.id);
-            const nome2 = nomeParticipante(match.opponent2.id);
-            modalTitulo.textContent = `${nome1} x ${nome2}`;
-            modalSubtitulo.textContent = 'Registrar resultado';
-
-            if (esporte === 'voleibol') {
-                criarModalVolei(
-                    match,
-                    nome1,
-                    nome2
-                );
-            }
-            else if (esporte === 'boxe') {
-                criarModalBoxe(
-                    match,
-                    nome1,
-                    nome2
-                );
-            }
-            else if (esporte === 'corrida') {
-                criarModalCorrida(
-                    match,
-                    nome1,
-                    nome2
+            function pegarParticipante(id) {
+                return bracketData.participant.find(
+                    participante => participante.id === id
                 );
             }
 
-            modalOverlay.classList.remove('hidden');
-            modalOverlay.classList.add('flex');
-        }
+            function nomeParticipante(id) {
+                if (id === null || id === undefined) {
+                    return 'A definir';
+                }
 
-        function criarModalVolei(match, nome1, nome2) {
-            const games =
-                (bracketData.match_game || [])
-                    .filter(
-                        game =>
-                            game.parent_id === match.id
-                    )
-                    .sort(
-                        (a, b) =>
-                            a.number - b.number
+                const participante = pegarParticipante(id);
+
+                if (!participante) {
+                    return 'A definir';
+                }
+
+                return participante.name;
+            }
+
+            function abrirModal(match) {
+                if (esporte === 'corrida') {
+                    return;
+                }
+
+                partidaSelecionada = match;
+
+                if (!match.opponent1 || !match.opponent2 ||
+                    match.opponent1.id === null || match.opponent2.id === null) {
+                    return;
+                }
+
+                const nome1 = nomeParticipante(match.opponent1.id);
+                const nome2 = nomeParticipante(match.opponent2.id);
+
+                modalTitulo.textContent = `${nome1} x ${nome2}`;
+                modalSubtitulo.textContent = 'Registrar resultado';
+
+                if (esporte === 'voleibol') {
+                    criarModalVolei(
+                        match,
+                        nome1,
+                        nome2
                     );
-
-            const setsConcluidos = games.filter(game =>
-                game.opponent1?.result ||
-                game.opponent2?.result
-            );
-            let vitorias1 = 0;
-            let vitorias2 = 0;
-
-            for (const game of setsConcluidos) {
-                if (game.opponent1 && game.opponent1.result === 'win') {
-                    vitorias1++;
                 }
-                if (game.opponent2 && game.opponent2.result === 'win') {
-                    vitorias2++;
+                else if (esporte === 'boxe') {
+                    criarModalBoxe(
+                        match,
+                        nome1,
+                        nome2
+                    );
                 }
+
+                modalOverlay.classList.remove('hidden');
+                modalOverlay.classList.add('flex');
             }
 
-            let html = `
-                    <div
-                        class="bg-[#e0fcff]
-                            rounded-xl
-                            p-5
-                            mb-6
-                            text-center">
-                        <p class="text-gray-600 text-sm mb-1">
-                            Placar da partida
+            function criarModalVolei(match, nome1, nome2) {
+                const games =
+                    (bracketData.match_game || [])
+                        .filter(
+                            game =>
+                                game.parent_id === match.id
+                        )
+                        .sort(
+                            (a, b) =>
+                                a.number - b.number
+                        );
+
+                const setsConcluidos = games.filter(game =>
+                    game.opponent1?.result ||
+                    game.opponent2?.result
+                );
+
+                let vitorias1 = 0;
+                let vitorias2 = 0;
+
+                for (const game of setsConcluidos) {
+                    if (game.opponent1 && game.opponent1.result === 'win') {
+                        vitorias1++;
+                    }
+
+                    if (game.opponent2 && game.opponent2.result === 'win') {
+                        vitorias2++;
+                    }
+                }
+
+                let html = `
+                <div class="bg-[#e0fcff] rounded-xl p-5 mb-6 text-center">
+                    <p class="text-gray-600 text-sm mb-1">
+                        Placar da partida
+                    </p>
+                    <p class="font-serif text-4xl text-[#127fbf]">
+                        ${vitorias1}
+                        <span class="text-gray-400 mx-2">
+                            x
+                        </span>
+                        ${vitorias2}
+                    </p>
+                </div>
+            `;
+
+                const partidaTerminou = vitorias1 >= 3 || vitorias2 >= 3;
+
+                if (partidaTerminou) {
+                    html += `
+                    <div class="bg-[#f4edd7] rounded-xl p-6 text-center">
+                        <p class="font-serif text-2xl text-[#127fbf] mb-2">
+                            Partida encerrada
                         </p>
-                        <p class="font-serif text-4xl text-[#127fbf]">
-                            ${vitorias1}
-                            <span class="text-gray-400 mx-2">
-                                x
-                            </span>
-                            ${vitorias2}
+                        <p class="text-gray-600">
+                            ${vitorias1 > vitorias2 ? nome1 : nome2}
+                            venceu.
                         </p>
                     </div>
                 `;
 
-            const partidaTerminou = vitorias1 >= 3 || vitorias2 >= 3;
+                    modalConteudo.innerHTML = html;
+                    return;
+                }
 
-            if (partidaTerminou) {
+                const numeroSet = setsConcluidos.length + 1;
+
                 html += `
-                <div
-                    class="bg-[#f4edd7]
-                           rounded-xl
-                           p-6
-                           text-center">
-                    <p
-                        class="font-serif text-2xl
-                               text-[#127fbf]
-                               mb-2">
-                        Partida encerrada
-                    </p>
-                    <p class="text-gray-600">
-                        ${vitorias1 > vitorias2
-                            ? nome1
-                            : nome2
-                        }
-                        venceu.
-                    </p>
-                </div>
+                <form id="formResultado" class="space-y-6">
+                    <div>
+                        <p class="font-serif text-2xl text-[#127fbf] mb-4">
+                            Set ${numeroSet}
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 mb-2">
+                                    ${nome1}
+                                </label>
+                                <input
+                                    type="number"
+                                    name="pontos1"
+                                    min="0"
+                                    required
+                                    class="w-full bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">
+                                    ${nome2}
+                                </label>
+                                <input
+                                    type="number"
+                                    name="pontos2"
+                                    min="0"
+                                    required
+                                    class="w-full bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        type="submit"
+                        class="w-full bg-[#127fbf] text-white py-3 rounded-lg hover:bg-[#106fa8] transition">
+                        Salvar set
+                    </button>
+                </form>
             `;
 
                 modalConteudo.innerHTML = html;
-                return;
+
+                document
+                    .getElementById('formResultado')
+                    .addEventListener('submit', enviarResultadoVolei);
             }
 
-            const numeroSet = setsConcluidos.length + 1;
+            async function enviarResultadoVolei(event) {
+                event.preventDefault();
 
-            html += `
-            <form
-                id="formResultado"
-                class="space-y-6">
-                <div>
-                    <p
-                        class="font-serif
-                               text-2xl
-                               text-[#127fbf]
-                               mb-4">
-                        Set ${numeroSet}
-                    </p>
-                    <div
-                        class="grid
-                               grid-cols-1
-                               sm:grid-cols-2
-                               gap-4">
-                        <div>
-                            <label
-                                class="block
-                                       text-gray-700
-                                       mb-2">
-                                ${nome1}
-                            </label>
-                            <input
-                                type="number"
-                                name="pontos1"
-                                min="0"
-                                required
-                                class="w-full
-                                       bg-[#f4edd7]
-                                       px-4
-                                       py-3
-                                       rounded-lg
-                                       outline-none
-                                       focus:ring-2
-                                       focus:ring-[#127fbf]">
-                        </div>
-                        <div>
-                            <label
-                                class="block
-                                       text-gray-700
-                                       mb-2">
-                                ${nome2}
-                            </label>
-                            <input
-                                type="number"
-                                name="pontos2"
-                                min="0"
-                                required
-                                class="w-full
-                                       bg-[#f4edd7]
-                                       px-4
-                                       py-3
-                                       rounded-lg
-                                       outline-none
-                                       focus:ring-2
-                                       focus:ring-[#127fbf]">
-                        </div>
-                    </div>
-                </div>
-                <button
-                    type="submit"
-                    class="w-full
-                           bg-[#127fbf]
-                           text-white
-                           py-3
-                           rounded-lg
-                           hover:bg-[#106fa8]
-                           transition">
-                    Salvar set
-                </button>
-            </form>
-        `;
+                const form = event.target;
+                const dados = new FormData(form);
 
-            modalConteudo.innerHTML = html;
-            document.getElementById('formResultado').addEventListener('submit', enviarResultadoVolei);
-        }
+                const games =
+                    (bracketData.match_game || [])
+                        .filter(
+                            game =>
+                                game.parent_id ===
+                                partidaSelecionada.id
+                        );
 
-        async function enviarResultadoVolei(event) {
-            event.preventDefault();
-            const form = event.target;
-            const dados = new FormData(form);
-            const games =
-                (bracketData.match_game || [])
-                    .filter(
-                        game =>
-                            game.parent_id ===
-                            partidaSelecionada.id
-                    );
-            const setsConcluidos = games.filter(game =>
-                game.opponent1?.result ||
-                game.opponent2?.result
-            );
-            const numeroSet = setsConcluidos.length + 1;
-            dados.append('numeroSet', numeroSet);
-            await enviarResultado(dados);
-        }
-
-        function criarModalBoxe(
-            match,
-            nome1,
-            nome2
-        ) {
-            let html = `
-            <form
-                id="formResultado"
-                class="space-y-6">
-                <div>
-                    <label
-                        class="block
-                               text-gray-700
-                               mb-2">
-                        Tipo de resultado
-                    </label>
-                    <select
-                        id="tipoResultado"
-                        name="tipoResultado"
-                        class="w-full
-                               bg-[#f4edd7]
-                               px-4
-                               py-3
-                               rounded-lg
-                               outline-none
-                               focus:ring-2
-                               focus:ring-[#127fbf]">
-                        <option value="decisao">
-                            Decisão
-                        </option>
-                        <option value="ko">
-                            KO
-                        </option>
-                    </select>
-                </div>
-                <div id="areaDecisao">
-                    <p
-                        class="font-serif
-                               text-2xl
-                               text-[#127fbf]
-                               mb-4">
-                        Pontuação dos rounds
-                    </p>
-        `;
-
-            for (let i = 1; i <= 3; i++) {
-                html += `
-                <div
-                    class="bg-gray-50
-                           rounded-xl
-                           p-4
-                           mb-4">
-                    <p
-                        class="font-semibold
-                               text-gray-700
-                               mb-3">
-                        Round ${i}
-                    </p>
-                    <div
-                        class="grid
-                               grid-cols-1
-                               sm:grid-cols-2
-                               gap-4">
-                        <div>
-                            <label
-                                class="block
-                                       text-sm
-                                       text-gray-600
-                                       mb-1">
-                                ${nome1}
-                            </label>
-                            <input
-                                type="number"
-                                name="round${i}_pontos1"
-                                min="0"
-                                max="10"
-                                required
-                                class="w-full
-                                       bg-[#f4edd7]
-                                       px-4
-                                       py-3
-                                       rounded-lg
-                                       outline-none
-                                       focus:ring-2
-                                       focus:ring-[#127fbf]">
-                        </div>
-                        <div>
-                            <label
-                                class="block
-                                       text-sm
-                                       text-gray-600
-                                       mb-1">
-                                ${nome2}
-                            </label>
-                            <input
-                                type="number"
-                                name="round${i}_pontos2"
-                                min="0"
-                                max="10"
-                                required
-                                class="w-full
-                                       bg-[#f4edd7]
-                                       px-4
-                                       py-3
-                                       rounded-lg
-                                       outline-none
-                                       focus:ring-2
-                                       focus:ring-[#127fbf]">
-                        </div>
-                    </div>
-                </div>
-            `;
-            }
-
-            html += `
-                </div>
-                <div
-                    id="areaKo"
-                    class="hidden space-y-5">
-                    <div>
-                        <label
-                            class="block
-                                   text-gray-700
-                                   mb-2">
-                            Round do KO
-                        </label>
-                        <select
-                            name="roundFinal"
-                            class="w-full
-                                   bg-[#f4edd7]
-                                   px-4
-                                   py-3
-                                   rounded-lg
-                                   outline-none
-                                   focus:ring-2
-                                   focus:ring-[#127fbf]">
-                            <option value="1">
-                                Round 1
-                            </option>
-                            <option value="2">
-                                Round 2
-                            </option>
-                            <option value="3">
-                                Round 3
-                            </option>
-                        </select>
-                    </div>
-                    <div>
-                        <label
-                            class="block
-                                   text-gray-700
-                                   mb-2">
-                            Vencedor
-                        </label>
-                        <select
-                            name="vencedor"
-                            class="w-full
-                                   bg-[#f4edd7]
-                                   px-4
-                                   py-3
-                                   rounded-lg
-                                   outline-none
-                                   focus:ring-2
-                                   focus:ring-[#127fbf]">
-                            <option value="1">
-                                ${nome1}
-                            </option>
-                            <option value="2">
-                                ${nome2}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <button
-                    type="submit"
-                    class="w-full
-                           bg-[#127fbf]
-                           text-white
-                           py-3
-                           rounded-lg
-                           hover:bg-[#106fa8]
-                           transition">
-                    Salvar resultado
-                </button>
-            </form>
-        `;
-
-            modalConteudo.innerHTML = html;
-            const tipoResultado = document.getElementById('tipoResultado');
-            const areaDecisao = document.getElementById('areaDecisao');
-            const areaKo = document.getElementById('areaKo');
-
-            function atualizarTipo() {
-                if (tipoResultado.value === 'decisao') {
-                    areaDecisao.classList.remove('hidden');
-                    areaKo.classList.add('hidden');
-                }
-                else {
-                    areaDecisao.classList.add('hidden');
-                    areaKo.classList.remove('hidden');
-                }
-            }
-
-            tipoResultado.addEventListener('change', atualizarTipo);
-            document.getElementById('formResultado').addEventListener('submit', enviarResultadoBoxe);
-        }
-
-        async function enviarResultadoBoxe(event) {
-            event.preventDefault();
-            const form = event.target;
-            const dados = new FormData(form);
-            await enviarResultado(dados);
-        }
-
-        function criarModalCorrida(match, nome1, nome2) {
-            const html = `
-            <form
-                id="formResultado"
-                class="space-y-6">
-                <div
-                    class="bg-[#e0fcff]
-                           rounded-xl
-                           p-5">
-                    <p
-                        class="text-gray-700
-                               mb-1">
-                        Informe o tempo de chegada
-                    </p>
-                    <p
-                        class="text-sm
-                               text-gray-500">
-                        Exemplo: 10.520 segundos
-                    </p>
-                </div>
-                <div
-                    class="grid
-                           grid-cols-1
-                           sm:grid-cols-2
-                           gap-4">
-                    <div>
-                        <label
-                            class="block
-                                   text-gray-700
-                                   mb-2">
-                            ${nome1}
-                        </label>
-                        <input
-                            type="number"
-                            name="tempo1"
-                            min="0"
-                            step="0.001"
-                            required
-                            class="w-full
-                                   bg-[#f4edd7]
-                                   px-4
-                                   py-3
-                                   rounded-lg
-                                   outline-none
-                                   focus:ring-2
-                                   focus:ring-[#127fbf]">
-                    </div>
-                    <div>
-                        <label
-                            class="block
-                                   text-gray-700
-                                   mb-2">
-                            ${nome2}
-                        </label>
-                        <input
-                            type="number"
-                            name="tempo2"
-                            min="0"
-                            step="0.001"
-                            required
-                            class="w-full
-                                   bg-[#f4edd7]
-                                   px-4
-                                   py-3
-                                   rounded-lg
-                                   outline-none
-                                   focus:ring-2
-                                   focus:ring-[#127fbf]">
-                    </div>
-                </div>
-                <button
-                    type="submit"
-                    class="w-full
-                           bg-[#127fbf]
-                           text-white
-                           py-3
-                           rounded-lg
-                           hover:bg-[#106fa8]
-                           transition">
-                    Salvar resultado
-                </button>
-            </form>
-        `;
-
-            modalConteudo.innerHTML = html;
-            document.getElementById('formResultado').addEventListener('submit', enviarResultadoCorrida);
-        }
-
-        async function enviarResultadoCorrida(event) {
-            event.preventDefault();
-            const form = event.target;
-            const dados = new FormData(form);
-            await enviarResultado(dados);
-        }
-
-        async function enviarResultado(dados) {
-            try {
-                const resposta = await fetch(
-                    `/campeonato/${campeonatoId}/chaveamento/${partidaSelecionada.id}/resultado`,
-                    {
-                        method: 'POST',
-                        body: new URLSearchParams(dados)
-                    }
+                const setsConcluidos = games.filter(game =>
+                    game.opponent1?.result ||
+                    game.opponent2?.result
                 );
-                const texto = await resposta.text();
-                const resultado = JSON.parse(texto);
-                if (!resposta.ok) {
-                    window.location.reload();
+
+                const numeroSet = setsConcluidos.length + 1;
+
+                dados.append('numeroSet', numeroSet);
+
+                await enviarResultado(dados);
+            }
+
+            function criarModalBoxe(match, nome1, nome2) {
+                if (match.opponent1?.result || match.opponent2?.result) {
+                    modalConteudo.innerHTML = `
+                    <div class="bg-[#f4edd7] rounded-xl p-6 text-center">
+                        <p class="font-serif text-2xl text-[#127fbf] mb-2">
+                            Partida encerrada
+                        </p>
+                        <p class="text-gray-600">
+                            ${match.opponent1?.result === 'win' ? nome1 : nome2}
+                            venceu.
+                        </p>
+                    </div>
+                `;
+
                     return;
                 }
-                window.location.reload();
-            } catch (erro) {
-                console.error(erro);
-            }
-        }
 
-        function fechar() {
-            modalOverlay.classList.remove('flex');
-            modalOverlay.classList.add('hidden');
-        }
+                let html = `
+                <form id="formResultado" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            Tipo de resultado
+                        </label>
 
-        fecharModal.addEventListener('click', fechar);
-        modalOverlay.addEventListener('click', (event) => {
-            if (
-                event.target === modalOverlay
-            ) {
-                fechar();
-            }
-        });
+                        <select
+                            id="tipoResultado"
+                            name="tipoResultado"
+                            class="w-full bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+                            <option value="decisao">
+                                Decisão
+                            </option>
+                            <option value="ko">
+                                KO
+                            </option>
+                        </select>
+                    </div>
 
-        window.bracketsViewer.render(
-            {
-                stages: bracketData.stage,
-                matches: bracketData.match,
-                matchGames: bracketData.match_game,
-                participants: bracketData.participant
-            },
-            {
-                selector: '#bracket',
-                clear: true,
-                participantOriginPlacement: 'before',
-                separatedChildCountLabel: true,
-                highlightParticipantOnHover: true,
-                onMatchClick: abrirModal
+                    <div id="areaDecisao">
+                        <p class="font-serif text-2xl text-[#127fbf] mb-4">
+                            Pontuação dos rounds
+                        </p>
+            `;
+
+                for (let i = 1; i <= 3; i++) {
+                    html += `
+                    <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                        <p class="font-semibold text-gray-700 mb-3">
+                            Round ${i}
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">
+                                    ${nome1}
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="round${i}_pontos1"
+                                    min="0"
+                                    max="10"
+                                    required
+                                    class="w-full bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">
+                                    ${nome2}
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="round${i}_pontos2"
+                                    min="0"
+                                    max="10"
+                                    required
+                                    class="w-full bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                }
+
+                html += `
+                    </div>
+
+                    <div id="areaKo" class="hidden space-y-5">
+                        <div>
+                            <label class="block text-gray-700 mb-2">
+                                Round do KO
+                            </label>
+
+                            <select
+                                name="roundFinal"
+                                class="w-full bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+                                <option value="1">
+                                    Round 1
+                                </option>
+                                <option value="2">
+                                    Round 2
+                                </option>
+                                <option value="3">
+                                    Round 3
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 mb-2">
+                                Vencedor
+                            </label>
+
+                            <select
+                                name="vencedor"
+                                class="w-full bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+                                <option value="1">
+                                    ${nome1}
+                                </option>
+                                <option value="2">
+                                    ${nome2}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="w-full bg-[#127fbf] text-white py-3 rounded-lg hover:bg-[#106fa8] transition">
+                        Salvar resultado
+                    </button>
+                </form>
+            `;
+
+                modalConteudo.innerHTML = html;
+
+                const tipoResultado =
+                    document.getElementById('tipoResultado');
+
+                const areaDecisao =
+                    document.getElementById('areaDecisao');
+
+                const areaKo =
+                    document.getElementById('areaKo');
+
+                function atualizarTipo() {
+                    const inputsDecisao =
+                        areaDecisao.querySelectorAll('input');
+
+                    if (tipoResultado.value === 'decisao') {
+                        areaDecisao.classList.remove('hidden');
+                        areaKo.classList.add('hidden');
+
+                        inputsDecisao.forEach(input => {
+                            input.disabled = false;
+                            input.required = true;
+                        });
+                    }
+                    else {
+                        areaDecisao.classList.add('hidden');
+                        areaKo.classList.remove('hidden');
+
+                        inputsDecisao.forEach(input => {
+                            input.disabled = true;
+                            input.required = false;
+                        });
+                    }
+                }
+
+                tipoResultado.addEventListener(
+                    'change',
+                    atualizarTipo
+                );
+
+                document
+                    .getElementById('formResultado')
+                    .addEventListener(
+                        'submit',
+                        enviarResultadoBoxe
+                    );
             }
-        );
-    </script>
+
+            async function enviarResultadoBoxe(event) {
+                event.preventDefault();
+
+                const form = event.target;
+                const dados = new FormData(form);
+
+                await enviarResultado(dados);
+            }
+
+            function criarModalCorrida(etapa, identificador, tipo) {
+                let html = ``;
+
+                etapa.participantes.forEach(participante => {
+                    html += `
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between gap-4 mb-3">
+                            <p class="font-semibold text-gray-700">
+                                ${participante.name}
+                            </p>
+
+                            ${participante.tempo !== null
+                            ? `<span class="text-green-600 font-semibold">${participante.tempo}s</span>`
+                            : ''
+                        }
+                        </div>
+
+                        ${participante.tempo === null
+                            ? `
+                                    <form
+                                        class="formTempo"
+                                        data-participante="${participante.id}">
+                                        <div class="flex gap-3">
+                                            <input
+                                                type="number"
+                                                name="tempo"
+                                                min="0"
+                                                step="0.001"
+                                                required
+                                                placeholder="Tempo em segundos"
+                                                class="flex-1 bg-[#f4edd7] px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-[#127fbf]">
+
+                                            <button
+                                                type="submit"
+                                                class="bg-[#127fbf] text-white px-5 rounded-lg hover:bg-[#106fa8] transition">
+                                                Salvar
+                                            </button>
+                                        </div>
+                                    </form>
+                                `
+                            : ''
+                        }
+                    </div>
+                `;
+                });
+
+                html += `</div>`;
+
+                modalConteudo.innerHTML = html;
+
+                document
+                    .querySelectorAll('.formTempo')
+                    .forEach(form => {
+                        form.addEventListener(
+                            'submit',
+                            async event => {
+                                event.preventDefault();
+
+                                const dados = new URLSearchParams();
+
+                                dados.append('fase', tipo);
+
+                                dados.append('bateria',
+                                    tipo === 'final'
+                                        ? ''
+                                        : identificador
+                                );
+
+                                dados.append('participanteId', form.dataset.participante);
+
+                                dados.append('tempo',
+                                    form.querySelector(
+                                        '[name="tempo"]'
+                                    ).value
+                                );
+
+                                await enviarResultado(dados);
+                            }
+                        );
+                    });
+            }
+
+            function abrirBateria(bateria) {
+                partidaSelecionada = {
+                    id: 0
+                };
+
+                modalTitulo.textContent =
+                    `Bateria ${bateria.numero}`;
+
+                modalSubtitulo.textContent =
+                    'Registrar tempos';
+
+                criarModalCorrida(
+                    bateria,
+                    bateria.numero,
+                    'bateria'
+                );
+
+                modalOverlay.classList.remove('hidden');
+                modalOverlay.classList.add('flex');
+            }
+
+            function abrirFinal() {
+                partidaSelecionada = {
+                    id: 0
+                };
+
+               modalTitulo.textContent = 'Final';
+               modalSubtitulo.textContent = 'Registrar tempos';
+
+                criarModalCorrida(
+                    bracketData.final,
+                    'Final',
+                    'final'
+                );
+
+                modalOverlay.classList.remove('hidden');
+                modalOverlay.classList.add('flex');
+            }
+
+            function renderizarCorrida() {
+                const corrida =
+                    document.getElementById('corrida');
+
+                let html = `
+                <div class="space-y-6">
+                    <div class="text-center">
+                        <h2 class="font-serif text-3xl text-[#127fbf]">
+                            Baterias
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            `;
+
+                bracketData.baterias.forEach(bateria => {
+                    html += `
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-md p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-serif text-2xl text-[#127fbf]">
+                                Bateria ${bateria.numero}
+                            </h3>
+
+                            <span class="text-sm ${bateria.concluida
+                            ? 'text-green-600'
+                            : 'text-gray-500'
+                        }">
+                                ${bateria.concluida
+                            ? 'Encerrada'
+                            : 'Pendente'
+                        }
+                            </span>
+                        </div>
+
+                        <div class="space-y-2 mb-5">
+                `;
+
+                    bateria.participantes.forEach(
+                        (participante, index) => {
+                            html += `
+                            <div class="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                                <span class="text-gray-700">
+                                    ${index + 1}. ${participante.name}
+                                </span>
+
+                                <span class="${participante.tempo !== null
+                                    ? 'text-[#127fbf] font-semibold'
+                                    : 'text-gray-400'
+                                }">
+                                    ${participante.tempo !== null
+                                    ? `${participante.tempo}s`
+                                    : '--'
+                                }
+                                </span>
+                            </div>
+                        `;
+                        }
+                    );
+
+                    html += `
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="abrirBateria(bracketData.baterias[${bateria.numero - 1}])"
+                            class="w-full bg-[#127fbf] text-white py-3 rounded-lg hover:bg-[#106fa8] transition">
+                            ${bateria.concluida
+                            ? 'Ver resultado'
+                            : 'Registrar tempos'
+                        }
+                        </button>
+                    </div>
+                `;
+                });
+
+                html += `</div>`;
+
+                if (
+                    bracketData.final &&
+                    bracketData.final.participantes &&
+                    bracketData.final.participantes.length > 0
+                ) {
+                    html += `
+                    <div class="pt-6 border-t border-gray-200">
+                        <div class="text-center mb-5">
+                            <h2 class="font-serif text-3xl text-[#127fbf]">
+                                Final
+                            </h2>
+
+                            <p class="text-gray-600 mt-1">
+                                Os classificados das baterias disputam a final.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                `;
+
+                    bracketData.final.participantes.forEach(
+                        (participante, index) => {
+                            html += `
+                            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700">
+                                        ${index + 1}. ${participante.name}
+                                    </span>
+
+                                    <span class="${participante.tempo !== null
+                                    ? 'text-[#127fbf] font-semibold'
+                                    : 'text-gray-400'
+                                }">
+                                        ${participante.tempo !== null
+                                    ? `${participante.tempo}s`
+                                    : '--'
+                                }
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                        }
+                    );
+
+                    html += `
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="abrirFinal()"
+                            class="w-full mt-5 bg-[#127fbf] text-white py-3 rounded-lg hover:bg-[#106fa8] transition">
+                            ${bracketData.final.concluida
+                            ? 'Ver resultado final'
+                            : 'Registrar tempos da final'
+                        }
+                        </button>
+                    </div>
+                `;
+                }
+
+                html += `</div>`;
+
+                corrida.innerHTML = html;
+                corrida.classList.remove('hidden');
+            }
+
+            async function enviarResultado(dados) {
+                try {
+                    const url = esporte === 'corrida'
+                        ? `/campeonato/${campeonatoId}/chaveamento/0/resultado`
+                        : `/campeonato/${campeonatoId}/chaveamento/${partidaSelecionada.id}/resultado`;
+
+                    const resposta = await fetch(
+                        url,
+                        {
+                            method: 'POST',
+                            body: new URLSearchParams(dados)
+                        }
+                    );
+
+                    const texto = await resposta.text();
+                    const resultado = JSON.parse(texto);
+
+                    if (!resposta.ok) {
+                        window.location.reload();
+                        return;
+                    }
+
+                    window.location.reload();
+                }
+                catch (erro) {
+                    console.error(erro);
+                }
+            }
+
+            function fechar() {
+                modalOverlay.classList.remove('flex');
+                modalOverlay.classList.add('hidden');
+            }
+
+            fecharModal.addEventListener(
+                'click',
+                fechar
+            );
+
+            modalOverlay.addEventListener(
+                'click',
+                event => {
+                    if (event.target === modalOverlay) {
+                        fechar();
+                    }
+                }
+            );
+
+            function mostrarKO() {
+                bracketData.match.forEach(match => {
+                    if (match.resultadoBoxe?.tipo !== 'ko') return;
+
+                    const elemento = document.querySelector(`[data-match-id="${match.id}"]`);
+                    if (!elemento) return;
+
+                    const vencedor = elemento.querySelector('.participant.win');
+                    if (!vencedor) return;
+
+                    const placar = vencedor.querySelector('.result');
+                    if (placar) placar.style.display = 'none';
+
+                    const aviso = document.createElement('div');
+                    aviso.textContent = 'KO';
+                    aviso.className = 'absolute top-1 right-1 text-green-600 text-xs font-semibold px-2 py-1 rounded';
+
+                    vencedor.style.position = 'relative';
+                    vencedor.appendChild(aviso);
+                });
+            }
+
+            window.bracketsViewer.addLocale(
+                'pt',
+                {
+                    common: {
+                        bye: 'Avança direto'
+                    }
+                }
+            ).then(() => {
+                if (esporte === 'corrida') {
+                    document
+                        .getElementById('bracket')
+                        .classList.add('hidden');
+
+                    renderizarCorrida();
+
+                    return;
+                }
+
+                window.bracketsViewer.render(
+                    {
+                        stages: bracketData.stage,
+                        matches: bracketData.match,
+                        matchGames: bracketData.match_game,
+                        participants: bracketData.participant
+                    },
+                    {
+                        selector: '#bracket',
+                        clear: true,
+                        participantOriginPlacement: 'before',
+                        separatedChildCountLabel: true,
+                        highlightParticipantOnHover: true,
+                        onMatchClick: abrirModal,
+                        customRoundName: ({
+                            roundNumber,
+                            roundCount
+                        }) => {
+                            if (roundNumber === roundCount) {
+                                return 'Final';
+                            }
+
+                            return `${roundNumber}ª Rodada`;
+                        }
+                    }
+                ).then(() => {
+                    mostrarKO();
+                });
+            });
+        </script>
 </body>
+
 </html>

@@ -11,8 +11,22 @@ module.exports = {
         var flag = 0;
         const perfis = res.locals.perfis;
 
+        const inscritosLimite = await Inscritos_Campeonato.findAll({
+            where: {
+                id_campeonato: id_campeonato
+            }
+        });
         const campeonato = await Campeonatos.findByPk(id_campeonato);
 
+        if (campeonato.iniciado) {
+            mensagem(req, 'erro', "Campeonato já iniciado");
+            res.redirect('/campeonato');
+        }
+
+        if (inscritosLimite.length >= campeonato.inscricoes) {
+            mensagem(req, 'erro', "Campeonato atingiu o limite de inscrições");
+            res.redirect('/campeonato');
+        }
         switch (campeonato.esporte) {
             case "voleibol":
                 if (perfis.voleibolJogador) {
@@ -50,20 +64,20 @@ module.exports = {
                     id_usuario: id_user, id_campeonato: id_campeonato
                 }
             });
-                if (inscritos.length == 0) {
-                    const resultado = await Inscritos_Campeonato.create({
-                        id_campeonato: id_campeonato, id_usuario: id_user
-                    })
+            if (inscritos.length == 0) {
+                const resultado = await Inscritos_Campeonato.create({
+                    id_campeonato: id_campeonato, id_usuario: id_user
+                })
 
-                    if (resultado) {
-                        mensagem(req, 'sucesso', "Inscrito com sucesso");
-                        res.redirect('/campeonato');
-                    }
-                } else {
-                    mensagem(req, 'erro', "Já está inscrito");
+                if (resultado) {
+                    mensagem(req, 'sucesso', "Inscrito com sucesso");
                     res.redirect('/campeonato');
                 }
-                
+            } else {
+                mensagem(req, 'erro', "Já está inscrito");
+                res.redirect('/campeonato');
+            }
+
         } else if (flag == 2) {
             res.redirect('/campeonato');
 

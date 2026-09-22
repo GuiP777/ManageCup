@@ -1,4 +1,4 @@
-const { Campeonatos, Inscritos_Campeonato, User, User_Voleibol_Treinador, Equipes } = require('../model');
+const { Campeonatos, Inscritos_Campeonato, User, User_Voleibol_Treinador, Equipes, User_Boxe } = require('../model');
 
 
 
@@ -31,6 +31,10 @@ async function obterParticipantesCampeonato(campeonatoId) {
                                 as: 'equipeTreinador'
                             }
                         ]
+                    },
+                    {
+                        model: User_Boxe,
+                        as: 'perfilBoxe',
                     }
                 ]
             }
@@ -61,6 +65,22 @@ async function obterParticipantesCampeonato(campeonatoId) {
 
     }
 
+    if (campeonato.esporte === 'boxe') {
+
+        return inscritos.map(inscrito => {
+
+            const boxeador = inscrito.userInscrito.perfilBoxe;
+
+            return {
+                name: boxeador.apelido,
+                externalId: inscrito.userInscrito.id,
+                tipo: 'usuario'
+            };
+
+        });
+
+    }
+    
     return inscritos.map(inscrito => {
 
         return {

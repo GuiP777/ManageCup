@@ -7,6 +7,7 @@ const { carregarBracket } = require('../utils/bracket');
 const { validarSet } = require('../utils/regraVoleibol');
 const { TOTAL_ROUNDS, calcularDecisao } = require('../utils/regraBoxe');
 const { calcularResultado } = require('../utils/regraCorrida');
+const { criarCorrida } = require('../utils/criarCorrida');
 
 module.exports = {
     pagCampeonatos: async function (req, res) {
@@ -243,13 +244,19 @@ module.exports = {
                 return res.redirect('/campeonato');
             }
 
-            const { criarBracket } = require('../utils/bracket');
+            let bracketData;
 
-            const bracketData = await criarBracket(
-                campeonato.id,
-                participantes,
-                campeonato.esporte
-            );
+            if (campeonato.esporte === 'corrida') {
+                bracketData = criarCorrida(participantes);
+            } else {
+                const { criarBracket } = require('../utils/bracket');
+
+                bracketData = await criarBracket(
+                    campeonato.id,
+                    participantes,
+                    esporte
+                );
+            }
 
             await Campeonatos.update(
                 {
@@ -281,242 +288,248 @@ module.exports = {
             const matchId = Number(req.params.matchId);
             const campeonato = await Campeonatos.findByPk(campeonatoId);
 
+            if (!campeonato || campeonato.id_organizador !== req.session.usuario_id) {
+                return res.status(403).json({ erro: 'Acesso negado.' });
+            }
+
             const erro = (texto, status = 400) => {
                 mensagem(req, 'erro', texto);
                 return res.status(status).json({ erro: texto });
             };
 
-            if (!campeonato) {
-                return erro('Campeonato não encontrado', 404);
+            if (campeonato.esporte === 'corrida') {
+                console.log('BODY DA CORRIDA:', req.body);
+                console.log('BRACKET ANTES:', campeonato.bracket_data);
+
+                const bracketData = JSON.parse(campeonato.bracket_data);
+                const fase = req.body.fase;
+                const bateriaNumero = Number(req.body.bateria);
+                const participanteId = Number(req.body.participanteId);
+                const tempo = Number(req.body.tempo);
+
+                if (!fase || !['bateria', 'final'].includes(fase)) {
+                    return erro('Fase da corrida inválida.');
+                }
+
+                if (!Number.isFinite(tempo) || tempo <= 0) {
+                    return erro('Informe um tempo válido.');
+                }
+
+                if (fase === 'bateria') {
+                    if (!Number.isInteger(bateriaNumero) || bateriaNumero < 1 ||
+                        bateriaNumero > bracketData.baterias.length) {
+                        return erro('Bateria inválida.');
+                    }
+
+                    const bateria = bracketData.baterias[bateriaNumero - 1];
+
+                    if (bateria.concluida) {
+                        return erro('Esta bateria já foi encerrada.');
+                    }
+
+                    const participante = bateria.participantes.find(item => item.id === participanteId);
+
+                    if (!participante) {
+                        return erro('Participante não encontrado.');
+                    }
+
+                    if (participante.tempo !== null) {
+                        return erro('O tempo deste participante já foi registrado.');
+                    }
+
+                    participante.tempo = tempo;
+
+                    if (bateria.participantes.every(item => item.tempo !== null)) {
+                        bateria.participantes = [...bateria.participantes].sort((a, b) =>
+                            a.tempo - b.tempo).map((item, index) =>
+                            ({
+                                ...item,
+                                colocacao: index + 1
+                            }));
+                        bateria.concluida = true;
+                    }
+
+                    const todasBateriasConcluidas = bracketData.baterias.every(item => item.concluida);
+
+                    if (todasBateriasConcluidas && bracketData.baterias.length > 1 &&
+                        bracketData.final.participantes.length === 0) {
+
+                        const quantidadeBaterias = bracketData.baterias.length;
+                        const vagasPorBateria = Math.floor(8 / quantidadeBaterias);
+                        const vagasRestantes = 8 - vagasPorBateria * quantidadeBaterias;
+                        const classificados = [];
+                        const restantes = [];
+
+                        for (const bateriaAtual of bracketData.baterias) {
+                            classificados.push(...bateriaAtual.participantes.slice(0, vagasPorBateria));
+                            restantes.push(...bateriaAtual.participantes.slice(vagasPorBateria));
+                        }
+
+                        restantes.sort((a, b) => a.tempo - b.tempo);
+                        classificados.push(...restantes.slice(0, vagasRestantes));
+
+                        bracketData.final.participantes = classificados.sort((a, b) =>
+                            a.tempo - b.tempo).map((participante, index) => ({
+                                id: index + 1,
+                                externalId: participante.externalId,
+                                name: participante.name,
+                                tempo: null,
+                                colocacao: null
+                            }));
+                    }
+                } else {
+                    if (!bracketData.final || bracketData.final.participantes.length === 0) {
+                        return erro('A final ainda não foi formada.');
+                    }
+
+                    if (bracketData.final.concluida) {
+                        return erro('A final já foi encerrada.');
+                    }
+
+                    const participante = bracketData.final.participantes.find(item =>
+                        item.id === participanteId);
+
+                    if (!participante) {
+                        return erro('Participante da final não encontrado.');
+                    }
+
+                    if (participante.tempo !== null) {
+                        return erro('O tempo deste participante já foi registrado.');
+                    }
+
+                    participante.tempo = tempo;
+
+                    if (bracketData.final.participantes.every(item => item.tempo !== null)) {
+                        bracketData.final.participantes = [...bracketData.final.participantes].sort((a, b) =>
+                            a.tempo - b.tempo).map((item, index) =>
+                                ({ ...item, colocacao: index + 1 }));
+                        bracketData.final.concluida = true;
+                    }
+                }
+
+                await Campeonatos.update({
+                    bracket_data: JSON.stringify(bracketData)
+                },
+                    {
+                        where: {
+                            id: campeonatoId
+                        }
+                    });
+                    console.log('BRACKET DEPOIS:', JSON.stringify(bracketData));
+                return res.json({ sucesso: true, bracket: bracketData });
             }
 
-            if (!campeonato.bracket_data) {
-                return erro('Este campeonato não possui chaveamento');
-            }
+            const manager = await carregarBracket(JSON.parse(campeonato.bracket_data));
+            const matches = await manager.get.matches({ id: matchId });
 
-            const manager = await carregarBracket(
-                JSON.parse(campeonato.bracket_data)
-            );
-
-            const matches = await manager.get.matches({
-                id: matchId
-            });
-
-            if (!matches || matches.length === 0) {
-                return erro('Partida não encontrada', 404);
+            if (!matches || !matches.length) {
+                return erro('Partida não encontrada.', 404);
             }
 
             const match = matches[0];
 
-            if (
-                match.opponent1?.id == null ||
-                match.opponent2?.id == null
-            ) {
-                return erro('Partida não possui dois participantes mínimos');
+            if ((campeonato.esporte === 'boxe' || campeonato.esporte === 'corrida') &&
+                (match.opponent1?.result || match.opponent2?.result)) {
+                return erro('Esta partida já terminou.');
             }
 
             if (campeonato.esporte === 'voleibol') {
-                const numeroSet = Number(req.body.numeroSet);
-                const pontos1 = Number(req.body.pontos1);
-                const pontos2 = Number(req.body.pontos2);
+                const sets = req.body.sets;
 
-                const games = await manager.get.matchGames([match]);
+                if (!Array.isArray(sets) || sets.length !== 5) {
+                    return erro('Informe os 5 sets.');
+                }
 
-                const jogosConcluidos = games.filter(game =>
-                    game.opponent1?.result ||
-                    game.opponent2?.result
-                );
+                let placar1 = 0;
+                let placar2 = 0;
 
-                let vitorias1 = 0;
-                let vitorias2 = 0;
+                for (let i = 0; i < 5; i++) {
+                    const pontos1 = Number(sets[i].pontos1);
+                    const pontos2 = Number(sets[i].pontos2);
 
-                for (const game of jogosConcluidos) {
-                    if (game.opponent1?.result === 'win') {
-                        vitorias1++;
+                    if (!Number.isInteger(pontos1) || !Number.isInteger(pontos2) ||
+                        pontos1 < 0 || pontos2 < 0 || pontos1 === pontos2) {
+                        return erro(`Resultado inválido no ${i + 1}º set.`);
                     }
 
-                    if (game.opponent2?.result === 'win') {
-                        vitorias2++;
-                    }
+                    if (pontos1 > pontos2) placar1++;
+                    else placar2++;
                 }
 
-                if (vitorias1 >= 3 || vitorias2 >= 3) {
-                    return erro('Esta partida já terminou.');
+                if (placar1 < 3 && placar2 < 3) {
+                    return erro('Uma equipe precisa vencer pelo menos 3 sets.');
                 }
 
-                const proximoSet = jogosConcluidos.length + 1;
-
-                if (numeroSet !== proximoSet) {
-                    return erro(`O próximo set deve ser o ${proximoSet}º.`);
-                }
-
-                if (numeroSet === 5) {
-                    if (vitorias1 !== 2 || vitorias2 !== 2) {
-                        return erro('O quinto set só pode acontecer com a partida em 2 a 2.');
-                    }
-                }
-
-                const validacao = validarSet(
-                    pontos1,
-                    pontos2,
-                    numeroSet
-                );
-
-                if (!validacao.valido) {
-                    return erro(validacao.mensagem);
-                }
-
-                const game = games.find(
-                    item => item.number === numeroSet
-                );
-
-                if (!game) {
-                    return erro('Set não encontrado', 404);
-                }
-
-                await manager.update.matchGame({
-                    id: game.id,
-                    opponent1: {
-                        score: pontos1,
-                        result: pontos1 > pontos2 ? 'win' : 'loss'
-                    },
-                    opponent2: {
-                        score: pontos2,
-                        result: pontos2 > pontos1 ? 'win' : 'loss'
-                    }
-                });
-            }
-
-            else if (campeonato.esporte === 'boxe') {
-                const tipoResultado = req.body.tipoResultado;
-
-                if (tipoResultado !== 'decisao' && tipoResultado !== 'ko') {
-                    return erro('Tipo de resultado errado');
-                }
-
-                if (tipoResultado === 'decisao') {
-                    const rounds = [];
-
-                    for (let i = 1; i <= TOTAL_ROUNDS; i++) {
-                        rounds.push({
-                            numero: i,
-                            pontos1: Number(req.body[`round${i}_pontos1`]),
-                            pontos2: Number(req.body[`round${i}_pontos2`])
-                        });
-                    }
-
-                    const resultado = calcularDecisao(rounds);
-
-                    if (!resultado.valido) {
-                        return erro(resultado.mensagem);
-                    }
-
-                    await manager.update.match({
-                        id: matchId,
-                        opponent1: {
-                            score: resultado.total1,
-                            result: resultado.vencedor === 1 ? 'win' : 'loss'
-                        },
-                        opponent2: {
-                            score: resultado.total2,
-                            result: resultado.vencedor === 2 ? 'win' : 'loss'
-                        },
-                        resultadoBoxe: {
-                            tipo: 'decisao',
-                            rounds: rounds,
-                            media1: resultado.media1,
-                            media2: resultado.media2
-                        }
-                    });
-                }
-
-                else {
-                    const roundFinal = Number(req.body.roundFinal);
-                    const vencedor = Number(req.body.vencedor);
-
-                    if (roundFinal < 1 || roundFinal > TOTAL_ROUNDS) {
-                        return erro('Round do KO inválido');
-                    }
-
-                    if (vencedor !== 1 && vencedor !== 2) {
-                        return erro('Vencedor Inválido');
-                    }
-
-                    await manager.update.match({
-                        id: matchId,
-                        opponent1: {
-                            score: vencedor === 1 ? 1 : 0,
-                            result: vencedor === 1 ? 'win' : 'loss'
-                        },
-                        opponent2: {
-                            score: vencedor === 2 ? 1 : 0,
-                            result: vencedor === 2 ? 'win' : 'loss'
-                        },
-                        resultadoBoxe: {
-                            tipo: 'ko',
-                            roundFinal: roundFinal,
-                            vencedor: vencedor
-                        }
-                    });
-                }
-            }
-
-            else if (campeonato.esporte === 'corrida') {
-                const tempo1 = Number(req.body.tempo1);
-                const tempo2 = Number(req.body.tempo2);
-                const resultado = calcularResultado(tempo1, tempo2);
-
-                if (!resultado.valido) {
-                    return erro(resultado.mensagem);
+                const partidas = match.opponents || [];
+                if (partidas.length < 2) {
+                    return erro('Partida inválida.');
                 }
 
                 await manager.update.match({
-                    id: matchId,
-                    opponent1: {
-                        score: 1,
-                        result: resultado.vencedor === 1 ? 'win' : 'loss'
-                    },
-                    opponent2: {
-                        score: 0,
-                        result: resultado.vencedor === 2 ? 'win' : 'loss'
-                    },
-                    resultadoCorrida: {
-                        tempo1: resultado.tempo1,
-                        tempo2: resultado.tempo2
-                    }
+                    id: match.id,
+                    opponent1: { result: placar1 },
+                    opponent2: { result: placar2 }
                 });
+                await manager.update.matchGames(match.id, sets.map((set, index) => ({
+                    number: index + 1,
+                    opponent1: Number(set.pontos1),
+                    opponent2: Number(set.pontos2)
+                })));
             }
 
-            else {
-                return erro('Esporte não informado corretamente');
-            }
+            if (campeonato.esporte === 'boxe') {
+                const tipoResultado = req.body.tipoResultado;
+                const vencedor = Number(req.body.vencedor);
 
-            const novoBracket = await manager.export();
-
-            await Campeonatos.update(
-                {
-                    bracket_data: JSON.stringify(novoBracket)
-                },
-                {
-                    where: {
-                        id: campeonatoId
-                    }
+                if (!['decisao', 'ko'].includes(tipoResultado)) {
+                    return erro('Tipo de resultado inválido.');
                 }
-            );
 
-            return res.json({
-                sucesso: true,
-                bracket: novoBracket
-            });
+                if (![1, 2].includes(vencedor)) {
+                    return erro('Vencedor inválido.');
+                }
 
-        } catch (erroCatch) {
-            console.error(erroCatch);
-            mensagem(req, 'erro', 'Erro ao registrar resultado');
-            return res.status(500).json({
-                erro: 'Erro ao registrar resultado'
-            });
+                if (tipoResultado === 'decisao') {
+                    const pontuacao1 = Number(req.body.pontuacao1);
+                    const pontuacao2 = Number(req.body.pontuacao2);
+
+                    if (!Number.isFinite(pontuacao1) || !Number.isFinite(pontuacao2)) {
+                        return erro('Informe as pontuações dos lutadores.');
+                    }
+
+                    if (pontuacao1 === pontuacao2) {
+                        return erro('A decisão não pode terminar empatada.');
+                    }
+
+                    const vencedorCorreto = pontuacao1 > pontuacao2 ? 1 : 2;
+
+                    if (vencedor !== vencedorCorreto) {
+                        return erro('O vencedor informado não corresponde à pontuação.');
+                    }
+
+                    await manager.update.match({
+                        id: match.id,
+                        opponent1: { result: pontuacao1 },
+                        opponent2: { result: pontuacao2 },
+                        resultadoBoxe: { tipo: 'decisao', pontuacao1, pontuacao2, vencedor }
+                    });
+                } else {
+                    await manager.update.match({
+                        id: match.id,
+                        opponent1: { result: vencedor === 1 ? 1 : 0 },
+                        opponent2: { result: vencedor === 2 ? 1 : 0 },
+                        resultadoBoxe: { tipo: 'ko', vencedor }
+                    });
+                }
+            }
+
+            const bracketData = await manager.export();
+            await Campeonatos.update({ bracket_data: JSON.stringify(bracketData) }, { where: { id: campeonatoId } });
+
+            return res.json({ sucesso: true, bracket: bracketData });
+        } catch (erro) {
+            console.error(erro);
+            return res.status(500).json({ erro: 'Erro ao registrar resultado.' });
         }
-    },
-
-
+    }
 }
