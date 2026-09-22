@@ -45,13 +45,13 @@ module.exports = {
         }
 
         if (flag == 1) {
-            await Inscritos_Campeonato.findAll({
+            const inscritos = await Inscritos_Campeonato.findAll({
                 where: {
                     id_usuario: id_user, id_campeonato: id_campeonato
                 }
-            }).then(result => {
-                if (result.length == 0) {
-                    const resultado = Inscritos_Campeonato.create({
+            });
+                if (inscritos.length == 0) {
+                    const resultado = await Inscritos_Campeonato.create({
                         id_campeonato: id_campeonato, id_usuario: id_user
                     })
 
@@ -63,7 +63,7 @@ module.exports = {
                     mensagem(req, 'erro', "Já está inscrito");
                     res.redirect('/campeonato');
                 }
-            })
+                
         } else if (flag == 2) {
             res.redirect('/campeonato');
 

@@ -101,7 +101,7 @@
 
                                 <p class="text-lg text-[#1a83b8]">
                                     <span class="font-semibold text-black">Organizador:</span>
-                                    <%= campeonato.organizador %>
+                                    <%= campeonato.organizador.nome %>
                                 </p>
 
                                 <p class="text-lg text-[#1a83b8]">
@@ -110,29 +110,51 @@
                                 </p>
                             </div>
                         </div>
+                        <% if(campeonato.iniciado) { %>
+                                <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
+                                    <a href="/campeonato/<%= campeonato.id %>/chaveamento">
+                                        <button
+                                            class="bg-[#ffe58f] text-[#1a83b8] border-2 border-black rounded-lg px-5 py-2 
+                                            hover:bg-[#fce597] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                            hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                            Ver chaveamento
+                                        </button>
+                                    </a>
+                                </div>
+                        <% }else{ %>
+                            <% if(campeonato.id_organizador == usuario_id) { %>
+                                 <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
+                                    <form action="/campeonato/<%= campeonato.id %>/criarChaveamento" method="POST">                               
+                                        <button type="submit"
+                                            class="bg-[#ffe58f] text-[#1a83b8] border-2 border-black rounded-lg px-5 py-2 
+                                            hover:bg-[#fce597] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                            hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                            Criar chaveamento
+                                        </button>
+                                    </form>
+                                </div>
+                                <% }else{ %>
+                                    <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
+                                        <a href="/inscrever/<%= campeonato.id %>">
+                                            <button
+                                                class="bg-[#c24e54] text-white border-2 border-black rounded-lg px-5 py-2 
+                                                hover:bg-[#a63f44] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                                hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                                Inscreva-se
+                                            </button>
+                                        </a>
 
-                        <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
-
-                            <a href="/inscrever/<%= campeonato.id %>">
-                                <button
-                                    class="bg-[#c24e54] text-white border-2 border-black rounded-lg px-5 py-2 
-                                    hover:bg-[#a63f44] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
-                                    hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
-                                    Inscreva-se
-                                </button>
-                            </a>
-
-                            <a href="/infoCampeonato/<%= campeonato.id %>">
-                                <button
-                                    class="bg-[#ffe58f] text-[#1a83b8] border-2 border-black rounded-lg px-5 py-2 
-                                    hover:bg-[#fce597] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
-                                    hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
-                                    Saiba mais
-                                </button>
-                            </a>
-
-                        </div>
-
+                                        <a href="/infoCampeonato/<%= campeonato.id %>">
+                                            <button
+                                                class="bg-[#ffe58f] text-[#1a83b8] border-2 border-black rounded-lg px-5 py-2 
+                                                hover:bg-[#fce597] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                                hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                                Saiba mais
+                                            </button>
+                                        </a>
+                                    </div>
+                                <% } %>
+                        <% } %>  
                     </div>
 
                     <% }) %>

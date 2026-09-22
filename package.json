@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "brackets-manager": "^1.11.1",
+    "brackets-memory-db": "^1.0.6",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",

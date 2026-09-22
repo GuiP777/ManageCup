@@ -189,6 +189,9 @@ app.get('/filtrarCampeonatos', campeonatoController.filtrarCampeonatos);
 app.get('/infoCampeonato/:id', campeonatoController.infoCampeonato);
 app.get('/cadastroCampeonato', auth.logado, campeonatoController.pagCadastroCampeonato);
 app.post('/cadastroCampeonato', auth.logado, campeonatoController.efetuaCadastroCampeonato);
+app.get('/campeonato/:id/chaveamento', campeonatoController.pagChaveamento);
+app.post('/campeonato/:id/criarChaveamento', auth.logado, campeonatoController.criarChaveamento);
+app.post('/campeonato/:id/chaveamento/:matchId/resultado', campeonatoController.registrarResultado);
 
 app.get('/inscrever/:id', auth.logado, inscritos_campeonatoController.inscrever);
 

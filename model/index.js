@@ -1,5 +1,16 @@
 const Campeonatos = require('./campeonatos');
 const User = require('./user');
+
+User.hasMany(Campeonatos, {
+    foreignKey: 'id_organizador',
+    as: 'campeonatosOrganizados'
+});
+
+Campeonatos.belongsTo(User, {
+    foreignKey: 'id_organizador',
+    as: 'organizador'
+});
+
 const User_Boxe = require('./user_boxe');
 
 User.hasOne(User_Boxe, {
