@@ -254,7 +254,7 @@ module.exports = {
                 bracketData = await criarBracket(
                     campeonato.id,
                     participantes,
-                    esporte
+                    campeonato.esporte
                 );
             }
 
@@ -288,18 +288,16 @@ module.exports = {
             const matchId = Number(req.params.matchId);
             const campeonato = await Campeonatos.findByPk(campeonatoId);
 
-            if (!campeonato || campeonato.id_organizador !== req.session.usuario_id) {
-                return res.status(403).json({ erro: 'Acesso negado.' });
-            }
-
             const erro = (texto, status = 400) => {
                 mensagem(req, 'erro', texto);
                 return res.status(status).json({ erro: texto });
             };
 
+            if (!campeonato || campeonato.id_organizador !== req.session.usuario_id) {
+                return erro('Acesso negado');
+            }
+
             if (campeonato.esporte === 'corrida') {
-                console.log('BODY DA CORRIDA:', req.body);
-                console.log('BRACKET ANTES:', campeonato.bracket_data);
 
                 const bracketData = JSON.parse(campeonato.bracket_data);
                 const fase = req.body.fase;
@@ -415,7 +413,7 @@ module.exports = {
                             id: campeonatoId
                         }
                     });
-                    console.log('BRACKET DEPOIS:', JSON.stringify(bracketData));
+                console.log('BRACKET DEPOIS:', JSON.stringify(bracketData));
                 return res.json({ sucesso: true, bracket: bracketData });
             }
 
@@ -428,53 +426,85 @@ module.exports = {
 
             const match = matches[0];
 
-            if ((campeonato.esporte === 'boxe' || campeonato.esporte === 'corrida') &&
+            if ((campeonato.esporte === 'boxe') &&
                 (match.opponent1?.result || match.opponent2?.result)) {
                 return erro('Esta partida já terminou.');
             }
 
             if (campeonato.esporte === 'voleibol') {
-                const sets = req.body.sets;
+                const numeroSet = Number(req.body.numeroSet);
+                const pontos1 = Number(req.body.pontos1);
+                const pontos2 = Number(req.body.pontos2);
 
-                if (!Array.isArray(sets) || sets.length !== 5) {
-                    return erro('Informe os 5 sets.');
+                const validacao = validarSet(pontos1, pontos2, numeroSet);
+
+                if (!validacao.valido) {
+                    return erro(validacao.mensagem);
                 }
 
-                let placar1 = 0;
-                let placar2 = 0;
+                const dadosBracket = JSON.parse(campeonato.bracket_data);
+                const jogos = dadosBracket.match_game || [];
 
-                for (let i = 0; i < 5; i++) {
-                    const pontos1 = Number(sets[i].pontos1);
-                    const pontos2 = Number(sets[i].pontos2);
+                const jogosPartida = jogos.filter(game =>
+                    game.parent_id === match.id
+                );
 
-                    if (!Number.isInteger(pontos1) || !Number.isInteger(pontos2) ||
-                        pontos1 < 0 || pontos2 < 0 || pontos1 === pontos2) {
-                        return erro(`Resultado inválido no ${i + 1}º set.`);
+                const jogoExistente = jogosPartida.find(game =>
+                    game.number === numeroSet
+                );
+
+                if (jogoExistente && (
+                    jogoExistente.opponent1?.result ||
+                    jogoExistente.opponent2?.result
+                )) {
+                    return erro('Esse set já foi cadastrado.');
+                }
+
+                const vencedor1 = pontos1 > pontos2;
+                const vencedor2 = pontos2 > pontos1;
+
+                await manager.update.matchGame({
+                    parent_id: match.id,
+                    number: numeroSet,
+                    opponent1: {
+                        score: pontos1,
+                        result: vencedor1 ? 'win' : undefined
+                    },
+                    opponent2: {
+                        score: pontos2,
+                        result: vencedor2 ? 'win' : undefined
+                    }
+                });
+
+                const bracketAtualizado = JSON.parse(campeonato.bracket_data);
+                const setsAtualizados = (bracketAtualizado.match_game || [])
+                    .filter(game => game.parent_id === match.id);
+
+                let vitorias1 = 0;
+                let vitorias2 = 0;
+
+                for (const set of setsAtualizados) {
+                    if (set.opponent1?.result === 'win') {
+                        vitorias1++;
                     }
 
-                    if (pontos1 > pontos2) placar1++;
-                    else placar2++;
+                    if (set.opponent2?.result === 'win') {
+                        vitorias2++;
+                    }
                 }
 
-                if (placar1 < 3 && placar2 < 3) {
-                    return erro('Uma equipe precisa vencer pelo menos 3 sets.');
+                if (vitorias1 >= 3 || vitorias2 >= 3) {
+                    await manager.update.match({
+                        id: match.id,
+                        opponent1: {
+                            result: vitorias1 > vitorias2 ? 'win' : null
+                        },
+                        opponent2: {
+                            result: vitorias2 > vitorias1 ? 'win' : null
+                        }
+                    });
                 }
-
-                const partidas = match.opponents || [];
-                if (partidas.length < 2) {
-                    return erro('Partida inválida.');
-                }
-
-                await manager.update.match({
-                    id: match.id,
-                    opponent1: { result: placar1 },
-                    opponent2: { result: placar2 }
-                });
-                await manager.update.matchGames(match.id, sets.map((set, index) => ({
-                    number: index + 1,
-                    opponent1: Number(set.pontos1),
-                    opponent2: Number(set.pontos2)
-                })));
+                mensagem(req, 'sucesso', 'Placar do set ' + numeroSet + ' foi salvo com sucesso');
             }
 
             if (campeonato.esporte === 'boxe') {
@@ -490,37 +520,70 @@ module.exports = {
                 }
 
                 if (tipoResultado === 'decisao') {
-                    const pontuacao1 = Number(req.body.pontuacao1);
-                    const pontuacao2 = Number(req.body.pontuacao2);
+                    const rounds = [];
 
-                    if (!Number.isFinite(pontuacao1) || !Number.isFinite(pontuacao2)) {
-                        return erro('Informe as pontuações dos lutadores.');
+                    for (let i = 1; i <= TOTAL_ROUNDS; i++) {
+                        rounds.push({
+                            pontos1: req.body[`round${i}_pontos1`],
+                            pontos2: req.body[`round${i}_pontos2`]
+                        });
                     }
 
-                    if (pontuacao1 === pontuacao2) {
-                        return erro('A decisão não pode terminar empatada.');
+                    const resultado = calcularDecisao(rounds);
+
+                    if (!resultado.valido) {
+                        return erro(resultado.mensagem);
                     }
 
-                    const vencedorCorreto = pontuacao1 > pontuacao2 ? 1 : 2;
-
-                    if (vencedor !== vencedorCorreto) {
+                    if (vencedor !== resultado.vencedor) {
                         return erro('O vencedor informado não corresponde à pontuação.');
                     }
 
                     await manager.update.match({
                         id: match.id,
-                        opponent1: { result: pontuacao1 },
-                        opponent2: { result: pontuacao2 },
-                        resultadoBoxe: { tipo: 'decisao', pontuacao1, pontuacao2, vencedor }
+                        opponent1: {
+                            score: resultado.total1,
+                            result: vencedor === 1 ? 'win' : 'loss'
+                        },
+                        opponent2: {
+                            score: resultado.total2,
+                            result: vencedor === 2 ? 'win' : 'loss'
+                        },
+                        resultadoBoxe: {
+                            tipo: 'decisao',
+                            rounds,
+                            total1: resultado.total1,
+                            total2: resultado.total2,
+                            vencedor
+                        }
                     });
+
                 } else {
+                    const roundFinal = Number(req.body.roundFinal);
+
+                    if (!Number.isInteger(roundFinal) || roundFinal < 1 || roundFinal > TOTAL_ROUNDS) {
+                        return erro('Round do KO inválido.');
+                    }
+
                     await manager.update.match({
                         id: match.id,
-                        opponent1: { result: vencedor === 1 ? 1 : 0 },
-                        opponent2: { result: vencedor === 2 ? 1 : 0 },
-                        resultadoBoxe: { tipo: 'ko', vencedor }
+                        opponent1: {
+                            score: vencedor === 1 ? 1 : 0,
+                            result: vencedor === 1 ? 'win' : 'loss'
+                        },
+                        opponent2: {
+                            score: vencedor === 2 ? 1 : 0,
+                            result: vencedor === 2 ? 'win' : 'loss'
+                        },
+                        resultadoBoxe: {
+                            tipo: 'ko',
+                            round: roundFinal,
+                            vencedor
+                        }
                     });
                 }
+                mensagem(req, 'sucesso', 'Resultado da luta por ' + tipoResultado + ' foi salvo com sucesso');
+
             }
 
             const bracketData = await manager.export();
