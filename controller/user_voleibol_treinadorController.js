@@ -1,7 +1,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
-const { User_Voleibol_Treinador, Equipes } = require("../model");
+const { User_Voleibol_Treinador, Equipes, User_Voleibol_Jogador } = require("../model");
 const bcrypt = require('bcrypt');
 const mensagem = require('../utils/mensagem');
 
@@ -32,7 +32,7 @@ module.exports = {
             mensagem(req, 'sucesso', "Perfil criado com sucesso!");
 
             let treinador = await User_Voleibol_Treinador.findOne({
-                where:{
+                where: {
                     id_usuario: req.session.usuario_id
                 }
             })
@@ -42,7 +42,7 @@ module.exports = {
             });
         }
 
-        req.session.perfis.voleibolTreinador = true ;
+        req.session.perfis.voleibolTreinador = true;
 
         res.redirect('/perfil');
     },
@@ -52,7 +52,7 @@ module.exports = {
         const id = req.session.usuario_id;
 
         const dadosTreinador = await User_Voleibol_Treinador.findOne({
-            where:{
+            where: {
                 id_usuario: id
             }
         });
@@ -61,9 +61,28 @@ module.exports = {
         res.render('user/editarPerfil.ejs', { dados: dadosTreinador, perfil: 'voleibolTreinador' });
     },
 
-      atualizarPerfilTreinador: async function (req, res) {
+    atualizarPerfilTreinador: async function (req, res) {
         var nomeEquipe = req.body['nomeEquipe'];
         var categoria = req.body['categoria'];
+
+        if (categoria) {
+            const treinador = await User_Voleibol_Treinador.findOne({
+                where: { id_usuario: req.session.usuario_id }
+            });
+            if (treinador.categoria !== categoria) {
+                const equipe = await Equipes.findOne({
+                    where: { id_treinador: treinador.id }
+                });
+                const jogadoresNaEquipe = await User_Voleibol_Jogador.findAll({
+                    where: { id_equipe: equipe.id }
+                });
+
+                if (jogadoresNaEquipe.length > 0) {
+                    mensagem(req, 'erro', "Você deve remover todos os jogadores da sua equipe para poder modificar a categoria");
+                    return res.redirect('/perfil');
+                }
+            }
+        }
 
         if (!nomeEquipe && !categoria) {
             mensagem(req, 'erro', "Preencha pelo menos uma informação!");

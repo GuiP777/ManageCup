@@ -15,29 +15,31 @@
 
                 <div>
                     <label>Nome completo</label>
-                    <input type="text" name="nome" class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                    <input type="text" name="nome"
+                        class="required w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
                 </div>
 
                 <div>
                     <label>Email</label>
                     <input type="email" name="email"
-                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none required">
                 </div>
 
                 <div>
                     <label>Senha</label>
                     <input type="password" name="senha"
-                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                        class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none required">
                 </div>
 
                 <div>
                     <label>Data de Nascimento</label>
-                    <input type="date" name="data" class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                    <input type="date" name="data" class="w-full mt-1 p-2 rounded bg-[#f4edd7] 
+                            text-black outline-none required">
                 </div>
 
                 <div>
                     <label>Sexo</label>
-                    <select name="sexo" class="w-full mt-1 p-2 rounded bg-[#f4edd7] text-black outline-none">
+                    <select name="sexo" class="w-full mt-1 p-2 rounded bg-[#f4edd7] required text-black outline-none">
                         <option value="">Selecione</option>
                         <option>Masculino</option>
                         <option>Feminino</option>
@@ -68,6 +70,68 @@
 
     </main>
     <%- include('../mensagens') %>
+
+        <script>
+            function mostrarMensagem(texto, tipo = 'erro') {
+                const existente = document.getElementById('mensagem');
+                if (existente) existente.remove();
+
+                const cor = tipo === 'sucesso'
+                    ? 'bg-green-500'
+                    : tipo === 'erro'
+                        ? 'bg-red-500'
+                        : 'bg-blue-500';
+
+                const elemento = document.createElement('div');
+                elemento.id = 'mensagem';
+                elemento.className = `fixed top-5 right-5 z-50 min-w-[320px] max-w-[400px] px-5 py-4 rounded-xl shadow-2xl text-white flex items-center justify-between gap-4 animate-slideIn ${cor}`;
+
+                elemento.innerHTML = `
+                    <div>
+                        <p class="font-semibold">${texto}</p>
+                    </div>
+                    <button class="text-2xl leading-none hover:scale-110 transition">&times;</button>
+                `;
+
+                document.body.appendChild(elemento);
+
+                const fechar = () => {
+                    elemento.classList.add('opacity-0', 'translate-x-10');
+                    setTimeout(() => elemento.remove(), 300);
+                };
+
+                elemento.querySelector('button').addEventListener('click', fechar);
+                setTimeout(fechar, 4000);
+            }
+
+            const formulario = document.querySelector('form');
+            const campoData = document.querySelector('input[name="data"]');
+
+            formulario.addEventListener('submit', function (event) {
+                const dataNascimento = new Date(campoData.value + 'T00:00:00');
+                const hoje = new Date();
+                const dataMinima = new Date();
+
+                dataMinima.setFullYear(hoje.getFullYear() - 100);
+
+                hoje.setHours(0, 0, 0, 0);
+                dataMinima.setHours(0, 0, 0, 0);
+
+
+                if (dataNascimento >= hoje) {
+                    event.preventDefault();
+                    mostrarMensagem('A data de nascimento deve ser anterior à data atual.');
+                    return;
+                }
+
+                if (dataNascimento < dataMinima) {
+                    event.preventDefault();
+                    mostrarMensagem('A idade não pode ser superior a 100 anos.');
+                    return;
+                }
+            });
+        </script>
+
 </body>
 
 </html>

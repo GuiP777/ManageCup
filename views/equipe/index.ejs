@@ -289,6 +289,11 @@
             </div>
 
             <div class="p-6 space-y-4 max-h-[520px] overflow-y-auto bg-[#f4edd7]">
+                 <% if(dadosJogadores.length === 0){ %>
+                    <div class="bg-white rounded-xl p-8 text-center shadow border border-black/10">
+                        <p class="text-lg font-semibold text-black">Não há jogadores da categoria da equipe cadastrados</p>
+                    </div>
+                <% } else { %>
 
                 <% dadosJogadores.forEach(function(jogador){ %>
 
@@ -383,6 +388,7 @@
                     </div>
 
                     <% }); %>
+                <% } %>
 
             </div>
 

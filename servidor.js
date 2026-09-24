@@ -215,6 +215,4 @@ app.get('/postagem/:id', auth.logado, postagemController.verPostagem);
 app.post('/criarComentario/:id', auth.logado, postagemController.criarComentario);
 
 
-server.listen(3000, () => {
-
-});
+server.listen(3000, () => {});

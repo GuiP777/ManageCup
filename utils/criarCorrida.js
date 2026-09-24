@@ -1,5 +1,23 @@
 function criarCorrida(participantes) {
     const quantidadeBaterias = Math.ceil(participantes.length / 8);
+
+    if (quantidadeBaterias === 1) {
+        return {
+            tipo: 'corrida',
+            baterias: [],
+            final: {
+                concluida: false,
+                participantes: participantes.map((participante, index) => ({
+                    id: index + 1,
+                    externalId: participante.externalId,
+                    name: participante.name,
+                    tempo: null,
+                    colocacao: null
+                }))
+            }
+        };
+    }
+
     const tamanhoBase = Math.floor(participantes.length / quantidadeBaterias);
     const restantes = participantes.length % quantidadeBaterias;
     const baterias = [];

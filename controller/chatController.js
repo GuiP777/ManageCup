@@ -77,8 +77,13 @@ module.exports = {
 
         const id_destinatario = req.params.id_destinatario;
 
-        const dados_destinatario = await User.findByPk(id_destinatario);
+        if (id_destinatario == req.session.usuario_id) {
+            mensagem(req, 'erro', "Não é permitido mandar mensagem para si mesmo");
+            return res.redirect("/chat");
+        }
 
+        const dados_destinatario = await User.findByPk(id_destinatario);
+        
         const mensagens = await Chat.findAll({
             where: {
                 [Op.or]: [

@@ -121,14 +121,14 @@
             </section>
         </main>
     </div>
-    <div id="dadosChat" data-usuario-id="<%= usuario_id %>" data-destinatario-id="<%= dadosDestinatario.id %>" hidden>
+    <div id="dadosChat" data-destinatario-id="<%= dadosDestinatario.id %>" hidden>
     </div>
     <div id="mensagens" data-mensagens="<%= JSON.stringify(mensagens) %>" hidden></div>
 
 
     <%- include('../mensagens') %>
 
-        <script src="/socket.io/socket.io.js"></script>
+        
 
         <script>
 
@@ -186,11 +186,7 @@
             const elementoMensagens = document.getElementById('mensagens');
             const mensagens = JSON.parse(elementoMensagens.dataset.mensagens);
 
-            const socket = io();
-
             const dadosChat = document.getElementById('dadosChat');
-
-            const usuarioId = dadosChat.dataset.usuarioId;
             const destinatarioId = dadosChat.dataset.destinatarioId;
 
             if (mensagens != null) {

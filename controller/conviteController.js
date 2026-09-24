@@ -1,4 +1,4 @@
-const { Convite, User_Voleibol_Jogador, Equipes, User_Voleibol_Treinador } = require("../model");
+const { Convite, User_Voleibol_Jogador, Equipes, User_Voleibol_Treinador, User } = require("../model");
 const mensagem = require('../utils/mensagem');
 
 function notificarJogador(req, id_usuario) {
@@ -18,7 +18,53 @@ module.exports = {
         const id_jogador = req.params.id_jogador;
         const id_equipe = req.params.id_equipe;
 
-        const usuario = await User_Voleibol_Jogador.findByPk(id_jogador);
+        const equipe = await Equipes.findByPk(id_equipe);
+        const treinador = await User_Voleibol_Treinador.findByPk(equipe.id_treinador);
+
+        const jogador = await User_Voleibol_Jogador.findByPk(id_jogador);
+        const usuario = await User.findByPk(jogador.id_usuario);
+
+        const usuarioSexo = usuario.sexo;
+        const anoAtual = new Date().getFullYear();
+        const anoNascimento = usuario.nascimento.getFullYear();
+
+        let podeConvidar = false;
+
+        switch (treinador.categoria) {
+            case 'adultoMasculino':
+                podeConvidar = usuarioSexo === 'Masculino';
+                break;
+
+            case 'adultoFeminino':
+                podeConvidar = usuarioSexo === 'Feminino';
+                break;
+
+            case 'infantoMasculino':
+                podeConvidar = usuarioSexo === 'Masculino' && anoAtual - anoNascimento === 18;
+                break;
+
+            case 'infantoFeminino':
+                podeConvidar = usuarioSexo === 'Feminino' && anoAtual - anoNascimento === 18;
+                break;
+
+            case 'juvenilMasculino':
+                podeConvidar = usuarioSexo === 'Masculino' && anoAtual - anoNascimento === 20;
+                break;
+
+            case 'juvenilFeminino':
+                podeConvidar = usuarioSexo === 'Feminino' && anoAtual - anoNascimento === 20;
+                break;
+
+            default:
+                podeConvidar = false;
+                break;
+        }
+
+        if (!podeConvidar) {
+            mensagem(req, 'erro', "Este jogador não se encaixa na categoria da sua equipe");
+            return res.redirect('/equipe');
+        }
+
         const resultado = await Convite.findAll({
             where: {
                 id_equipe: id_equipe, id_jogador: id_jogador
@@ -38,7 +84,7 @@ module.exports = {
                         status: "pendente", id_equipe: id_equipe, id_jogador: id_jogador
                     })
 
-                    notificarJogador(req, usuario.id_usuario);
+                    notificarJogador(req, jogador.id_usuario);
                     mensagem(req, 'sucesso', "Jogador convidado novamente");
                     return res.redirect('/equipe');
                 }
@@ -49,7 +95,7 @@ module.exports = {
                 status: "pendente", id_equipe: id_equipe, id_jogador: id_jogador
             })
 
-            notificarJogador(req, usuario.id_usuario);
+            notificarJogador(req, jogador.id_usuario);
             mensagem(req, 'sucesso', "Jogador convidado");
             res.redirect('/equipe');
         }
