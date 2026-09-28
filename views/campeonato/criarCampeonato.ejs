@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 
-<head> <%- include('../head'); %> </head>
+<head>
+    <%- include('../head'); %>
+</head>
 
 <body class="bg-gradient-to-b from-[#e0fcff] to-white min-h-screen flex flex-col">
     <header> <%- include('../menu'); %> </header>
@@ -9,7 +11,7 @@
 
         <div class="bg-[#1a83b8] w-full max-w-4xl rounded-xl p-8 shadow-lg">
 
-            <h1 class="text-[#f4edd7] text-4xl font-semibold  mb-8">Criar um Campeonato</h1>
+            <h1 class="text-[#f4edd7] text-4xl font-semibold mb-8">Criar um Campeonato</h1>
 
             <form action="/cadastroCampeonato" method="POST" enctype="multipart/form-data"
                 class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 text-[#f4edd7]">
@@ -20,12 +22,18 @@
                         class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
                 </div>
 
-                <div class="hidden md:block"></div>
+                <div class="flex flex-col">
+                    <label for="categoria" class="mb-1 text-[1.1rem]">Categoria</label>
+                    <select id="categoria" name="categoria"
+                        class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                        <option value="" selected disabled>Selecione o esporte</option>
+                    </select>
+                </div>
 
                 <div class="flex flex-col relative">
                     <label for="esporte" class="mb-1 text-[1.1rem]">Esporte</label>
                     <select id="esporte" name="esporte"
-                        class=" bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
+                        class="bg-[#f4edd7] text-black rounded-md px-3 py-1.5 focus:outline-none shadow-sm w-full h-9">
                         <option value="" disabled <% if(modalidade=="" ){%>selected<% } %>>Selecione</option>
                         <option value="voleibol" <% if(modalidade=="Voleibol" ){%>selected<% } %>>Voleibol</option>
                         <option value="boxe" <% if(modalidade=="Boxe" ){%>selected<% } %>>Boxe</option>
@@ -64,7 +72,7 @@
                     </label>
                 </div>
 
-                <div class="flex justify-center ">
+                <div class="flex justify-center">
                     <button type="submit" class="w-1/2 h-2/3 mt-auto font-sans text-lg cursor-pointer bg-[#c24e54] 
                         text-white font-semibold border-2 border-black rounded-lg hover:bg-[#a63f44]
                         shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
@@ -77,6 +85,133 @@
     </main>
     <%- include('../mensagens') %>
 
+        <script>
+            function mostrarMensagem(texto, tipo = 'erro') {
+                const existente = document.getElementById('mensagem');
+                if (existente) existente.remove();
+
+                const cor = tipo === 'sucesso'
+                    ? 'bg-green-500'
+                    : tipo === 'erro'
+                        ? 'bg-red-500'
+                        : 'bg-blue-500';
+
+                const elemento = document.createElement('div');
+                elemento.id = 'mensagem';
+                elemento.className = `fixed top-5 right-5 z-50 min-w-[320px] max-w-[400px] px-5 py-4 rounded-xl shadow-2xl text-white flex items-center justify-between gap-4 animate-slideIn ${cor}`;
+
+                elemento.innerHTML = `
+                <div>
+                    <p class="font-semibold">${texto}</p>
+                </div>
+                <button class="text-2xl leading-none hover:scale-110 transition">&times;</button>
+            `;
+
+                document.body.appendChild(elemento);
+
+                const fechar = () => {
+                    elemento.classList.add('opacity-0', 'translate-x-10');
+                    setTimeout(() => elemento.remove(), 300);
+                };
+
+                elemento.querySelector('button').addEventListener('click', fechar);
+                setTimeout(fechar, 4000);
+            }
+
+            const formulario = document.querySelector('form');
+            const campoData = document.querySelector('input[name="data"]');
+            const esporte = document.querySelector('#esporte');
+            const categoria = document.querySelector('#categoria');
+
+            const categorias = {
+                voleibol: [
+                    { value: 'adultoMasculino', texto: 'Adulta - Masculino' },
+                    { value: 'adultoFeminino', texto: 'Adulta - Feminino' },
+                    { value: 'infantoMasculino', texto: 'Infanto - Masculino' },
+                    { value: 'infantoFeminino', texto: 'Infanto - Feminino' },
+                    { value: 'juvenilMasculino', texto: 'Juvenil - Masculino' },
+                    { value: 'juvenilFeminino', texto: 'Juvenil - Feminino' }
+                ],
+                boxe: [
+                    { value: 'palha', texto: 'Peso Palha - até 47,63 kg' },
+                    { value: 'moscaLigeiro', texto: 'Peso Mosca Ligeiro - até 48,99 kg' },
+                    { value: 'mosca', texto: 'Peso Mosca - até 50,80 kg' },
+                    { value: 'supermosca', texto: 'Peso Supermosca - até 52,16 kg' },
+                    { value: 'galo', texto: 'Peso Galo - até 53,42 kg' },
+                    { value: 'supergalo', texto: 'Peso Super Galo - até 55,34 kg' },
+                    { value: 'pena', texto: 'Peso Pena - até 57,15 kg' },
+                    { value: 'superpena', texto: 'Peso Super Pena - até 58,97 kg' },
+                    { value: 'leve', texto: 'Peso Leve - até 61,23 kg' },
+                    { value: 'superleve', texto: 'Peso Super Leve - até 63,50 kg' },
+                    { value: 'meioMedio', texto: 'Peso Meio-Médio - até 66,68 kg' },
+                    { value: 'superMeioMedio', texto: 'Peso Super Meio-Médio - até 69,85 kg' },
+                    { value: 'medio', texto: 'Peso Médio - até 72,58 kg' },
+                    { value: 'superMedio', texto: 'Peso Super Médio - até 76,20 kg' },
+                    { value: 'meioPesado', texto: 'Peso Meio-Pesado - até 79,38 kg' },
+                    { value: 'cruzador', texto: 'Peso Cruzador - até 90,71 kg' },
+                    { value: 'ponte', texto: 'Peso Ponte - até 101,60 kg' },
+                    { value: 'pesado', texto: 'Peso Pesado - mais de 90,71 kg' }
+                ],
+                corrida: [
+                    { value: '100m', texto: 'Velocidade - 100m' },
+                    { value: '200m', texto: 'Velocidade - 200m' },
+                    { value: '400m', texto: 'Velocidade - 400m' },
+                    { value: '4x100m', texto: 'Revezamento - 4x100m' },
+                    { value: '4x400m', texto: 'Revezamento - 4x400m' },
+                    { value: '800m', texto: 'Meio-Fundo - 800m' },
+                    { value: '1500m', texto: 'Meio-Fundo - 1.500m' },
+                    { value: '5000m', texto: 'Fundo - 5.000m' },
+                    { value: '10000m', texto: 'Fundo - 10.000m' },
+                    { value: '110mBarreiras', texto: 'Barreiras e Obstáculos - 110m com barreiras' },
+                    { value: '3000mObstaculos', texto: 'Barreiras e Obstáculos - 3.000m com obstáculos' },
+                    { value: '5km', texto: 'Corrida de Rua - 5 km' },
+                    { value: '10km', texto: 'Corrida de Rua - 10 km' },
+                    { value: 'meiaMaratona', texto: 'Corrida de Rua - Meia Maratona (21,097 km)' },
+                    { value: 'maratona', texto: 'Corrida de Rua - Maratona (42,195 km)' },
+                    { value: 'ultramaratona', texto: 'Corrida de Rua - Ultramaratona (acima de 42,195 km)' }
+                ]
+            };
+
+            esporte.addEventListener('change', function () {
+                categoria.innerHTML = '<option value="" selected disabled>Selecione</option>';
+
+                if (categorias[this.value]) {
+                    categorias[this.value].forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.value;
+                        option.textContent = item.texto;
+                        categoria.appendChild(option);
+                    });
+                }
+            });
+
+            formulario.addEventListener('submit', function (event) {
+                const valorData = campoData.value;
+
+                if (!valorData || !/^\d{4}-\d{2}-\d{2}$/.test(valorData)) {
+                    event.preventDefault();
+                    mostrarMensagem('Informe uma data válida.');
+                    return;
+                }
+
+                const dataSelecionada = new Date(valorData + 'T00:00:00');
+                const hoje = new Date();
+
+                if (isNaN(dataSelecionada.getTime())) {
+                    event.preventDefault();
+                    mostrarMensagem('Informe uma data válida.');
+                    return;
+                }
+
+                hoje.setHours(0, 0, 0, 0);
+         
+                if (dataSelecionada < hoje) {
+                    event.preventDefault();
+                    mostrarMensagem('A data de ocorrência deve ser posterior à data atual.');
+                    return;
+                }
+            });
+        </script>
 </body>
 
 </html>

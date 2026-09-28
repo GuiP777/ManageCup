@@ -194,6 +194,7 @@ app.post('/campeonato/:id/criarChaveamento', auth.logado, campeonatoController.c
 app.post('/campeonato/:id/chaveamento/:matchId/resultado', campeonatoController.registrarResultado);
 
 app.get('/inscrever/:id', auth.logado, inscritos_campeonatoController.inscrever);
+app.post('/desinscreverCampeonato', auth.logado, inscritos_campeonatoController.desinscrever);
 
 app.get('/equipe', auth.logado, equipeController.pagEquipe);
 app.get('/removerJogador/:id_jogador/:id_equipe', auth.logado, equipeController.removerJogador);

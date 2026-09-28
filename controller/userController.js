@@ -99,7 +99,6 @@ module.exports = {
                     });
                     bcrypt.hash(fields['senha'][0], 10, async function (err, hashPassword) {
                         if (err) throw err;
-                        console.log("ERRROO" + fields['senha'][0]);
                         User.create({
                             nome: fields['nome'][0], email: fields['email'][0], senha: hashPassword, nascimento: fields['data'][0], sexo: fields['sexo'][0], avatar: nomeimg
                         })
