@@ -18,6 +18,10 @@ const Campeonatos = database.define('campeonatos', {
         type: Sequelize.STRING(50),
         allowNull: false,
     },
+    sexo: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+    },
     inscricoes: {
         type: Sequelize.INTEGER,
         allowNull: false,
