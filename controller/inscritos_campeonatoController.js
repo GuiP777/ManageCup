@@ -1,4 +1,4 @@
-const { Inscritos_Campeonato, Campeonatos, User_Voleibol_Jogador, User_Boxe, User_Voleibol_Treinador } = require("../model");
+const { Inscritos_Campeonato, Campeonatos, User_Voleibol_Jogador, User_Boxe, User_Voleibol_Treinador, User } = require("../model");
 const mensagem = require('../utils/mensagem');
 
 module.exports = {
@@ -47,11 +47,15 @@ module.exports = {
                         }
                     });
 
-                    if (treinador.categoria !== campeonato.categoria) {
-                        mensagem(req, 'erro', "Sua categoria não corresponde à categoria do campeonato");
+                    const categoriaTreinador = treinador.categoria.replace(/Masculino|Feminino/, '');
+                    const sexoTreinador = treinador.categoria.includes('Masculino') ? 'masculino' : 'feminino';
+
+                    if (categoriaTreinador !== campeonato.categoria || sexoTreinador !== campeonato.sexo) {
+                        mensagem(req, 'erro', "Sua categoria ou sexo não corresponde à categoria do campeonato");
                         flag = 2;
                         break;
                     }
+
                     flag = 1;
                     break;
                 }
@@ -90,6 +94,13 @@ module.exports = {
 
                     if (!limite || peso < limite[0] || peso > limite[1]) {
                         mensagem(req, 'erro', "Seu peso não corresponde à categoria do campeonato");
+                        flag = 2;
+                        break;
+                    }
+
+                    const usuario = await User.findByPk(id_user);
+                    if (usuario.sexo.toLowerCase() !== campeonato.sexo) {
+                        mensagem(req, 'erro', "Seu sexo não corresponde à categoria do campeonato");
                         flag = 2;
                         break;
                     }

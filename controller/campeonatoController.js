@@ -95,7 +95,7 @@ module.exports = {
             await Campeonatos.create({
                 nome: fields['nome'][0], esporte: fields['esporte'][0], id_organizador: req.session.usuario_id,
                 data: fields['data'][0], inscricoes: fields['inscricoes'][0], localizacao: fields['localizacao'][0],
-                imagem: nomeimg, iniciado: false, categoria: fields['categoria'][0]
+                imagem: nomeimg, iniciado: false, categoria: fields['categoria'][0], sexo: fields['sexo'][0]
             })
 
             mensagem(req, 'sucesso', "Campeonato criado com sucesso");

@@ -26,7 +26,9 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
                             <p><span class="font-bold text-black">Esporte:</span>
-                                <%= dadosCampeonatos.esporte %>
+                                <% const esportes={ 'voleibol' : 'Voleibol ' , 'boxe' : 'Boxe ' ,
+                                                         'corrida' : 'Corrida ' } %>
+                                    <%= esportes[dadosCampeonatos.esporte] || dadosCampeonatos.esporte %>
                             </p>
                             <p><span class="font-bold text-black">Organizador:</span>
                                 <%= dadosCampeonatos.organizador.nome %>
@@ -45,49 +47,40 @@
                             </p>
 
                              <p><span class="font-bold text-black">Categoria:</span>
-                                    <% const categorias = {
-                                        'adultoMasculino': 'Adulta - Masculino',
-                                        'adultoFeminino': 'Adulta - Feminino',
-                                        'infantoMasculino': 'Infanto - Masculino',
-                                        'infantoFeminino': 'Infanto - Feminino',
-                                        'juvenilMasculino': 'Juvenil - Masculino',
-                                        'juvenilFeminino': 'Juvenil - Feminino',
-                                        'palha': 'Peso Palha - até 47,63 kg',
-                                        'moscaLigeiro': 'Peso Mosca Ligeiro - até 48,99 kg',
-                                        'mosca': 'Peso Mosca - até 50,80 kg',
-                                        'supermosca': 'Peso Supermosca - até 52,16 kg',
-                                        'galo': 'Peso Galo - até 53,42 kg',
-                                        'supergalo': 'Peso Super Galo - até 55,34 kg',
-                                        'pena': 'Peso Pena - até 57,15 kg',
-                                        'superpena': 'Peso Super Pena - até 58,97 kg',
-                                        'leve': 'Peso Leve - até 61,23 kg',
-                                        'superleve': 'Peso Super Leve - até 63,50 kg',
-                                        'meioMedio': 'Peso Meio-Médio - até 66,68 kg',
-                                        'superMeioMedio': 'Peso Super Meio-Médio - até 69,85 kg',
-                                        'medio': 'Peso Médio - até 72,58 kg',
-                                        'superMedio': 'Peso Super Médio - até 76,20 kg',
-                                        'meioPesado': 'Peso Meio-Pesado - até 79,38 kg',
-                                        'cruzador': 'Peso Cruzador - até 90,71 kg',
-                                        'ponte': 'Peso Ponte - até 101,60 kg',
-                                        'pesado': 'Peso Pesado - mais de 90,71 kg',
-                                        '100m': 'Velocidade - 100m',
-                                        '200m': 'Velocidade - 200m',
-                                        '400m': 'Velocidade - 400m',
-                                        '4x100m': 'Revezamento - 4x100m',
-                                        '4x400m': 'Revezamento - 4x400m',
-                                        '800m': 'Meio-Fundo - 800m',
-                                        '1500m': 'Meio-Fundo - 1.500m',
-                                        '5000m': 'Fundo - 5.000m',
-                                        '10000m': 'Fundo - 10.000m',
-                                        '110mBarreiras': 'Barreiras e Obstáculos - 110m com barreiras',
-                                        '3000mObstaculos': 'Barreiras e Obstáculos - 3.000m com obstáculos',
-                                        '5km': 'Corrida de Rua - 5 km',
-                                        '10km': 'Corrida de Rua - 10 km',
-                                        'meiaMaratona': 'Corrida de Rua - Meia Maratona (21,097 km)',
-                                        'maratona': 'Corrida de Rua - Maratona (42,195 km)',
-                                        'ultramaratona': 'Corrida de Rua - Ultramaratona (acima de 42,195 km)'
-                                    }; %>
-                                    <%= categorias[dadosCampeonatos.categoria] || dadosCampeonatos.categoria %>
+                                    <% const categorias={ 'adulto' : 'Adulto ' , 'adulto'
+                                        : 'Adulto' , 'infanto' : 'Infanto '
+                                        , 'infanto' : 'Infanto' , 'juvenil'
+                                        : 'Juvenil' , 'juvenil' : 'Juvenil' , 'palha'
+                                        : 'Peso Palha - 0 até 47,63 kg' , 'moscaLigeiro'
+                                        : 'Peso Mosca Ligeiro - 47,64 até 48,99 kg' , 'mosca'
+                                        : 'Peso Mosca - 49,00 até 50,80 kg' , 'supermosca'
+                                        : 'Peso Supermosca - 50,81 até 52,16 kg' , 'galo'
+                                        : 'Peso Galo - 52,17 até 53,42 kg' , 'supergalo'
+                                        : 'Peso Super Galo - 53,43 até 55,34 kg' , 'pena'
+                                        : 'Peso Pena - 55,35 até 57,15 kg' , 'superpena'
+                                        : 'Peso Super Pena - 57,16 até 58,97 kg' , 'leve'
+                                        : 'Peso Leve - 58,98 até 61,23 kg' , 'superleve'
+                                        : 'Peso Super Leve - 61,24 até 63,50 kg' , 'meioMedio'
+                                        : 'Peso Meio-Médio - 63,51 até 66,68 kg' , 'superMeioMedio'
+                                        : 'Peso Super Meio-Médio - 66,69 até 69,85 kg' , 'medio'
+                                        : 'Peso Médio - 69,86 até 72,58 kg' , 'superMedio'
+                                        : 'Peso Super Médio - 72,59 até 76,20 kg' , 'meioPesado'
+                                        : 'Peso Meio-Pesado - 76,21 até 79,38 kg' , 'cruzador'
+                                        : 'Peso Cruzador - 79,39 até 90,71 kg' , 'ponte'
+                                        : 'Peso Ponte - 90,72 até 101,60 kg' , 'pesado'
+                                        : 'Peso Pesado - mais de 101,60 kg' , '100m' : 'Velocidade - 100m' , '200m'
+                                        : 'Velocidade - 200m' , '400m' : 'Velocidade - 400m' , '4x100m'
+                                        : 'Revezamento - 4x100m' , '4x400m' : 'Revezamento - 4x400m' , '800m'
+                                        : 'Meio-Fundo - 800m' , '1500m' : 'Meio-Fundo - 1.500m' , '5000m'
+                                        : 'Fundo - 5.000m' , '10000m' : 'Fundo - 10.000m' , '110mBarreiras'
+                                        : 'Barreiras e Obstáculos - 110m com barreiras' , '3000mObstaculos'
+                                        : 'Barreiras e Obstáculos - 3.000m com obstáculos' , '5km'
+                                        : 'Corrida de Rua - 5 km' , '10km' : 'Corrida de Rua - 10 km' , 'meiaMaratona'
+                                        : 'Corrida de Rua - Meia Maratona (21,097 km)' , 'maratona'
+                                        : 'Corrida de Rua - Maratona (42,195 km)' , 'ultramaratona'
+                                        : 'Corrida de Rua - Ultramaratona (acima de 42,195 km)' }; %>
+                                        <%= categorias[dadosCampeonatos.categoria] || dadosCampeonatos.categoria %>
+                                            - <%= dadosCampeonatos.sexo %>
                                 </p>
 
                             <div

@@ -1,8 +1,5 @@
-const fs = require('fs');
-const crypto = require('crypto');
-const path = require('path');
-const { User_Boxe } = require("../model");
-const bcrypt = require('bcrypt');
+
+const { User_Boxe, Inscritos_Campeonato, Campeonatos } = require("../model");
 const mensagem = require('../utils/mensagem');
 
 module.exports = {
@@ -59,6 +56,22 @@ module.exports = {
         var peso = req.body['peso'];
         var treinador = req.body['treinador'];
         var quantidadeLutas = req.body['quantidadeLutas'];
+
+        const inscrito = await Inscritos_Campeonato.findOne({
+            raw: false,
+            where: { id_usuario: req.session.usuario_id },
+            include: [
+                {
+                    model: Campeonatos,
+                    as: 'campeonatoInscritos',
+                    where: { esporte: 'boxe' }
+                }
+            ]
+        });
+        if (inscrito) {
+            mensagem(req, 'erro', "Não é possível editar o perfil enquanto estiver inscrito em um campeonato.");
+            return res.redirect('/perfil');
+        }
 
         if (!apelido && !peso && !treinador && !quantidadeLutas) {
             mensagem(req, 'erro', "Preencha pelo menos uma informação!");

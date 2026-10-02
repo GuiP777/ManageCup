@@ -32,27 +32,27 @@ module.exports = {
 
         switch (treinador.categoria) {
             case 'adultoMasculino':
-                podeConvidar = usuarioSexo === 'Masculino';
+                podeConvidar = usuarioSexo === 'masculino';
                 break;
 
             case 'adultoFeminino':
-                podeConvidar = usuarioSexo === 'Feminino';
+                podeConvidar = usuarioSexo === 'feminino';
                 break;
 
             case 'infantoMasculino':
-                podeConvidar = usuarioSexo === 'Masculino' && anoAtual - anoNascimento === 18;
+                podeConvidar = usuarioSexo === 'masculino' && anoAtual - anoNascimento === 18;
                 break;
 
             case 'infantoFeminino':
-                podeConvidar = usuarioSexo === 'Feminino' && anoAtual - anoNascimento === 18;
+                podeConvidar = usuarioSexo === 'feminino' && anoAtual - anoNascimento === 18;
                 break;
 
             case 'juvenilMasculino':
-                podeConvidar = usuarioSexo === 'Masculino' && anoAtual - anoNascimento === 20;
+                podeConvidar = usuarioSexo === 'masculino' && anoAtual - anoNascimento === 20;
                 break;
 
             case 'juvenilFeminino':
-                podeConvidar = usuarioSexo === 'Feminino' && anoAtual - anoNascimento === 20;
+                podeConvidar = usuarioSexo === 'feminino' && anoAtual - anoNascimento === 20;
                 break;
 
             default:

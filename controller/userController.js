@@ -2,7 +2,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
 const bcrypt = require('bcrypt');
-const { User, User_Boxe, User_Corrida, User_Voleibol_Jogador, User_Voleibol_Treinador } = require("../model");
+const { User, User_Boxe, User_Corrida, User_Voleibol_Jogador, User_Voleibol_Treinador, Inscritos_Campeonato } = require("../model");
 const mensagem = require('../utils/mensagem');
 
 module.exports = {
@@ -185,6 +185,14 @@ module.exports = {
         const id = req.session.usuario_id;
         const formidable = require('formidable');
         const form = new formidable.IncomingForm({ allowEmptyFiles: true, minFileSize: 0 });
+
+        const inscrito = await Inscritos_Campeonato.findOne({
+            where: { id_usuario: id }
+        });
+        if (inscrito) {
+            mensagem(req, 'erro', "Não é possível editar o perfil enquanto estiver inscrito em um campeonato.");
+            return res.redirect('/perfil');
+        }
 
         form.parse(req, async (err, fields, files) => {
             if (err) {

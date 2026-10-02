@@ -1,7 +1,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
-const { User_Voleibol_Treinador, Equipes, User_Voleibol_Jogador, Inscritos_Campeonato } = require("../model");
+const { User_Voleibol_Treinador, Equipes, User_Voleibol_Jogador, Inscritos_Campeonato, Campeonatos } = require("../model");
 const bcrypt = require('bcrypt');
 const mensagem = require('../utils/mensagem');
 
@@ -65,6 +65,23 @@ module.exports = {
         var nomeEquipe = req.body['nomeEquipe'];
         var categoria = req.body['categoria'];
 
+        const inscritoEmCameponatos = await Inscritos_Campeonato.findAll({
+            raw: false,
+            where: { id_usuario: req.session.usuario_id },
+            include: [
+                {
+                    model: Campeonatos,
+                    as: 'campeonatoInscritos',
+                    where: { esporte: 'voleibol' }
+                }
+            ]
+        });
+
+        if (inscritoEmCameponatos.length > 0) {
+            mensagem(req, 'erro', "Você não pode modificar seu perfil em quanto estiver inscrito em um campeonato");
+            return res.redirect('/perfil');
+        }
+
         if (categoria) {
             const treinador = await User_Voleibol_Treinador.findOne({
                 where: { id_usuario: req.session.usuario_id }
@@ -76,17 +93,9 @@ module.exports = {
                 const jogadoresNaEquipe = await User_Voleibol_Jogador.findAll({
                     where: { id_equipe: equipe.id }
                 });
-                const inscritoEmCameponatos = await Inscritos_Campeonato.findAll({
-                    where: { id_usuario: req.session.usuario_id }
-                });
 
                 if (jogadoresNaEquipe.length > 0) {
                     mensagem(req, 'erro', "Você deve remover todos os jogadores da sua equipe para poder modificar a categoria");
-                    return res.redirect('/perfil');
-                }
-
-                if (inscritoEmCameponatos.length > 0) {
-                    mensagem(req, 'erro', "Você não pode modificar sua categoria em quanto estiver inscrito em um campeonato");
                     return res.redirect('/perfil');
                 }
             }
