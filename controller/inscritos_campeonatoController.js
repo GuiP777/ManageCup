@@ -50,10 +50,17 @@ module.exports = {
                     const categoriaTreinador = treinador.categoria.replace(/Masculino|Feminino/, '');
                     const sexoTreinador = treinador.categoria.includes('Masculino') ? 'masculino' : 'feminino';
 
-                    if (categoriaTreinador !== campeonato.categoria || sexoTreinador !== campeonato.sexo) {
-                        mensagem(req, 'erro', "Sua categoria ou sexo não corresponde à categoria do campeonato");
+                    if (categoriaTreinador !== campeonato.categoria) {
+                        mensagem(req, 'erro', "Sua categoria não corresponde à categoria do campeonato");
                         flag = 2;
                         break;
+                    }
+                    if (campeonato.sexo !== 'mista') {
+                        if (sexoTreinador !== campeonato.sexo) {
+                            mensagem(req, 'erro', "Sua categoria não corresponde à categoria do campeonato");
+                            flag = 2;
+                            break;
+                        }
                     }
 
                     flag = 1;
@@ -109,9 +116,18 @@ module.exports = {
                     break;
                 }
             case "corrida":
-                if (perfis.corrida)
+                if (perfis.corrida) {
+                    const usuario = await User.findByPk(id_user);
+                    if (campeonato.sexo !== 'mista') {
+                        if (usuario.sexo.toLowerCase() !== campeonato.sexo) {
+                            mensagem(req, 'erro', "Seu sexo não corresponde à categoria do campeonato");
+                            flag = 2;
+                            break;
+                        }
+                    }
                     flag = 1;
-                break;
+                    break;
+                }
         }
 
         if (flag == 1) {

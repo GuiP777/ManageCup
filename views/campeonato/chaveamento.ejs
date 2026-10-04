@@ -38,10 +38,10 @@
                     Voltar
                 </a>
             </div>
-            <div
-                class="bg-white/80 rounded-2xl shadow-md border border-gray-100 p-4 md:p-6 w-full max-w-[1400px] max-w-none mx-auto overflow-hidden">
-                <div id="bracket" class="brackets-viewer w-full"></div>
-                <div id="corrida" class="hidden w-full"></div>
+            <div class="bg-white/80 rounded-2xl shadow-md border border-gray-100 p-4 
+                md:p-6 w-full max-w-[1400px] max-w-none mx-auto overflow-hidden <%if (campeonato.id_organizador != usuario_id) { %>pointer-events-none<% } %>">
+                <div id="bracket" class="brackets-viewer w-full <%if (campeonato.id_organizador != usuario_id) { %>pointer-events-none<% } %>"></div>
+                <div id="corrida" class="hidden w-full <%if (campeonato.id_organizador != usuario_id) { %>pointer-events-none<% } %>"></div>
             </div>
         </div>
     </main>

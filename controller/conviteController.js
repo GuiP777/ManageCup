@@ -24,7 +24,7 @@ module.exports = {
         const jogador = await User_Voleibol_Jogador.findByPk(id_jogador);
         const usuario = await User.findByPk(jogador.id_usuario);
 
-        const usuarioSexo = usuario.sexo;
+        const usuarioSexo = usuario.sexo.toLowerCase();
         const anoAtual = new Date().getFullYear();
         const anoNascimento = usuario.nascimento.getFullYear();
 

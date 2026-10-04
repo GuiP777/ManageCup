@@ -222,6 +222,14 @@ module.exports = {
             const id = req.params.id;
             const campeonato = await Campeonatos.findByPk(id);
 
+            const hoje = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+            const data = new Date(campeonato.data).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+
+            if (hoje !== data) {
+                mensagem(req, 'erro', 'Só é possível iniciar o campeonato no dia do evento');
+                return res.redirect('/campeonato');
+            }
+
             if (campeonato.id_organizador != req.session.usuario_id) {
                 mensagem(req, 'erro', 'Somente o organizador deste campeonato pode inicia-lo');
                 return res.redirect('/campeonato');

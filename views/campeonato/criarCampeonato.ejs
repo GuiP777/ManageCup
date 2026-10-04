@@ -158,8 +158,6 @@
                     { value: '100m', texto: 'Velocidade - 100m' },
                     { value: '200m', texto: 'Velocidade - 200m' },
                     { value: '400m', texto: 'Velocidade - 400m' },
-                    { value: '4x100m', texto: 'Revezamento - 4x100m' },
-                    { value: '4x400m', texto: 'Revezamento - 4x400m' },
                     { value: '800m', texto: 'Meio-Fundo - 800m' },
                     { value: '1500m', texto: 'Meio-Fundo - 1.500m' },
                     { value: '5000m', texto: 'Fundo - 5.000m' },
@@ -191,7 +189,16 @@
                         <option value="feminino">Feminino</option>
                         <option value="mista" selected>Mista</option>
                     `;
+
+                } else if (this.value === 'voleibol') {
+                    sexo.innerHTML = `
+                        <option value="" selected disabled>Selecione o sexo</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                        <option value="mista" selected>Mista</option>
+                    `;
                 } else {
+
                     sexo.innerHTML = `
                     <option value="" selected disabled>Selecione o sexo</option>
                     <option value="masculino">Masculino</option>
