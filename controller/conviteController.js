@@ -40,19 +40,19 @@ module.exports = {
                 break;
 
             case 'infantoMasculino':
-                podeConvidar = usuarioSexo === 'masculino' && anoAtual - anoNascimento === 18;
+                podeConvidar = usuarioSexo === 'masculino' && anoAtual - anoNascimento <= 18;
                 break;
 
             case 'infantoFeminino':
-                podeConvidar = usuarioSexo === 'feminino' && anoAtual - anoNascimento === 18;
+                podeConvidar = usuarioSexo === 'feminino' && anoAtual - anoNascimento <= 18;
                 break;
 
             case 'juvenilMasculino':
-                podeConvidar = usuarioSexo === 'masculino' && anoAtual - anoNascimento === 20;
+                podeConvidar = usuarioSexo === 'masculino' && anoAtual - anoNascimento <= 20;
                 break;
 
             case 'juvenilFeminino':
-                podeConvidar = usuarioSexo === 'feminino' && anoAtual - anoNascimento === 20;
+                podeConvidar = usuarioSexo === 'feminino' && anoAtual - anoNascimento <= 20;
                 break;
 
             default:

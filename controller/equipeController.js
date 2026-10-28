@@ -82,8 +82,7 @@ module.exports = {
                         sexo: sexo,
                         ...(anoNascimento && {
                             nascimento: {
-                                [Op.gte]: new Date(anoNascimento, 0, 1),
-                                [Op.lt]: new Date(anoNascimento + 1, 0, 1)
+                                [Op.gte]: new Date(anoNascimento, 0, 1)
                             }
                         })
                     }
