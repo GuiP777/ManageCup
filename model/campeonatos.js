@@ -42,8 +42,8 @@ const Campeonatos = database.define('campeonatos', {
         type: Sequelize.TEXT('long'),
         allowNull: true
     },
-    iniciado: {
-        type: Sequelize.BOOLEAN,
+    status: {
+        type: Sequelize.STRING(50),
         allowNull: false,
     },
     id_organizador: {

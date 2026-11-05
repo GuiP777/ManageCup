@@ -95,7 +95,7 @@ module.exports = {
             await Campeonatos.create({
                 nome: fields['nome'][0], esporte: fields['esporte'][0], id_organizador: req.session.usuario_id,
                 data: fields['data'][0], inscricoes: fields['inscricoes'][0], localizacao: fields['localizacao'][0],
-                imagem: nomeimg, iniciado: false, categoria: fields['categoria'][0], sexo: fields['sexo'][0]
+                imagem: nomeimg, status: "aguardando", categoria: fields['categoria'][0], sexo: fields['sexo'][0]
             })
 
             mensagem(req, 'sucesso', "Campeonato criado com sucesso");
@@ -223,7 +223,7 @@ module.exports = {
             const campeonato = await Campeonatos.findByPk(id);
 
             const hoje = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-            const data = new Date(campeonato.data).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+            const data = campeonato.data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 
             if (hoje !== data) {
                 mensagem(req, 'erro', 'Só é possível iniciar o campeonato no dia do evento');
@@ -269,7 +269,7 @@ module.exports = {
             await Campeonatos.update(
                 {
                     bracket_data: JSON.stringify(bracketData),
-                    iniciado: true
+                    status: "iniciado"
                 },
                 {
                     where: {
@@ -602,5 +602,18 @@ module.exports = {
             console.error(erro);
             return res.status(500).json({ erro: 'Erro ao registrar resultado.' });
         }
-    }
+    },
+
+    finalizarCampeonato: async function (req, res) {
+
+        const campeonatoId = req.params.id;
+
+        await Campeonatos.update({
+            status: 'finalizado'
+        },
+            { where: { id: campeonatoId } });
+
+        mensagem(req, 'sucesso', 'Campeonato finalizado com sucesso');
+        return res.redirect('/campeonato');
+    },
 }

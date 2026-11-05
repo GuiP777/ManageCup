@@ -34,10 +34,12 @@
                                 <%= dadosCampeonatos.organizador.nome %>
                             </p>
                             <p><span class="font-bold text-black">Data:</span>
-                                <%= dadosCampeonatos.data.toLocaleDateString('pt-BR', { 
-                                    day: '2-digit' , 
-                                    month: 'long' ,
-                                    year: 'numeric' }) %>
+                                <%= dadosCampeonatos.data.toLocaleDateString('pt-BR', {
+                                    timeZone: 'UTC',
+                                    day: '2-digit',
+                                    month: 'long',
+                                    year: 'numeric'
+                                }) %>
                             </p>
                             <p><span class="font-bold text-black">Local:</span>
                                 <%= dadosCampeonatos.localizacao %>

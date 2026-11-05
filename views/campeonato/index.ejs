@@ -150,7 +150,21 @@
                                 </p>
                             </div>
                         </div>
-                        <% if(campeonato.iniciado) { %>
+                        <% if(campeonato.status === "finalizado") { %>
+                                    <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
+                                        <h1 class="text-lg text-[#1a83b8]">Campeonato Finalizado</h1>
+                                        <a href="/campeonato/<%= campeonato.id %>/chaveamento">
+                                            <button
+                                                class="bg-[#ffe58f] text-[#1a83b8] border-2 border-black rounded-lg px-5 py-2 
+                                                    hover:bg-[#fce597] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                                                    hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                                Ver Resultado
+                                            </button>
+                                        </a>
+                                    </div>
+                                    
+                                <% }else{ %>
+                        <% if(campeonato.status === "iniciado") { %>
                             <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
                                 <a href="/campeonato/<%= campeonato.id %>/chaveamento">
                                     <button
@@ -161,7 +175,7 @@
                                     </button>
                                 </a>
                             </div>
-                            <% }else{ %>
+                            <% }else{ %>                                
                                 <% if(campeonato.id_organizador==usuario_id) { %>
                                     <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
                                         <form action="/campeonato/<%= campeonato.id %>/criarChaveamento" method="POST">
@@ -205,9 +219,11 @@
                                                     </div>
                                                     <% } %>
                                                         <% } %>
+                                                         <% } %>
                                             </div>
-
+                                               
                                             <% }) %>
+                                           
 
                     </div>
 
