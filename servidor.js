@@ -193,6 +193,7 @@ app.get('/campeonato/:id/chaveamento', campeonatoController.pagChaveamento);
 app.post('/campeonato/:id/criarChaveamento', auth.logado, campeonatoController.criarChaveamento);
 app.post('/campeonato/:id/chaveamento/:matchId/resultado', auth.logado, campeonatoController.registrarResultado);
 app.get('/finalizarCampeonato/:id', auth.logado, campeonatoController.finalizarCampeonato);
+app.post('/cancelarCampeonato', auth.logado, campeonatoController.cancelarCampeonato);
 
 app.get('/inscrever/:id', auth.logado, inscritos_campeonatoController.inscrever);
 app.post('/desinscreverCampeonato', auth.logado, inscritos_campeonatoController.desinscrever);

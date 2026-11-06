@@ -615,4 +615,16 @@ module.exports = {
         mensagem(req, 'sucesso', 'Campeonato finalizado com sucesso');
         return res.redirect('/campeonato');
     },
+
+    cancelarCampeonato: async function (req, res) {
+        const campeonatoId = req.body.id_campeonato;
+
+        await Campeonatos.update({
+            status: 'cancelado'
+        },
+            { where: { id: campeonatoId } });
+
+        mensagem(req, 'sucesso', 'Campeonato cancelado com sucesso');
+        return res.redirect('/campeonato');
+    }
 }

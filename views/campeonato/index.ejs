@@ -150,6 +150,12 @@
                                 </p>
                             </div>
                         </div>
+                         <% if(campeonato.status === "cancelado") { %>
+                                    <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
+                                        <h1 class="text-lg text-[#a63f44]">Campeonato Cancelado</h1>        
+                                    </div>
+                                    
+                        <% }else{ %>
                         <% if(campeonato.status === "finalizado") { %>
                                     <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
                                         <h1 class="text-lg text-[#1a83b8]">Campeonato Finalizado</h1>
@@ -163,7 +169,7 @@
                                         </a>
                                     </div>
                                     
-                                <% }else{ %>
+                        <% }else{ %>
                         <% if(campeonato.status === "iniciado") { %>
                             <div class="flex flex-col gap-3 mt-5 md:mt-0 min-w-[170px]">
                                 <a href="/campeonato/<%= campeonato.id %>/chaveamento">
@@ -186,6 +192,12 @@
                                                 Criar chaveamento
                                             </button>
                                         </form>
+                                         <button type="button"
+                                                    onclick="abrirModalCancelamento('<%= campeonato.id %>')" class="bg-[#c24e54] text-white border-2 border-black rounded-lg px-5 py-2 
+            hover:bg-[#a63f44] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+            hover:translate-y-[2px] hover:translate-x-[2px] w-full cursor-pointer font-semibold">
+                                                    Cancelar Campeonato
+                                                </button>
                                     </div>
                                     <% }else{ %>
                                         <% if(campeonato.inscritosCamp.some(inscrito=> inscrito.id_usuario ==
@@ -219,6 +231,7 @@
                                                     </div>
                                                     <% } %>
                                                         <% } %>
+                                                         <% } %>
                                                          <% } %>
                                             </div>
                                                
@@ -263,6 +276,36 @@
             </div>
         </div>
 
+        <div id="modalCancelamento" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div class="bg-[#f4edd7] rounded-2xl border-2 border-black shadow-2xl p-7 w-full max-w-md text-center">
+                <h2 class="text-2xl font-bold text-[#1a83b8] mb-3">
+                    Cancelar Campeonato
+                </h2>
+
+                <p class="text-black text-lg mb-6">
+                    Tem certeza que deseja cancelar este campeonato?
+                </p>
+
+                <div class="flex justify-center gap-4">
+                    <button type="button" onclick="fecharModalCancelamento()" class="bg-[#d1d5db] text-[#1a83b8] border-2 border-black rounded-lg px-6 py-2 
+                hover:bg-gray-200 transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                hover:translate-y-[2px] hover:translate-x-[2px] cursor-pointer font-semibold">
+                        Cancelar
+                    </button>
+
+                    <form id="formCancelamento" action="/cancelarCampeonato" method="POST">
+                        <input type="hidden" name="id_campeonato" id="idCampeonatoCancelamento">
+
+                        <button type="submit" class="bg-[#c24e54] text-white border-2 border-black rounded-lg px-6 py-2 
+                    hover:bg-[#a63f44] transition shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-none 
+                    hover:translate-y-[2px] hover:translate-x-[2px] cursor-pointer font-semibold">
+                            Cancelar Campeonato
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <script>
             function abrirModalDesinscricao(id) {
                 document.getElementById('idCampeonatoDesinscricao').value = id;
@@ -273,6 +316,17 @@
             function fecharModalDesinscricao() {
                 document.getElementById('modalDesinscricao').classList.add('hidden');
                 document.getElementById('modalDesinscricao').classList.remove('flex');
+            }
+
+            function abrirModalCancelamento(id) {
+                document.getElementById('idCampeonatoCancelamento').value = id;
+                document.getElementById('modalCancelamento').classList.remove('hidden');
+                document.getElementById('modalCancelamento').classList.add('flex');
+            }
+
+            function fecharModalCancelamento() {
+                document.getElementById('modalCancelamento').classList.add('hidden');
+                document.getElementById('modalCancelamento').classList.remove('flex');
             }
         </script>
 
