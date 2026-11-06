@@ -26,20 +26,6 @@ module.exports = {
         }
         switch (campeonato.esporte) {
             case "voleibol":
-                if (perfis.voleibolJogador) {
-                    const resultado = await User_Voleibol_Jogador.findAll({
-                        where: {
-                            id_usuario: id_user
-                        }
-                    })
-                    if (resultado.id_equipe === null)
-                        mensagem(req, 'info', "Entre em uma equipe para se inscrever. Você pode procurar por um time na comunidade de voleibol");
-                    else
-                        mensagem(req, 'info', "Somente o treinador da sua equipe pode fazer a inscrição");
-
-                    flag = 2
-                    break;
-                }
                 if (perfis.voleibolTreinador) {
                     const treinador = await User_Voleibol_Treinador.findOne({
                         where: {
@@ -64,6 +50,20 @@ module.exports = {
                     }
 
                     flag = 1;
+                    break;
+                }
+                if (perfis.voleibolJogador) {
+                    const resultado = await User_Voleibol_Jogador.findAll({
+                        where: {
+                            id_usuario: id_user
+                        }
+                    })
+                    if (resultado.id_equipe === null)
+                        mensagem(req, 'info', "Entre em uma equipe para se inscrever. Você pode procurar por um time na comunidade de voleibol");
+                    else
+                        mensagem(req, 'info', "Somente o treinador da sua equipe pode fazer a inscrição");
+
+                    flag = 2
                     break;
                 }
             case "boxe":
