@@ -120,7 +120,8 @@ module.exports = {
             {
                 where: {
                     id_equipe: id_equipe,
-                    id_jogador: id_jogador
+                    id_jogador: id_jogador,
+                    status: "aceito"
                 }
             }
         );
