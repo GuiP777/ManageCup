@@ -421,7 +421,6 @@ module.exports = {
                             id: campeonatoId
                         }
                     });
-                console.log('BRACKET DEPOIS:', JSON.stringify(bracketData));
                 return res.json({ sucesso: true, bracket: bracketData });
             }
 
