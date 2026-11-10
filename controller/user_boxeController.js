@@ -64,7 +64,10 @@ module.exports = {
                 {
                     model: Campeonatos,
                     as: 'campeonatoInscritos',
-                    where: { esporte: 'boxe' }
+                    where: { 
+                        esporte: 'boxe',
+                        status: ['aguardando', 'iniciado']
+                     }
                 }
             ]
         });

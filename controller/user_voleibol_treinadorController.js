@@ -72,8 +72,10 @@ module.exports = {
                 {
                     model: Campeonatos,
                     as: 'campeonatoInscritos',
-                    where: { esporte: 'voleibol' }
-                }
+                    where: { 
+                        esporte: 'voleibol',
+                        status: ['aguardando', 'iniciado'] },
+                     }             
             ]
         });
 

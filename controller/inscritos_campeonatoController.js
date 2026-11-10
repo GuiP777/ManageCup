@@ -15,7 +15,7 @@ module.exports = {
         });
         const campeonato = await Campeonatos.findByPk(id_campeonato);
 
-        if (campeonato.iniciado) {
+        if (campeonato.status === 'iniciado') {
             mensagem(req, 'erro', "Campeonato já iniciado");
             res.redirect('/campeonato');
         }
@@ -27,6 +27,7 @@ module.exports = {
         switch (campeonato.esporte) {
             case "voleibol":
                 if (perfis.voleibolTreinador) {
+
                     const treinador = await User_Voleibol_Treinador.findOne({
                         where: {
                             id_usuario: id_user
@@ -163,7 +164,7 @@ module.exports = {
         const id_campeonato = req.body.id_campeonato;
         const campeonato = await Campeonatos.findByPk(id_campeonato);
 
-        if (!campeonato.iniciado) {
+        if (campeonato.status === 'aguardando') {
             const resultado = await Inscritos_Campeonato.destroy({
                 where: {
                     id_campeonato: id_campeonato,
