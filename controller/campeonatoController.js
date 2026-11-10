@@ -542,26 +542,22 @@ module.exports = {
                         return erro(resultado.mensagem);
                     }
 
-                    if (vencedor !== resultado.vencedor) {
-                        return erro('O vencedor informado não corresponde à pontuação.');
-                    }
-
                     await manager.update.match({
                         id: match.id,
                         opponent1: {
                             score: resultado.total1,
-                            result: vencedor === 1 ? 'win' : 'loss'
+                            result: resultado.vencedor === 1 ? 'win' : 'loss'
                         },
                         opponent2: {
                             score: resultado.total2,
-                            result: vencedor === 2 ? 'win' : 'loss'
+                            result: resultado.vencedor === 2 ? 'win' : 'loss'
                         },
                         resultadoBoxe: {
                             tipo: 'decisao',
                             rounds,
                             total1: resultado.total1,
                             total2: resultado.total2,
-                            vencedor
+                            vencedor: resultado.vencedor
                         }
                     });
 
